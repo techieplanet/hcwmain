@@ -195,6 +195,7 @@ float:left;
     height: auto;
     background-color: #F4E9DD;
     float: left;
+    margin-top: 1%;
     /*height: 400px;*/
 }
 .content-area
@@ -209,23 +210,19 @@ float:left;
 }
 .sidebar ul#sidebar_ul li
 {
-    width: 100%;
-    margin-top: 20px;    
     font-family: Arial;
     font-size: 15px; 
     text-align: left;
-    text-decoration: none;
-
+    border-bottom: 1px solid 	#ccc;
 }
 .sidebar ul#sidebar_ul li a
 {
     color: #000;
     text-decoration: none;
     font-weight: normal;
-    width: 70%;
-    margin-left: 20px;
-    top: 100%;
-   
+    margin-left: 6%;
+    display: block;
+    padding: 9%;
 }
 .sidebar ul#sidebar_ul li a:visited, .sidebar ul#sidebar_ul li a:link
 {
@@ -235,13 +232,6 @@ float:left;
 .sidebar ul#sidebar_ul li a:hover, .sidebar ul#sidebar_ul li a:active
 {
     color: #003366 !important; 
-}
-.sidebar ul#sidebar_ul li
-{
-   width: 100%;
-   padding: 15px 0;
-   border-bottom: 1px solid 	#ccc;
-   background: url(../img/sidebar-line.png) center no-repeat;   
 }
 .sidebar ul#sidebar_ul li:last-child
 {
@@ -300,10 +290,9 @@ float:left;
 }
 .c-inner-content p
 {
-   width: 90%;
-   padding: 15px 0;
-   border-bottom: 1px solid 	#ccc;
-   background: url(../img/c-icon-r1.png) center right no-repeat;
+   /*width: 100%;*/
+   border-bottom: 1px solid	#ccc;
+   background: url(../img/c-icon-r1.png) 90% center no-repeat;
 }
 .c-inner-content p:last-child 
 {
@@ -316,7 +305,8 @@ float:left;
     font-weight: normal !important;
     font-family: Arial;
     font-size: 15px;
-    padding: 2px 2px;
+    padding: 15px;
+    display: block;
 }
 .c-inner-content p img
 {
@@ -474,7 +464,7 @@ color: #000 !important;
 /* Collapsible content block styling Line: 2277
 -----------------------------------------------------------------------------------------------------------*/
 .ui-collapsible-content {
-        background-color: #F4E9DD;
+        background-color: #F4E9DD !important;   /* c-inner-content*/
         border-bottom: 1px solid 	#ccc;
         height: auto;
 }

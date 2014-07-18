@@ -14,6 +14,7 @@ var globalObj = {   //begin class
     categoryID : 0, //current category id, init 0
     
     moduleID : 0, //current module id, init 0
+    moduleTitle: '',
     
     topicID : 0,  //current topic id, init 0
     
