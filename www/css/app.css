@@ -1,0 +1,514 @@
+*{
+  box-sizing: border-box;
+  margin:0 ;
+  padding: 0;
+  text-shadow: none !important;
+  font-family: Arial;
+  text-shadow:none !important;
+}
+
+
+root{
+  display:block;
+}
+
+
+body{
+    font-family: Arial !important;
+}
+
+
+html{height: 100%;}
+.fullheight {
+    height: 100% !important; 
+    max-height: 100%; 
+    box-sizing: border-box;
+}
+#content{padding: 3% 0 !important;}
+
+.header {
+    
+    background-color:#003366;
+    border: 1px solid #006666;
+    width: 100%;
+    position:fixed;
+    margin-top: 0px !important;
+    top: 0;
+    z-index: 10;
+}
+
+.header-right{
+    border:0px solid #f00;
+    float: right;
+    width: 50%;
+    padding-top: 2px;
+    margin-right: 2%;
+}
+
+
+/*Homepage menu*/
+.home-menu
+{
+    border:0px solid #000; 
+    width: 100%; 
+    float:  left;
+    text-align: center;  
+}
+.height60{height: 60% !important;}
+.height40{height: 40% !important;}
+.iconblock1 {text-decoration: none; width: 25%; height: 100%;  float: left;border-right: 0px solid #999; background-color: #ccc;/*#3B62B1;*/ padding: 11% 0;}
+/*.iconblock1 img {position: relative; top: 40%; }*/
+.iconblock1 p {width: 100%; font-size: 13px; color: #000; background:none !important; font-weight: normal !important; }
+
+.iconblock2 {text-decoration: none; width: 25%; height: 100%; float: left;border-right: 0px solid #999; background-color: #6c7992; /*#C6483B;*/ padding: 4% 0;}
+.iconblock2 p {width: 100%; font-size: 13px; color: #fff; background:none !important; font-weight: normal !important; }
+
+.iconblock1:last-child, .iconblock2:last-child{ border:0;}
+
+.nomargintop {margin-top: 0px !important;}
+
+/*Homepage header formatting*/
+.header #logo_icon_h
+{
+width:15%;
+margin-top: 10px;
+margin-left: 25px;
+float:left;   
+}
+
+.header #notification_txt_h
+{
+    font-family: 'Arial Black';
+    font-size: 13px;
+    color: #fff;
+    float: right;
+    margin: 2% 10% !important;
+    width: 19%;
+    background: url(../img/notification_icon.png) center right no-repeat;
+}
+.header #notification_icon_h
+{
+    margin-top: 15px;
+    width: 5%;
+    float:left;
+}
+.noticecount {
+    float: right;
+    font-weight: bold;
+    margin-right: 6%;
+}
+
+.header #profile_txt_h
+{
+    
+    font-family: 'Arial Black';
+    font-size: 13px;
+    color: #fff;
+    float: right;
+    margin: 2% 10% !important;
+    width: 13%;
+    background: url(../img/profile_icon.png) center right no-repeat;
+}
+.header #profile_icon_h
+{
+    margin-top: 13px;
+    width: 5%;
+    float:left;
+    
+}
+.header #menu_icon_h
+{
+    /*margin-top: 15px;*/
+    float: right;
+    margin: 2%;
+}
+/*Other pages header formating with homepage icon*/
+.header #logo_icon
+{
+width:5%;
+margin-top: 10px;
+margin-left: 25px;
+float:left;
+    
+}
+.header div#title{
+   
+    width: 35%;
+    margin-top: 8px;
+    font-family: Arial Black;
+    font-size: 20px;
+    color: #fff;
+    text-align: right;
+    float: left;
+}
+.header #home_icon
+{
+    width: 18%;
+    float: right;
+    margin-top: 1%;
+    text-align: center;
+    
+}
+.header #notification_txt
+{
+    margin-top: 15px;
+    margin-right: 18px;
+    width: 10%;
+    float:left;
+    font-family: 'Arial Black';
+    font-size: 13px;
+    color: #fff;
+}
+.header #notification_icon
+{
+    margin-top: 15px;
+    width: 5%;
+    float:left;
+}
+.header #profile_txt
+{
+    margin-top: 15px;
+    margin-right:0px;
+    width: 6.5%;
+    float:left;
+    font-family: Arial Black;
+    font-size: 13px;
+    color: #fff;   
+}
+.header #profile_icon
+{
+    margin-top: 13px;
+    width: 5%;
+    float:left;
+    
+}
+.header #menu_icon
+{
+    margin-top: 15px;
+    width: 3%;
+    float:left;
+    
+}
+.sidebar
+{
+    width: 29.5%;
+    height: auto;
+    background-color: #F4E9DD;
+    float: left;
+    /*height: 400px;*/
+}
+.content-area
+{
+    width: 70%;
+    height: auto;
+    background-color: #FFF;
+    float: right;
+    height: 400px;
+    overflow: scroll;
+    padding-top: 2%;
+}
+.sidebar ul#sidebar_ul li
+{
+    width: 100%;
+    margin-top: 20px;    
+    font-family: Arial;
+    font-size: 15px; 
+    text-align: left;
+    text-decoration: none;
+
+}
+.sidebar ul#sidebar_ul li a
+{
+    color: #000;
+    text-decoration: none;
+    font-weight: normal;
+    width: 70%;
+    margin-left: 20px;
+    top: 100%;
+   
+}
+.sidebar ul#sidebar_ul li a:visited, .sidebar ul#sidebar_ul li a:link
+{
+    color: #000 !important; 
+}
+
+.sidebar ul#sidebar_ul li a:hover, .sidebar ul#sidebar_ul li a:active
+{
+    color: #003366 !important; 
+}
+.sidebar ul#sidebar_ul li
+{
+   width: 100%;
+   padding: 15px 0;
+   border-bottom: 1px solid 	#ccc;
+   background: url(../img/sidebar-line.png) center no-repeat;   
+}
+.sidebar ul#sidebar_ul li:last-child
+{
+   border-bottom: none; 
+}
+/*Active link- should work... */
+.sidebar ul#sidebar_ul li:first-child
+{
+    background: url(../img/s-active-link.png) right no-repeat;
+      
+}
+.sidebar ul#sidebar_ul li:first-child a
+{
+    color: #003366 !important;
+}
+/*this out with leke*/
+.c-header
+{
+    margin-top: 10px;
+    margin-left:10px;
+    margin-bottom: 10px;
+    width: 95%;
+}
+.c-header div.c-title
+{
+    font-family: Arial;
+    font-size: 20px;
+    width:85%;
+    float: left;
+}
+.c-popup a
+{  
+   width: 10%;
+   margin-left: 43px;
+}
+.c-popup-txt
+{  
+    margin-top: 10px !important;
+    margin-right: 5px ;
+    margin-left: 5px;
+    font-size: 13px;
+    background-color: #fefefe;
+}
+.c-popup-back-btn
+{
+    text-align: center !important;
+    background-color: #ccc !important;
+}
+.c-list
+{
+    width:95%;
+    height: 81%;
+    float: left;
+    margin: 5px; 
+    border: 0px solid #000; 
+}
+.c-inner-content p
+{
+   width: 90%;
+   padding: 15px 0;
+   border-bottom: 1px solid 	#ccc;
+   background: url(../img/c-icon-r1.png) center right no-repeat;
+}
+.c-inner-content p:last-child 
+{
+    border: 0;
+}
+.c-inner-content p a
+{
+    color: #003366 !important;
+    text-decoration: none;
+    font-weight: normal !important;
+    font-family: Arial;
+    font-size: 15px;
+    padding: 2px 2px;
+}
+.c-inner-content p img
+{
+float: right;
+margin-right: 2px;
+}
+.focus-area{
+    height: 85%;
+    overflow: scroll;
+    padding:1% 2%;
+}
+
+
+
+/*Footer*/
+.footer {
+   
+    background-color:#003366;
+    border: 1px solid #006666;
+    width: 100%;
+    /*height: 8%; /*49px;*/
+    position:fixed;
+    margin-top: 0px !important;
+    bottom: 0;  
+    padding-bottom: 4px;
+    z-index: 10;
+}
+.footer #footer_text1
+{
+    
+    width:40%;
+    margin-top: 2px;
+    margin-left: 5%;
+    float:left;
+    font-family: Arial;
+    font-size: 11px;
+    color: #fff;
+}
+
+
+.footer #footer_text2
+{
+    
+    width:50%;
+    margin-top: 2px;
+    margin-left: 80%;
+    font-family: Arial;
+    font-size: 11px;
+    color: #fff; 
+   
+}
+
+
+
+/*
+    UTILITY
+------------------------------------------------------------------------------*/
+.noborder{border: 0 !important;}
+.nomargin {margin: 0 !important;}
+/*.margintop10 {margin-top: 10px !important;}
+.margintop20 {margin-top: 20px !important;}
+.margintop40 {margin-top: 40px !important;}
+.marginbottom10 {margin-bottom: 10px !important;}
+.marginbottom20 {margin-bottom: 20px !important;}
+.marginbottom30 {margin-bottom: 30px !important;}*/
+.hidden {display: none !important;}
+.bold {font-weight: bold;}
+.date {color:#ccc; font-size: 10px !important;}
+.articleblock  {margin-bottom: 1px !important; }
+.articleblock p {font-size: 13px;}
+.articleblock img, .dietblock img {margin: 5px 5px; height: 80px; width: 80px; border-radius: 7px;}
+.articlecontent { white-space: normal; padding:15px 10px 10px; }
+.articlecontent p {white-space: normal; font-size: 14px; margin-bottom: 20px; font-weight: normal; }
+
+
+/*******    ALIGNMENT   *******/
+.textleft {text-align: left; }
+#ui-block {text-align: center;}
+.textcenter {text-align: center;}
+.textright {text-align: right; }
+.centerpage {margin: auto;}
+.floatleft {float: left;}
+.floatright {float: right;}
+
+
+
+
+
+/*
+    OVERRIDES
+------------------------------------------------------------------------------*/
+.ui-content {padding:0 !important; /*margin-top: 48px;*/}
+
+
+/*Bar padding and font tunings. Line: 2814*/
+.ui-li-divider {padding: .5em 15px; font-size: 15px !important; font-family: Arial !important; color:#fff !important; font-weight:normal !important; }
+
+
+/*Straightens top left/right bar borders Lines: 2821-2827*/
+.ui-listview > .ui-li.ui-first-child,
+.ui-listview .ui-btn.ui-first-child > .ui-li > .ui-btn-text > .ui-link-inherit {
+	-webkit-border-top-right-radius: 0px !important;	
+	border-top-right-radius: 0px !important;
+	-webkit-border-top-left-radius: 0px !important;
+	border-top-left-radius: 0px !important;
+}
+
+/*btn text formating Line: 2194*/
+.ui-btn-inner { font-size: 13px !important;  font-family: Arial !important; font-weight:normal !important;}
+
+/*btn text formating Lines: 884-887*/
+.ui-btn-active:visited,
+.ui-btn-active:hover,
+.ui-btn-active a.ui-link-inherit {
+	color: 					#003366 !important /*{global-active-color}*/;
+}
+
+/*a:active button*/
+.ui-btn-active {
+        border: none !important;       
+	background: none !important /*{global-active-background-color}*/;
+	font-weight: normal !important;
+	color: 					#003366 /*{global-active-color}*/;
+	text-shadow: 0 /*{global-active-shadow-x}*/ 0px /*{global-active-shadow-y}*/ 0 /*{global-active-shadow-radius}*/ url(img/btn-line.png) /*{global-active-shadow-color}*/ !important;
+	text-decoration: none;
+	background-image: none !important;
+}
+
+
+/* corner rounding classes
+-----------------------------------------------------------------------------------------------------------*/
+.ui-corner-all {
+	-webkit-border-radius: 				0em  !important/*{global-radii-blocks}*/;
+	border-radius: 					0em !important/*{global-radii-blocks}*/;
+}
+
+/* button inner top highlight Lines: 891-894
+-----------------------------------------------------------------------------------------------------------*/
+.ui-btn-inner {
+	border-top: none !important;
+        border-bottom:  1px solid 	#ccc;
+	border-color: 		#ccc !important;
+}
+
+.ui-btn-active 
+{
+color: #000 !important;    
+}
+
+/* Spacing between collapsibles Line: 2277
+-----------------------------------------------------------------------------------------------------------*/
+.ui-collapsible-inset { margin: 1.0em 0 !important; }
+
+
+/* Collapsible content block styling Line: 2277
+-----------------------------------------------------------------------------------------------------------*/
+.ui-collapsible-content {
+        background-color: #F4E9DD;
+        border-bottom: 1px solid 	#ccc;
+        height: auto;
+}
+/* Outer collapsible arrow image
+-----------------------------------------------------------------------------------------------------------*/
+.ui-btn-icon-right .ui-icon {background: url(../img/c-icon-d.png) center right no-repeat !important;}
+.ui-btn-icon-top .ui-icon {background: url(../img/c-icon-u.png) center right no-repeat !important;}
+/*Popup tweaks
+-----------------------------------------------------------------------------------------------------------*/
+.ui-popup-container
+{
+    width:500px !important;
+    margin-left: 100px !important;
+    
+}
+.ui-popup .ui-title 
+{
+    font-size: 13px !important;
+    color:#fff !important;
+    
+}
+.ui-overlay-shadow
+{
+   	-moz-box-shadow: 0 0 0px 			rgba(0,0,0,.6) !important;
+	-webkit-box-shadow: 0 0 0px 		rgba(0,0,0,.6) !important;
+	box-shadow: 0 0 0px 				rgba(0,0,0,.6) !important; 
+}
+
+
+
+/*
+*   LEKE STYLES
+-------------------------------------------------------*/
+#contentList li{
+    border-bottom: 1px solid #ccc;
+}
+#contentList li:last-child{border: 0;}
