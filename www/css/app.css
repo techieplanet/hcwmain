@@ -6,7 +6,6 @@
   font-family: Arial;
   text-shadow:none !important;
 }
-
 root{
   display:block;
 }
@@ -279,15 +278,17 @@ float:left;
 .c-popup-txt
 {  
     margin-top: 10px !important;
-    margin-right: 5px ;
-    margin-left: 5px;
     font-size: 13px;
     color: #000;
+	text-align:left;
+	padding: 5px;
 }
 .c-popup-back-btn
 {
     text-align: center !important;
-    background-color: #ccc !important;
+    background-color: #036 !important;
+	padding: 1px 0 5px 0 !important;
+	margin-top: 10px;
 }
 .c-list
 {
@@ -337,7 +338,7 @@ margin-right: 2px;
 .focus-area{
     height: 85%;
     overflow: scroll;
-    padding:0 2%;
+	padding:1% 2%;
 }
 .training-video-nav
 {
@@ -406,7 +407,9 @@ margin-right: 2px;
     margin-right: 1%;
     border: 1px solid 	#ccc;
 }
-    /*Footer*/
+
+
+/*Footer*/
 .footer {
    
     background-color:#003366;
@@ -443,6 +446,8 @@ margin-right: 2px;
     color: #fff; 
    
 }
+
+
 /*
     UTILITY
 ------------------------------------------------------------------------------*/
@@ -581,13 +586,13 @@ color: #000 !important;
 }
 
 .ui-body-popup{
-	background: 			#F4E9DD /*{e-body-background-color}*/ !important;
-	background-image: -webkit-gradient(linear, left top, left bottom, from( #F4E9DD /*{e-body-background-start}*/), to( #F4E9DD /*{e-body-background-end}*/)) !important; /* Saf4+, Chrome */
-	background-image: -webkit-linear-gradient( #F4E9DD /*{e-body-background-start}*/, #F4E9DD /*{e-body-background-end}*/) !important; /* Chrome 10+, Saf5.1+ */
-	background-image:    -moz-linear-gradient( #F4E9DD /*{e-body-background-start}*/, #F4E9DD /*{e-body-background-end}*/) !important; /* FF3.6 */
-	background-image:     -ms-linear-gradient( #F4E9DD /*{e-body-background-start}*/, #F4E9DD /*{e-body-background-end}*/) !important; /* IE10 */
-	background-image:      -o-linear-gradient( #F4E9DD /*{e-body-background-start}*/, #F4E9DD /*{e-body-background-end}*/) !important; /* Opera 11.10+ */
-	background-image:         linear-gradient( #F4E9DD/*{e-body-background-start}*/, #F4E9DD /*{e-body-background-end}*/) !important;
+	background: 			#FFFFFF /*{e-body-background-color}*/ !important;
+	background-image: -webkit-gradient(linear, left top, left bottom, from( #FFFFFF /*{e-body-background-start}*/), to( #FFFFFF /*{e-body-background-end}*/)) !important; /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient( #FFFFFF /*{e-body-background-start}*/, #FFFFFF /*{e-body-background-end}*/) !important; /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient( #FFFFFF /*{e-body-background-start}*/, #FFFFFF /*{e-body-background-end}*/) !important; /* FF3.6 */
+	background-image:     -ms-linear-gradient( #FFFFFF /*{e-body-background-start}*/, #FFFFFF /*{e-body-background-end}*/) !important; /* IE10 */
+	background-image:      -o-linear-gradient( #FFFFFF /*{e-body-background-start}*/, #FFFFFF /*{e-body-background-end}*/) !important; /* Opera 11.10+ */
+	background-image:         linear-gradient( #FFFFFF/*{e-body-background-start}*/, #FFFFFF /*{e-body-background-end}*/) !important;
 }
 .ui-btn-popup{
 	background: 			#FEFEFE /*{e-body-background-color}*/ !important;
@@ -603,3 +608,14 @@ width: 15%;
 margin-left: 200px !important;
 margin-bottom:0 !important;
 }
+
+
+
+/*
+*   LEKE STYLES
+-------------------------------------------------------*/
+#contentList li{
+    border-bottom: 1px solid #ccc;
+}
+#contentList li:last-child{border: 0;}
+
