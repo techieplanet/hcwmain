@@ -8,8 +8,8 @@
 function openDb(){
     //alert("inside opendb")
     //create database or open it if created
-    _db = window.openDatabase("chaidbpx", "1.0", "CHAI mlearning App DB", 200000); 
-    _db.transaction(populateDB, errorCB, successCB);                           
+    globalObj.db = window.openDatabase("chaidbpx", "1.0", "CHAI mlearning App DB", 200000); 
+    globalObj.db.transaction(populateDB, errorCB, successCB);                           
 }
             
 function populateDB(tx){
