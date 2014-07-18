@@ -90,10 +90,36 @@
             
 
                 <div data-role="collapsibleset" class="focus-area">
+                    
+                    <div class="c-popup" >
+                         
+                     
+                     <div data-role="popup" id="popupBasic" class="ui-body-popup">
+               
+                         <div data-role="header" class="ui-header ui-bar-f">
+                            <h1>Select Session</h1>
+                          </div>
+
+                          <div data-role="main" class="ui-content  session-popup-container" data-theme="f">                    
+                       
+                              <p> <input type="radio" name="radio-choice" id="radio-choice-1" value="choice-1" checked="checked" />
+                                <label for="radio-choice-1"  data-corners="false" class="ui-btn-corner-none" >Individual Session</label></p>
+                                <input type="radio" name="radio-choice" id="radio-choice-2" value="choice-2"  />
+                                <p>  <label for="radio-choice-2" data-corners="false" class="ui-btn-corner-none">Group Session</label></p>
+                         
+                          </div>
+                           <div data-role="footer">
+                            <p class="c-popup-back-btn"><a href="#" data-rel="back" data-theme="f" data-iconshadow="false"
+                                                           data-corners="false" data-role="button" class="ui-btn-popup-ok">OK</a></p>
+                          </div>
+                    </div>
+                 </div>
 
                           <div data-role="collapsible" data-icon="arrow-d" data-iconpos="right" class="c-inner-content">
                             <h1>Antenatal Care Series</h1>
-                            <p><a href="training.html">Referring a Sick Baby</a></p>
+                            <p>
+                                <a href="#popupBasic" data-rel="popup" data-position-to=".content-area">Referring a Sick Baby</a>
+                            </p>
                             <p><a href="#">The Cold Baby</a> </p>
                             <p><a href="#">Breathing Problems</a> </p>
                           </div>
