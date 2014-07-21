@@ -752,7 +752,7 @@
 	border: 1px solid 		#003366 /*{e-body-border}*/;
 	color: 					#000 /*{e-body-color}*/ ;
 	text-shadow: 0 /*{e-body-shadow-x}*/ 1px /*{e-body-shadow-y}*/ 0 /*{e-body-shadow-radius}*/ 	#fff /*{e-body-shadow-color}*/;
-	background: 			#006666 /*{e-body-background-color}*/;
+	background: 			#fff /*{e-body-background-color}*/;
 	background-image: -webkit-gradient(linear, left top, left bottom, from( #ffffff /*{e-body-background-start}*/), to( #ffffff /*{e-body-background-end}*/)); /* Saf4+, Chrome */
 	background-image: -webkit-linear-gradient( #ffffff /*{e-body-background-start}*/, #ffffff /*{e-body-background-end}*/); /* Chrome 10+, Saf5.1+ */
 	background-image:    -moz-linear-gradient( #ffffff /*{e-body-background-start}*/, #ffffff /*{e-body-background-end}*/); /* FF3.6 */
@@ -823,7 +823,7 @@
 	color: 					#003366 /*{e-bhover-color}*/;
 }
 .ui-btn-down-f {
-	border: 1px solid 		#f2c43d /*{e-bdown-border}*/;
+	border: 0px solid 		#f2c43d /*{e-bdown-border}*/;
 	background: 			#fff /*{e-bhover-background-color}*/;
 	font-weight: bold;
 	color: 					#003366 /*{e-bhover-color}*/;

@@ -17,7 +17,7 @@ var globalObj = {   //begin class
     moduleTitle: '',
     
     topicID : 0,  //current topic id, init 0
-    
+        
     loggedInUserID : -1, //init -1, 0 reserved for group sessions
     
     sessionUsersList : [], //list of logged in users. super useful for group sessions

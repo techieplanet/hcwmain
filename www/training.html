@@ -14,7 +14,7 @@
     </head>
     <body >                        
         
-        <div data-role="page" data-theme="f" class="fullheight"  > 
+        <div id="trainingpage" data-role="page" data-theme="f" class="fullheight"  > 
              <div class="header"> 
                  <div id="logo_icon_h"><img src="img/logo_icon.png" ></div> 
                  
@@ -46,17 +46,15 @@
              <div class="sidebar fullheight">
                  <ul id="sidebar_ul">
                   
+
                          <li>
-                             <a href="#">Videos</a>
+                             <a class="active" href="#">Videos</a>
                          </li>
                          <li>
                              <a href="#" >Training Guide</a>
                          </li>
                          <li>
                              <a href="#" >Job Aid</a>
-                         </li>
-                         <li>
-                             <a href="#" >FAQ</a>
                          </li>
                          <li>
                              <a href="training_home.html" >Exit</a> 
@@ -71,40 +69,32 @@
                  
                  
                  <div class="c-header">
-                     <div class="c-title">Antenatal Care Series</div>
+                     <div class="c-title"></div>
                      
                      
                      <div class="c-popup" >
-                         <a href="#popupBasic" data-rel="popup" data-position-to=".content-area">
+                         <a href="#infoPopup" data-rel="popup" data-position-to=".content-area">
                          <img src="img/info-icon.png"/>
                         </a>
                      
-                     <div data-role="popup" id="popupBasic" class="ui-body-popup">
-               
-                         <div data-role="header" class="ui-header ui-bar-f">
-                            <h1>Antenatal Care Series</h1>
-                          </div>
+                     <!--module info popup  -->
+                        <div class="noborder" data-role="popup" id="infoPopup" data-overlay-theme="f" data-dismissible="false">
+                           <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
+                           <div class="popup_header">HCW LMS</div>
 
-                          <div data-role="main" class="ui-content c-popup-txt" data-theme="f">
-                            <p>
-                                <span class="c-popup-txt">
-                            The popup consists of two elements: the screen,
-                            which is a transparent or translucent element that
-                            overs the entire document, and the container,
-                            which is the popup itself. If your original
-                            element had an id attribute, the screen and
-                            the container will each receive an id attribute
-                            based on it. The screen's id will be suffixed
-                            with "-screen", and the container's id will
-                            be suffixed.
-                            </span>
-                            </p>
-                          </div>
-                           <div data-role="footer">
-                            <p class="c-popup-back-btn"><a href="#" data-rel="back" data-theme="f" data-iconshadow="false"
-                                                           data-corners="false" data-role="button" class="ui-btn-popup">OK</a></p>
-                          </div>
-                    </div>
+                           <div class="margintop10 marginbottom10 popup_body" >
+                               <p class="info"></p>
+                           </div>
+
+                           <div class="popup_header">
+                               <a class="pagebutton footerbutton" onclick="$('#infoPopup').popup('close'); return false;" 
+                                data-role="button"  data-inline="true" data-mini="true">OK</a>
+                           </div>
+
+                       </div>
+                       <!--module info popup  -->
+                         
+                         
                  </div>
                  </div>
   
@@ -112,7 +102,7 @@
                  <div class="c-list">
                      
                      <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                        <li data-role="list-divider">Referring a Sick Baby</li>   
+                        <li id="c-bar" data-role="list-divider"></li>   
                      </ul>  
             
 
@@ -120,16 +110,17 @@
                     
                     <div class="training-container padcontainer">
                             <div class="training-video ui-block" >
-                                <video  width="500" height="200" controls="controls">
-                                      <source src="img/Bombay-Wizkid.mp4" type="video/mp4" />
+                                <video width="600" height="450" controls="controls" id="videoscreen">
+                                      <!--<source src="refer.mp4" type="video/mp4" />-->
+                                      <source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>
                                 </video>
                             </div>
                         
                              <div class="training-video-nav ui-block padcontainer" >
-                                 <a href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >
+                                 <a id="prevvideo" href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >
                                  Previous
                                  </a>
-                                 <a href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">
+                                 <a id="nextvideo" href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">
                                  Next
                                  </a>
                             </div>   
@@ -139,7 +130,29 @@
 
                  </div> 
                  
+                 
+                 
+                 <!--test popup-->
+                 <div class="noborder" data-role="popup" id="testPopup" data-overlay-theme="f" data-dismissible="false">
+                    <div class="popup_header">HCW LMS</div>
 
+                    <div class="popup_body" >
+                        <p class="">
+                            Hurray! You have completed all the tests in this module.
+                             <br/>
+                             Would you like to take the module test now?
+                        </p>
+                    </div>
+                    
+                    <div class="popup_header">
+                        <a class="pagebutton footerbutton width40" onclick="$('#testPopup').popup('close'); return false;" 
+                         data-role="button"  data-inline="true" data-mini="true">No, thanks</a>
+                        <a id="sessionok" class="pagebutton footerbutton width40" onclick="changeToTest()" 
+                         data-role="button" data-inline="true" data-mini="true">Take me to test</a>
+                    </div>
+                    
+                </div>
+                <!--test popup-->
 
 
              </div>

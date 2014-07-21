@@ -1,0 +1,5 @@
+.cordova/
+hooks/
+merges/
+nbproject/
+platforms/

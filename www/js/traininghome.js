@@ -5,7 +5,8 @@
 *   Displays first category modules in content area
 **********************/
 
-$(document ).delegate("#traininghomepage", "pageinit", function() {
+$(document ).delegate("#traininghomepage", "pageinit", function() {   
+    
         globalObj.db.transaction(queryCategories,
                                 function(error){console.log('Database error: ' + JSON.stringify(error));
                             }
@@ -23,22 +24,27 @@ $(document ).delegate("#traininghomepage", "pageinit", function() {
 
 $( document ).delegate("#traininghomepage", "pageshow", function() {
     
-    
-    $('#traininghomepage .moduletitle').click(function(e){
-        //e.preventDefault();
-        //console.log($(this).parent())
-        var collapsible = $(this).next('.ui-collapsible-content');
         
-        collapsible.one('expand',function(){
-            //console.log('expanded')
-            $('div.ui-collapsible-content').trigger("collapse");
-            $(this).slideDown(600, function(){
-                $(this).trigger("expand");
-            })
-        });
-        
-        collapsible.one('collapse',function(){console.log('collapsed')})
+    $('#sidebar_ul li a').click(function(){
+        $('#sidebar_ul li a').removeClass('active');
+        $(this).addClass('active');
     });
+    
+//    $('#traininghomepage .moduletitle').click(function(e){
+//        //e.preventDefault();
+//        //console.log($(this).parent())
+//        var collapsible = $(this).next('.ui-collapsible-content');
+//        
+//        collapsible.one('expand',function(){
+//            //console.log('expanded')
+//            $('div.ui-collapsible-content').trigger("collapse");
+//            $(this).slideDown(600, function(){
+//                $(this).trigger("expand");
+//            })
+//        });
+//        
+//        collapsible.one('collapse',function(){console.log('collapsed')})
+//    });
 });
 
 function moduleSlide(){
@@ -90,6 +96,7 @@ function moduleSlide(){
  }
  
 function loadModule(cat_id){
+    
     globalObj.categoryID = cat_id;
     globalObj.db.transaction(populateModule,function(error){alert("error populating modules.")});
     
@@ -97,8 +104,8 @@ function loadModule(cat_id){
 }
 
 function populateModule(tx){
-    var query = 'SELECT * FROM cthx_training_module WHERE category_id='+ globalObj.categoryID;
-    console.log('mods: ' + query);
+    var query = 'SELECT * FROM cthx_training_module m JOIN cthx_category c ON m.category_id=c.category_id AND m.category_id='+ globalObj.categoryID;
+    //console.log('mods: ' + query);
     tx.executeSql(query,[],
                     function(tx,result){
                         var len = result.rows.length;
@@ -109,11 +116,14 @@ function populateModule(tx){
                                 //closure
                                 (function(i){
                                     var row = result.rows.item(i);
+                                    //console.log(row)
+                                    $('.c-title').html(row['category_name']);
+                                    
                                     setTimeout(function(){
                                         globalObj.moduleID = row['module_id'];
                                         globalObj.moduleTitle = row['module_title'];
                                         globalObj.db.transaction(populateTopic);
-                                    },i*1000);
+                                    },i*500);
                                     
                                 })(i);
                                 
@@ -148,7 +158,7 @@ function populateTopic(tx){
                         
                         for(var i=0; i<len; i++){
                             var row = result.rows.item(i);
-                            html += '<p><a href="#">' + row['training_title'] + '</a></p>';
+                            html += '<p><a onclick="topicStarter(' + row['training_id'] + '); return false;" href="#">' + row['training_title'] + '</a></p>';
                         }
                         
                         html += '</div>';
@@ -162,3 +172,30 @@ function populateTopic(tx){
                 );
                     
 }
+
+
+function topicStarter(topic_id){
+    globalObj.topicID = topic_id; //selected topic id
+    
+    if(globalObj.loggedInUserID > -1){  //user is logged in, group is 0
+        $.mobile.changePage( "training.html" );
+    }
+    else{
+        $('#sessionPopup').popup('open');
+    }
+}
+
+
+function sessionPick(){    
+    var selection = $("input[name='session-choice']:checked").val();
+    
+    if(selection == 'individual'){
+        globalObj.sessionType = 1;
+        globalObj.loginMode = 'training';
+        $.mobile.changePage( "login.html?pagemode=1" );
+    }
+    else if(selection == 'group'){
+        globalObj.sessionType = 2;
+        $.mobile.changePage( "login.html?pagemode=2");
+    }
+}        

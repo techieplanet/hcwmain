@@ -1,3 +1,7 @@
+$(document).on("popupafteropen", function() {
+    $('#sessionPopup').popup('reposition', 'positionTo: window');
+});
+
 /********************** Index Page   **********************/        
 $(document ).delegate("#mainpage", "pageinit", function() {
   
@@ -9,19 +13,19 @@ $(document ).delegate("#mainpage", "pageinit", function() {
             
    //put the following into deviceready event listener to disable back button totally
    //navigator.app.overrideBackbutton(true);        
-     document.addEventListener("backbutton", function(e){
-            if($.mobile.activePage.is('#mainpage')){
-                //e.preventDefault();
-                //quits the app
-                //quitApp();
-                
-            }
-            else if($.mobile.activePage.is('#trainingpage')){
-                //alert("Disabled while on video.");
-                //e.preventDefault();
-            }
-            
-        }, false);
+//     document.addEventListener("backbutton", function(e){
+//            if($.mobile.activePage.is('#mainpage')){
+//                //e.preventDefault();
+//                //quits the app
+//                //quitApp();
+//                
+//            }
+//            else if($.mobile.activePage.is('#trainingpage')){
+//                //alert("Disabled while on video.");
+//                //e.preventDefault();
+//            }
+//            
+//        }, false);
 });
 
 
