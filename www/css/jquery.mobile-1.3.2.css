@@ -823,7 +823,7 @@
 	color: 					#003366 /*{e-bhover-color}*/;
 }
 .ui-btn-down-f {
-	border: 1px solid 		#f2c43d /*{e-bdown-border}*/;
+	border: 0px solid 		#f2c43d /*{e-bdown-border}*/;
 	background: 			#fff /*{e-bhover-background-color}*/;
 	font-weight: bold;
 	color: 					#003366 /*{e-bhover-color}*/;
