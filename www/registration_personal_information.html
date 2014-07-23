@@ -40,23 +40,13 @@
             <div id="content" data-role="content" class="fullheight"  > 
 
              <div class="sidebar fullheight">
-                 <ul id="sidebar_ul"  class="sidebar-notification-counter" data-role="listview" data-icon="false">
+                 <ul id="sidebar_ul"  class="sidebar-notification-counter" data-icon="false">
                   
-                         <li id="link" data-icon="false">
-                             <a href="profile-usage.html" class="textfontarial15" >Usage</a>
+                         <li id="link">
+                             <a href="registration_personal_information.html" id="active">Personal Information</a>
                          </li>
-                         <li data-icon="false">
-                             <a href="profile-personal-information.html" class="textfontarial15" id="active">Personal Information</a>
-                         </li>
-              
-                       
-                         <li data-icon="false" >
-                             <a href="profile_notifications.html" class="textfontarial15">Notifications<span id="sidebar-noti" class="ui-li-count">57</span></a>
-                         </li>
-                      
-              
-                         <li data-icon="false">
-                             <a href="profile_login_details.html" class="textfontarial15">Login Details</a>
+                         <li >
+                             <a href="registration_login_details.html">Login Detail</a>
                          </li>
                  </ul>
                  
@@ -74,42 +64,49 @@
                  <div class="c-list">
                      
                      <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                         <li data-role="list-divider"><span id="column-width">Personal Information</span><div class="floatright textfontarial12"><a href="profile_personal_information_edit.html" class="notextdecoration textwhite" >Edit</a></div></li>   
+                         <li data-role="list-divider"><span id="column-width">Personal Information</span><div class="floatright textfontarial12"><a href="profile_personal_information_edit.html" class="notextdecoration textwhite" >Save</a></div></li>   
                      </ul>  
             
 
-                <div data-role="collapsibleset" class="focus-area">
+                <div data-role="collapsibleset" class="focus-area width90" >
                     <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
                        
-                            <p class="marginbottom10"><strong class="marginbottom10">Fullname:</strong></p>
+                            <p class="marginbottom10"><strong>Fullname:</strong></p>
                             <p>
-                              <span class="">Adebayo</span>
-                              <span class="marginleft20">Nofisat</span>
-                              <span class="marginleft20">Adejoke</span>
+                              <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="firstname" id="firstname" value="" placeholder="First Name"/></span>
+                              <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="middlename" id="middlename" value="" placeholder="Middle Name" /></span>
+                              <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="lastname" id="lastname" value="" placeholder="Last Name" /></span>
                             </p>
                    </div>
                    <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
                             <p class="marginbottom10"><strong>Cadre:</strong></p>
                             <p>
-                              <span class="">CHEW</span>
+                              <span class="marginleft10">
+                                  <select name="cadre" id="cadre" data-role="none" class="styleinputtext">
+                                      <option value="mon">&nbsp;</option>
+                                      <option value="mon">CHEW</option>
+                                      <option value="tue">Midwife</option>
+                                      <option value="wed">Nurses</option>
+                                    </select>
+                              </span>
                             </p>
                    </div>
                     <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
                             <p class="marginbottom10"><strong>Phone:</strong></p>
                             <p>
-                              <span class="">0123456789</span>
+                              <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="phonenumber" id="phonenumber" value="" placeholder="Phone Number" /></span>
                             </p>
                    </div> 
                     <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
                             <p class="marginbottom10"><strong>Email:</strong></p>
                             <p>
-                              <span class="">email@example.com</span>
+                              <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="email" id="email" value="" placeholder="Email Address" /></span>
                             </p>
                    </div> 
                     <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
                             <p class="marginbottom10"><strong>Gender:</strong></p>
                             <p>
-                              <span class="">Female</span>
+                              <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="gender" id="gender" value="" placeholder="Gender" /></span>
                             </p>
                    </div> 
                     

@@ -44,15 +44,24 @@
             <div id="content" data-role="content" class="fullheight"  > 
 
              <div class="sidebar fullheight">
-                 <ul id="sidebar_ul"  >
+                 <ul id="sidebar_ul"  class="sidebar-notification-counter" data-role="listview" data-icon="false">
                   
-                         <li id="link">
-                             <a href="registration-login-detail.html" id="active">Personal Information</a>
+                         <li id="link" data-icon="false">
+                             <a href="profile_usage.html" class="textfontarial15" >Usage</a>
                          </li>
-                         <li >
-                             <a href="#" class="textfontarial15">Login Detail</a>
+                         <li data-icon="false">
+                             <a href="profile_personal_information.html" class="textfontarial15">Personal Information</a>
                          </li>
               
+                       
+                         <li data-icon="false" >
+                             <a href="profile_notifications.html" class="textfontarial15" >Notifications<span id="sidebar-noti" class="ui-li-count">57</span></a>
+                         </li>
+                      
+              
+                         <li data-icon="false">
+                             <a href="profile_login_details.html" class="textfontarial15" id="active">Login Details</a>
+                         </li>
                  </ul>
                  
              </div>
@@ -70,38 +79,28 @@
                  <div class="c-list">
                      
                      <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                         <li data-role="list-divider">User Registration Form <div class="floatright textfontarial12"><a href="#" class="notextdecoration textwhite" >Save</a></div></li>   
+                        <li data-role="list-divider">Credentials<span class="floatright textfontarial12"><a href="#" class="notextdecoration textwhite" >Save</a></span></li>   
                      </ul>  
             
-                            <ul  data-role="listview" class="registration-form marginb10">      
 
-                                <li class="" data-icon="false">
-                                    <div data-role="fieldcontain" class="fieldrow nomargin" >
-                                            <label class="" for="username">Username</label>
-                                            <input class="iconifiedinput username" type="text" name="username" id="username" value=""  />
-                                    </div>
-                                </li>
-
-                                <li class="" data-icon="false">
-                                    <div data-role="fieldcontain" class="fieldrow nomargin">
-                                            <label class="" for="password">Password</label>
-                                            <input class="iconifiedinput password" type="password" name="password" id="password" value=""  />
-                                    </div>
-                                </li>
-                                                                <li class="noborder" data-icon="false">
-                                    <div data-role="fieldcontain" class="fieldrow nomargin">
-                                            <label class="" for="confirm-password">Confirm Password</label>
-                                            <input class="iconifiedinput password" type="password" name="confirm-password" id="confirm-password" value=""  />
-                                    </div>
-                                </li>
-                                
-<!--                                <li class="noborder" data-icon="false">
-                                    <div data-role="fieldcontain" class="fieldrow nomargin">
-                                            <a id="login" class="pagebutton" onclick="" data-theme="d" data-role="button"  data-inline="true">Login</a>
-                                    </div>
-                                </li>-->
-
-                            </ul>
+                <div  class="focus-area">
+                    
+                   <ul class="content-listing textfontarial12" data-role="listview">
+                       <li  data-icon="false" class="bottomborder marginleft15">
+                           <div  class="margintop10">
+                               <p ><strong>Username:</strong></p>
+                           <p class=""><input class="styleinputtext" data-role="none" size="20" type="text" name="username" id="username" value="" placeholder="User Name"/></p>
+                           </div>
+                       </li>
+                       <li  data-icon="false" class="bottomborder marginleft15">
+                           <div  class="margintop10">
+                               <p><strong>Password:</strong></p>
+                           <p class=""><input class="styleinputtext" data-role="none" size="20" type="password" name="password" id="password" value="" placeholder="Password"/></p>
+                           </div>
+                       </li>
+                   </ul>
+                   
+                </div> 
 
                  </div> 
                  
