@@ -6,7 +6,7 @@
 **********************/
 
 $(document ).delegate("#traininghomepage", "pageinit", function() {   
-    
+        //openDb();
         globalObj.db.transaction(queryCategories,
                                 function(error){console.log('Database error: ' + JSON.stringify(error));
                             }
@@ -98,7 +98,7 @@ function moduleSlide(){
 function loadModule(cat_id){
     
     globalObj.categoryID = cat_id;
-    globalObj.db.transaction(populateModule,function(error){alert("error populating modules.")});
+    globalObj.db.transaction(populateModule,function(error){alert("error populating modules " + JSON.stringify(error))});
     
     $('#collapsible_content').html('');
 }
@@ -123,7 +123,7 @@ function populateModule(tx){
                                         globalObj.moduleID = row['module_id'];
                                         globalObj.moduleTitle = row['module_title'];
                                         globalObj.db.transaction(populateTopic);
-                                    },i*500);
+                                    },i*200);
                                     
                                 })(i);
                                 
@@ -141,14 +141,22 @@ function populateModule(tx){
 }
 
 
+/*
+ * This method retrieves the topics for each module and registers it under the module 
+ * in the interface collapsible.
+ * Tables: training, training_to_module, module
+ */
 var html ='';
 function populateTopic(tx){
-    var query = 'SELECT * FROM cthx_training WHERE module_id=' + globalObj.moduleID;
+    var query = 'SELECT * FROM cthx_training_to_module tm JOIN cthx_training t JOIN cthx_training_module m ' +
+                'WHERE t.training_id=tm.training_id AND m.module_id=tm.module_id ' + 
+                'AND tm.module_id=' + globalObj.moduleID;
     //console.log('topics : ' + query);
+    
     tx.executeSql(query,[],
                     function(tx,result){
                         var len = result.rows.length;
-                        
+                        //console.log(globalObj.moduleID + ' len: ' + len);
                         //var empty = len>0 ? '' : 'empty';
                         html += '<div id="coll_mod_'+ globalObj.moduleID + '" data-role="collapsible" data-icon="arrow-d" data-iconpos="right"  class="c-inner-content">';
                         html += '<h1 class="moduletitle" >' + globalObj.moduleTitle + '</h1>';
@@ -158,7 +166,7 @@ function populateTopic(tx){
                         
                         for(var i=0; i<len; i++){
                             var row = result.rows.item(i);
-                            html += '<p><a onclick="topicStarter(' + row['training_id'] + '); return false;" href="#">' + row['training_title'] + '</a></p>';
+                            html += '<p><a onclick="topicStarter(' + row['training_id'] + ',' + globalObj.moduleID + '); return false;" href="#">' + row['training_title'] + '</a></p>';
                         }
                         
                         html += '</div>';
@@ -174,8 +182,9 @@ function populateTopic(tx){
 }
 
 
-function topicStarter(topic_id){
+function topicStarter(topic_id,module_id){
     globalObj.topicID = topic_id; //selected topic id
+    globalObj.moduleID = module_id;
     
     if(globalObj.loggedInUserID > -1){  //user is logged in, group is 0
         $.mobile.changePage( "training.html" );

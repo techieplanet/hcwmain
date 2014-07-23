@@ -2,8 +2,8 @@
 
 <html>
     <head>
-
-     
+      
+        
     </head>
     <body >                        
         
@@ -15,32 +15,50 @@
                  
                  <div class="header-right">
                      
-                     <div id="menu_icon_h"><img src="img/menu_icon.png"  ></div>
+                     <div id="menu_icon_h">
+                         <a href="#quickMenu" data-rel="popup" data-position-to="origin">
+                             <img src="img/menu_icon.png" />
+                         </a>
+                      </div>
 
                      <div id="profile_txt_h">
                         Profile
-                        <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
+                         <!--<div id="profile_icon_h"><img src="img/profile_icon.png" ></div>--> 
                     </div>
 
                      <div id="notification_txt_h">
                         <span>Notifications</span> 
                         <span class="noticecount">2</span> 
                      </div>
-                     
-                     <div id="home_icon">
+                 </div>     
+                 
+                 <!--context menu-->
+                    <div data-role="popup" id="quickMenu" >
+                        <ul id="choicelist" data-role="listview" >
+                            <li data-icon="false"><a href="index.html" id="main">Main Menu </a></li>
+                            <li data-icon="false"><a href="training_home.html">Training</a></li>
+                            <li data-icon="false"><a href="index.html">Take Test</a></li>
+                            <li data-icon="false"><a href="index.html">Job Aids</a></li>
+                            <li data-icon="false"><a href="index.html">Standing Order</a></li>
+                            
+                            <li id="quick-login" data-icon="false"><a href="login.html" id="gator">Log In</a></li>
+                            <li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
+                            <li data-icon="false"><a href="" id="quit">Quit</a></li>
 
-                        <a href="index.html"><img src="img/home-icon.png" ></a>
-
+                        </ul>
                     </div>
-                 </div>                 
-
-             </div>  
+                 <!--context menu-->
+                 
+             </div> 
 
             
             <div id="content" data-role="content" class="fullheight" style="/*border:0px solid #000;padding-top: 70px !important;*/"  > 
                 
                 
-                
+<!--                <a href="#pg" data-role="button" data-rel="popup" >Worked</a>
+                <div data-role="popup" id="pg" >
+                    <p>I am positioned to the window2.</p>
+                </div>-->
                 
                 
                 <!--<a href="#sessionPopup" data-theme="b" data-role="button" data-rel="popup" data-position-to="window">Worked</a>-->
@@ -60,10 +78,10 @@
 
 
              <div class="content-area fullheight">
-<!--                 <a href="#positionWindow2" data-role="button" data-rel="popup" data-position-to="window">Worked</a>
-                        <div data-role="popup" id="positionWindow2">
-                            <p>I am positioned to the window2.</p>
-                        </div>-->
+<!--                 <a href="#pg" data-role="button" data-rel="popup" >Worked</a>
+                <div data-role="popup" id="pg" >
+                    <p>I am positioned to the window2.</p>
+                </div>-->
                  
                  <div class="c-header">
                      <div class="c-title">Emergency Obstetric Care </div>
@@ -104,15 +122,10 @@
                                 </div>                       
 
                           </div>-->
-                         
+      
 
 
 
-                 
-                
-                
-                
-                
                          
                          
                      </div>

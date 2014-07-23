@@ -5,8 +5,9 @@
 
 $(document ).delegate("#loginpage", "pageinit", function() {        
         
-        //sample initial string to split on - /phonegap/hcwdeploy/www/login.html?pagemode=i
+        //sample initial string to split on - /phonegap/hcwdeploy/www/login.html?pagemode=1
         var pageMode = $('#loginpage').attr('data-url').split('?')[1].split('=')[1];
+        //pageMode = 1;
         
         if(pageMode==1){
             $('#indtab').addClass('active');
@@ -132,6 +133,5 @@ function login(mode){
         globalObj.sessionUsersList.push(checked[i].id);
         
     globalObj.sessionType = 2;   //set session type
-    $.mobile.changePage( "training.html" );
-    
+    $.mobile.changePage( "training.html" );   
 }

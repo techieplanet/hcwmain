@@ -18,6 +18,7 @@ function populateDB(tx){
        setUpCategoryTable(tx);
        setUpTrainingModules(tx);
        setUpTopics(tx);
+       setUpTrainingToModules(tx)
        setUpWorkers(tx);
        setUpTrainingSession(tx);
        setUpTests(tx);
@@ -61,13 +62,26 @@ function setUpTrainingModules(tx){
 function setUpTopics(tx){
     //alert('inside settopics');
     tx.executeSql('DROP TABLE IF EXISTS cthx_training');
-    tx.executeSql('CREATE TABLE cthx_training (training_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, training_title TEXT, video_file TEXT, guide_file TEXT, image_file TEXT, module_id INTEGER)');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file,module_id) VALUES ("Referring A Sick Baby","refer_sick_baby.mp4","","refer_baby.png","1")' );
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file,module_id) VALUES ("The Cold Baby","cold_baby.mp4","","cold_baby.png","1")' );
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file,module_id) VALUES ("Breathing Problems","breathing_problems.mp4","","breathing.png","1")' );
-    
+    tx.executeSql('CREATE TABLE cthx_training (training_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, training_title TEXT, video_file TEXT, guide_file TEXT, image_file TEXT)');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file) VALUES ("Referring A Sick Baby","refer_sick_baby.mp4","","refer_baby.png")' );
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file) VALUES ("The Cold Baby","cold_baby.mp4","","cold_baby.png")' );
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file) VALUES ("Breathing Problems","breathing_problems.mp4","","breathing.png")' );
+  
     //module 2 topics
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file,module_id) VALUES ("Breathing Problems 2","breathing_problems.mp4","","breathing.png","2")' );
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file) VALUES ("Breathing Problems 2","breathing_problems.mp4","","breathing.png")' );
+}
+
+
+function setUpTrainingToModules(tx){
+    tx.executeSql('DROP TABLE IF EXISTS cthx_module_to_training');
+    tx.executeSql('DROP TABLE IF EXISTS cthx_training_to_module');
+    tx.executeSql('CREATE TABLE "cthx_training_to_module" ("module_id" INTEGER NOT NULL, "training_id" INTEGER NOT NULL, PRIMARY KEY ("module_id", "training_id"))');
+    
+    tx.executeSql('INSERT INTO "cthx_training_to_module" ("module_id","training_id") VALUES (1,1)');
+    tx.executeSql('INSERT INTO "cthx_training_to_module" ("module_id","training_id") VALUES (1,2)');
+    tx.executeSql('INSERT INTO "cthx_training_to_module" ("module_id","training_id") VALUES (2,3)');
+    
+    tx.executeSql('INSERT INTO "cthx_training_to_module" ("module_id","training_id") VALUES (3,4)');
 }
 
 
@@ -82,10 +96,10 @@ function setUpWorkers(tx){
 
 function setUpTrainingSession(tx){
     tx.executeSql('DROP TABLE IF EXISTS cthx_training_session');
-    tx.executeSql('CREATE TABLE "cthx_training_session" ("session_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "start_time" DATETIME, "end_time" DATETIME, "status" INTEGER, "session_type" INTEGER, "worker_id" INTEGER, "module_id" INTEGER, "training_id" INTEGER);');
-    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","worker_id","module_id","training_id") VALUES ("1",NULL,NULL,"2","2","1","1","1")');
-    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","worker_id","module_id","training_id") VALUES ("2","01-01-2014",NULL,"2","1","1","1","2")');
-    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","worker_id","module_id","training_id") VALUES ("3","01-01-2014",NULL,"2","1","1","1","3")');
+    tx.executeSql('CREATE TABLE "cthx_training_session" ("session_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "start_time" DATETIME, "end_time" DATETIME, "status" INTEGER, "session_type" INTEGER, "material_type" INTEGER,"worker_id" INTEGER, "module_id" INTEGER, "training_id" INTEGER);');
+    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("1",NULL,NULL,"2","2","1","1","1","1")');
+    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("2","01-01-2014",NULL,"2","1","1","1","1","2")');
+    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("3","01-01-2014",NULL,"2","1","1","1","1","3")');
 }
 
 

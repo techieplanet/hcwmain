@@ -8,6 +8,10 @@ var globalObj = {   //begin class
     loginMode : '',
     
     sessionType: 0,  //sessionType: 1 - INDIVIDUAL SESSION, 2 - GROUP SESSION, 3 - TEST SESSION
+    
+    videoMaterial: 1,
+    guideMaterial: 2,  
+    guideViewed: false,
 
     db : '',   //database object
     
