@@ -44,16 +44,23 @@
             <div id="content" data-role="content" class="fullheight"  > 
 
              <div class="sidebar fullheight">
-                 <ul id="sidebar_ul">
+                 <ul id="sidebar_ul"  class="sidebar-notification-counter" data-role="listview" data-icon="false">
                   
-                         <li>
-                             <a href="test_summary.html">Summary</a>
+                         <li id="link" data-icon="false">
+                             <a href="profile-usage.html" class="textfontarial15" id="active">Usage</a>
                          </li>
-                         <li id="link">
-                             <a href="test_pending.html" id="active" >Pending</a>
+                         <li data-icon="false">
+                             <a href="profile-personal-information.html" class="textfontarial15">Personal Information</a>
                          </li>
-                         <li>
-                             <a href="test_results.html" >Results</a>
+              
+                       
+                         <li data-icon="false" >
+                             <a href="profile_notifications.html" class="textfontarial15">Notifications<span id="sidebar-noti" class="ui-li-count">57</span></a>
+                         </li>
+                      
+              
+                         <li data-icon="false">
+                             <a href="profile_login_details.html" class="textfontarial15">Login Details</a>
                          </li>
                  </ul>
                  
@@ -65,56 +72,30 @@
                  
                  
                  <div class="c-header">
-                     <div class="c-title">Pending</div>
-                     
+                     <div class="c-title">Adejoke Nophisat Adebayo</div>
                  </div>
   
 
                  <div class="c-list">
                      
                      <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                         <li data-role="list-divider"><span id="column-width">Module</span><span id="column-width">Due Date</span><span id="column-width">Action</span></li>   
+                        <li data-role="list-divider">Usage Information</li>   
                      </ul>  
             
 
-                <div data-role="collapsibleset" class="focus-area">
-                    <div class="row-content textfontarial12 ">
-                        <div>
-                            <p>
-                              <span class="row-content-col">Antenatal Care Series</span>
-                              <span class="row-content-col ">02/23/14</span>
-                              <span class="row-content-col-btn marginb10 ">
-                                    
-                                  <a  class="pagebutton" onclick="" data-theme="d" data-role="button"  data-inline="true" >Take test now</a>
-                                    
-                              </span>
-                            </p>
-                        </div>
-                        <div>
-                            <p>
-                                <span class="row-content-col">Postnatal Care Series</span>
-                                <span class="row-content-col">04/08/14</span>
-                                <span class="row-content-col-btn marginb10 ">
-                                    <a class="pagebutton" onclick="" data-theme="d" data-role="button"  data-inline="true">Take test now</a>
-                                </span>
-                            </p>
-                        </div>
-                        <div>
-                            <p>
-                                <span class="row-content-col">Advanced Family Planning Education</span>
-                                <span class="row-content-col">11/05/14</span>
-                                <span class="row-content-col-btn marginb10 ">
-                                    <a  class=" pagebutton" onclick="" data-theme="d" data-role="button"  data-inline="true">Take test now</a>
-                                </span>
-                            </p>
-                        </div>
-                   </div>
+                <div  class="focus-area">
                     
+                   <ul class="content-listing textfontarial12" data-role="listview"  >
+                       <li  data-icon="false"><p>Number of training taken<span id="totaltest" class=ui-li-count>57</span></p></li>
+                       <li  data-icon="false"><p>Number of training due<span id="totalpassed" class=ui-li-count>44</span></p></li>
+                       <li data-icon="false"><p>Number of tests passed<span id="totalfailed" class=ui-li-count>13</span></p></li>
+                       <li data-icon="false"><p>Number of tests failed<span id="averagescore" class=ui-li-count>123</span></p></li>
+                   </ul>
+                   
                 </div> 
 
                  </div> 
                  
-
 
 
              </div>
@@ -123,7 +104,9 @@
                       
                      
          </div>  
-
+            
+            
+            
          <div class="footer"> 
 
                     <div id="footer_text1">   
