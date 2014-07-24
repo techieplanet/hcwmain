@@ -1,8 +1,21 @@
-function getJobAids(){
+$(document ).delegate("#jobaidspage", "pageinit", function() {        
+                        console.log('jobaidspage');
+                        getJobAids(2);
+                    }
+            );
+
+function getJobAids(mode){
        var html = '';
-       var query = 'SELECT * FROM cthx_jobaid_to_module jm JOIN cthx_jobaid j JOIN cthx_training_module m ' +
+       console.log('mode: ' + mode);
+       if(mode==1){  //select by current module. Used on training page
+            var query = 'SELECT * FROM cthx_jobaid_to_module jm JOIN cthx_jobaid j JOIN cthx_training_module m ' +
                                       'WHERE j.aid_id=jm.aid_id AND m.module_id=jm.module_id ' + 
                                       'AND jm.module_id=' + globalObj.moduleID;
+       }
+       else if(mode==2){ //select all
+            var query = 'SELECT * FROM cthx_jobaid';
+       }
+        
        console.log('all job aids: ' + query);
        
         globalObj.db.transaction(function(tx){
@@ -25,6 +38,7 @@ function getJobAids(){
                                     //console.log('html: ' + html);
                                     $('.focus-area').html(html);
                                     $("#trainingpage").trigger('create');
+                                    $("#jobaidspage").trigger('create');
                                 }
                                 else
                                     $('.focus-area').html('No Job Aids found for this module');
@@ -37,7 +51,7 @@ function getJobAids(){
    
    
 function launchAid(aid_file){
-    alert('launching aid');                             
+    console.log('launching aid');                             
     //counterUpdate('job_aids');
     
     window.requestFileSystem(

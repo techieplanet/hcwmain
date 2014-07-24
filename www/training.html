@@ -45,8 +45,6 @@
 
              <div class="sidebar fullheight">
                  <ul id="sidebar_ul">
-                  
-
                          <li>
                              <a class="active" href="#">Videos</a>
                          </li>
@@ -54,7 +52,10 @@
                              <a href="#" onclick="launchGuide();return false;" >Training Guide</a>
                          </li>
                          <li>
-                             <a href="#" onclick="getJobAids();return false;" >Job Aids</a>
+                             <a href="#" onclick="getJobAids(1);return false;" >Job Aids</a>
+                         </li>
+                         <li>
+                             <a href="#" onclick="getFAQ(1);return false;" >FAQ</a>
                          </li>
                          <li>
                              <a href="training_home.html" >Exit</a> 
@@ -93,7 +94,6 @@
 
                        </div>
                        <!--module info popup  -->
-                         
                          
                  </div>
                  </div>
@@ -134,6 +134,7 @@
                  
                  
                  <!--test popup-->
+                 
                  <div class="noborder" data-role="popup" id="testPopup" data-overlay-theme="f" data-dismissible="false">
                     <div class="popup_header">HCW LMS</div>
 

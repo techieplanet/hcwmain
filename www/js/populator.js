@@ -27,6 +27,8 @@ function populateDB(tx){
        setUpCounters(tx);
        setUpJobAids(tx);
        setUpAidsToModules(tx);
+       setUpFAQ(tx);
+       setUpFAQToModules(tx);
 }
             
 function successCB(){
@@ -154,7 +156,7 @@ function setUpCounters(tx){
 
 function setUpJobAids(tx){
     tx.executeSql('DROP TABLE IF EXISTS cthx_jobaid');
-    tx.executeSql('CREATE TABLE "cthx_jobaid" ("aid_id" INTEGER,"aid_title" TEXT,"aid_file" TEXT)');
+    tx.executeSql('CREATE TABLE "cthx_jobaid" ("aid_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"aid_title" TEXT,"aid_file" TEXT)');
     tx.executeSql('INSERT INTO "cthx_jobaid" ("aid_id","aid_title","aid_file") VALUES ("1","Job Aid 1","jobaid1.pdf")');
     tx.executeSql('INSERT INTO "cthx_jobaid" ("aid_id","aid_title","aid_file") VALUES ("2","Job Aid 2","jobaid2.pdf")');
     tx.executeSql('INSERT INTO "cthx_jobaid" ("aid_id","aid_title","aid_file") VALUES ("3","Job Aid 3","jobaid3.pdf")');
@@ -166,4 +168,22 @@ function setUpAidsToModules(tx){
     tx.executeSql('INSERT INTO "cthx_jobaid_to_module" ("aid_id","module_id") VALUES ("1","1")');
     tx.executeSql('INSERT INTO "cthx_jobaid_to_module" ("aid_id","module_id") VALUES ("2","1")');
     tx.executeSql('INSERT INTO "cthx_jobaid_to_module" ("aid_id","module_id") VALUES ("3","1")');
+}
+
+
+function setUpFAQ(tx){
+    var text = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt";
+    tx.executeSql('DROP TABLE IF EXISTS cthx_faq');
+    tx.executeSql('CREATE TABLE "cthx_faq" ("faq_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "question" TEXT, "answer" TEXT);');
+    tx.executeSql('INSERT INTO "cthx_faq" ("faq_id","question","answer") VALUES ("1","Question 1","' + text + '")');
+    tx.executeSql('INSERT INTO "cthx_faq" ("faq_id","question","answer") VALUES ("2","Question 2","' + text + '")');
+    tx.executeSql('INSERT INTO "cthx_faq" ("faq_id","question","answer") VALUES ("3","Question 3","' + text + '")');
+}
+
+function setUpFAQToModules(tx){
+    tx.executeSql('DROP TABLE IF EXISTS cthx_faq_to_module');
+    tx.executeSql('CREATE TABLE "cthx_faq_to_module" ("faq_id" INTEGER NOT NULL, "module_id" INTEGER NOT NULL, PRIMARY KEY ("faq_id", "module_id"))');
+    tx.executeSql('INSERT INTO "cthx_faq_to_module" ("faq_id","module_id") VALUES ("1","1")');
+    tx.executeSql('INSERT INTO "cthx_faq_to_module" ("faq_id","module_id") VALUES ("2","1")');
+    tx.executeSql('INSERT INTO "cthx_faq_to_module" ("faq_id","module_id") VALUES ("3","3")');
 }
