@@ -15,7 +15,6 @@ body{
     font-family: Arial !important;
 }
 
-
 html{height: 100%;}
 .fullheight {
     height: 100% !important; 
@@ -37,14 +36,11 @@ html{height: 100%;}
 }
 
 .header-right{
-    border:0px solid #f00;
     float: right;
     width: 50%;
     padding-top: 2px;
     margin-right: 2%;
 }
-
-
 /*Homepage menu*/
 .home-menu
 {
@@ -70,19 +66,32 @@ html{height: 100%;}
 .header #logo_icon_h
 {
     width:15%;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 25px;
     float:left;   
 }
-
-.header #notification_txt_h
+.header #title_txt_h
 {
-    font-family: 'Arial Black';
-    font-size: 13px;
+    color: #fff;
+    float: left;
+    text-align: center;
+    margin-left:10% !important;
+    margin-top: .4% !important;
+    width: 20%;
+}
+.header #help_txt_h
+{
     color: #fff;
     float: right;
-    margin: 2% 10% !important;
-    width: 22%;
+    margin: 1.5% 1% !important;
+    width: 10%;
+}
+.header #notification_txt_h
+{
+    color: #fff;
+    float: right;
+    margin: 1.5% 1% !important;
+    width: 23%;
     background: url(../img/notification_icon.png) center right no-repeat;
 }
 .header #notification_icon_h
@@ -94,26 +103,22 @@ html{height: 100%;}
 .noticecount {
     float: right;
     font-weight: bold;
-    margin-right: 6%;
+    margin-right: 5%;
 }
 
 .header #profile_txt_h
 {
-    
-    font-family: 'Arial Black';
-    font-size: 13px;
     color: #fff;
     float: right;
-    margin: 2% 10% !important;
-    width: 13%;
+    margin: 1.5% 4% !important;
+    width: 14%;
     background: url(../img/profile_icon.png) center right no-repeat;
 }
 .header #profile_icon_h
 {
     margin-top: 13px;
-    width: 5%;
+    width: 2%;
     float:left;
-    
 }
 .header #menu_icon_h
 {
@@ -519,8 +524,11 @@ padding: 2%;
 .textfontarial15{font-family: Arial !important; font-size: 15px !important; }
 .textfontarial13{font-family: Arial !important; font-size: 13px !important; }
 .textfontarial12{font-family: Arial !important; font-size: 12px !important; }
+.textfontarialblack13{    font-family: 'Arial Black' !important; font-size: 13px !important;}
+.textfontarialblack20{    font-family: 'Arial Black' !important; font-size: 20px !important;}
 .notextdecoration{text-decoration: none !important; font-weight: normal !important;}
 .bottomborder{border-bottom: 1px solid #ccc !important; width: 70%;}
+.boxborder{border-bottom: 1px solid #ccc !important; border-top: 1px solid #ccc !important; border-left: 1px solid #ccc !important; border-right: 1px solid #ccc !important;width: 70%;}
 .textblack{color: #000 !important;}
 .textwhite{color: #fff !important;}
 .textlemon{color: #009900 !important;}
