@@ -31,17 +31,20 @@ var globalObj = {   //begin class
      *  SETUP
      */
     videoDir : 'CHAI/Videos', //video default directory on device
-    
+    guidesDir : 'CHAI/Guides', //guides default directory on device
+    jobaidsDir : 'CHAI/JobAids', //job aids default directory on device
     
    
   
   /*
-   *    TRAINING/VIDEO
+   *    TRAINING VIDEO, GUIDE, FAQ
    */
     videoPlaying : false,
     videoEnded : false,
     videoPlayedList : new Array(),
     videoFile : '', 
+    guideFile : '',
+    
     
   /*
    * TEST/ASSESSMENT VARS

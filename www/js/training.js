@@ -27,7 +27,7 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
      console.log('users list: ' + globalObj.sessionUsersList);
      
      
-     globalObj.db.transaction(handleTopicVideo,
+     globalObj.db.transaction(handleTopicFiles,
                     function(error){alert('Error loading training video')}, //errorCB
                     function(){  //succesCB
                             //set next and previous id for video nav buttons
@@ -64,11 +64,11 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
  * but get the module details along too.
  * Tables: training, module
  */
- function handleTopicVideo(tx){        
+ function handleTopicFiles(tx){        
        var query = 'SELECT * FROM cthx_training t JOIN cthx_training_module m ' +
                    'WHERE m.module_id='+globalObj.moduleID + ' AND t.training_id='+globalObj.topicID;
                  
-     console.log('handleTopicVideo: ' + query);
+     console.log('handleTopicFiles: ' + query);
      tx.executeSql(query,[],
                 function(tx,resultSet){  //query success callback
                     console.log('length: ' + resultSet.rows.length);
@@ -88,12 +88,13 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
                         $('.info').html(capitalizeFirstLetter(row['remarks']));
                         
                         globalObj.videoFile = row['video_file'];  //use public variable in deviceready successCB
+                        globalObj.guideFile = row['guide_file'];
                         
                         attachVideoFile(); //find and add the video to the video tag                        
                     }
                 },
                 function(error){
-                    console.log('Error in handleTopicVideo');
+                    console.log('Error in handleTopicFiles');
                 }
         );
  }//end getvideo file
@@ -105,7 +106,7 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
   * The video directory and video file name are already stored in public vars _videoDir and _videoFile respectively
   */
 function attachVideoFile(){
-     //return;
+     return;
      
        window.requestFileSystem(
             LocalFileSystem.PERSISTENT, 0, 
@@ -357,7 +358,7 @@ function loadTraining(topicID){
     $('#vsPopup').popup('open');
     console.log('loadTraining- topicID: ' + globalObj.topicID + ', update mode: ' + globalObj.videoEnded);
     globalObj.topicID = topicID;
-    globalObj.db.transaction(handleTopicVideo,
+    globalObj.db.transaction(handleTopicFiles,
                     function(error){alert('Training Nav: Error loading training video')}, //errorCB
                     function(){  //succesCB
                             
@@ -479,8 +480,8 @@ function launchGuide(){
                 var rootDirectoryEntry = fileSystem.root;
                 //alert('root: ' + fileSystem.root.fullPath);
                 
-                var filePath = globalObj.videoDir + "/" + 'chai.pdf';
-                //alert('Guide file filePath: ' + filePath);
+                var filePath = globalObj.guidesDir + "/" + globalObj.guideFile;
+                alert('Guide file filePath: ' + filePath);
                 
                  /*
                     * This method (getFile) is used to look up a directory. It does not create a non-existent direcory.
@@ -549,3 +550,7 @@ function launchGuide(){
         
         DAO.save(tx, 'cthx_training_session', fields, values);      
   }
+  
+  
+  
+ 
