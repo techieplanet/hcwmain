@@ -8,6 +8,10 @@ var globalObj = {   //begin class
     loginMode : '',
     
     sessionType: 0,  //sessionType: 1 - INDIVIDUAL SESSION, 2 - GROUP SESSION, 3 - TEST SESSION
+    
+    videoMaterial: 1,
+    guideMaterial: 2,  
+    guideViewed: false,
 
     db : '',   //database object
     
@@ -27,17 +31,20 @@ var globalObj = {   //begin class
      *  SETUP
      */
     videoDir : 'CHAI/Videos', //video default directory on device
-    
+    guidesDir : 'CHAI/Guides', //guides default directory on device
+    jobaidsDir : 'CHAI/JobAids', //job aids default directory on device
     
    
   
   /*
-   *    TRAINING/VIDEO
+   *    TRAINING VIDEO, GUIDE, FAQ
    */
     videoPlaying : false,
     videoEnded : false,
     videoPlayedList : new Array(),
     videoFile : '', 
+    guideFile : '',
+    
     
   /*
    * TEST/ASSESSMENT VARS

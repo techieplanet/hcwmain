@@ -45,16 +45,17 @@
 
              <div class="sidebar fullheight">
                  <ul id="sidebar_ul">
-                  
-
                          <li>
                              <a class="active" href="#">Videos</a>
                          </li>
                          <li>
-                             <a href="#" >Training Guide</a>
+                             <a href="#" onclick="launchGuide();return false;" >Training Guide</a>
                          </li>
                          <li>
-                             <a href="#" >Job Aid</a>
+                             <a href="#" onclick="getJobAids(1);return false;" >Job Aids</a>
+                         </li>
+                         <li>
+                             <a href="#" onclick="getFAQ(1);return false;" >FAQ</a>
                          </li>
                          <li>
                              <a href="training_home.html" >Exit</a> 
@@ -110,8 +111,8 @@
                     <div class="training-container padcontainer">
                             <div class="training-video ui-block" >
                                 <video width="600" height="450" controls="controls" id="videoscreen">
-                                      <!--<source src="refer.mp4" type="video/mp4" />-->
-                                      <source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>
+                                      <source src="refer.mp4" type="video/mp4" />
+                                      <!--<source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>-->
                                 </video>
                             </div>
                         
@@ -125,6 +126,7 @@
                             </div>   
                         
                     </div>
+                    
                 </div> 
 
                  </div> 
@@ -138,7 +140,7 @@
 
                     <div class="popup_body" >
                         <p class="">
-                            Hurray! You have completed all the tests in this module.
+                            Hurray! You have completed necessary training for this module.
                              <br/>
                              Would you like to take the module test now?
                         </p>

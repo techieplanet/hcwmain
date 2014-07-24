@@ -18,6 +18,7 @@
         <script src="js/DAO.js"></script> 
         <script src="js/populator.js"></script>
         <script src="js/functions.js"></script> 
+        <script src="js/printdb.js"></script> 
 
         
         <!--corresponding js files for .html files-->
@@ -25,11 +26,13 @@
         <script src="js/traininghome.js"></script> 
         <script src="js/login.js"></script> 
         <script src="js/training.js"></script> 
+        <script src="js/jobaids.js"></script> 
+        <script src="js/faq.js"></script> 
         
         
     </head>
 
-    <body >                        
+    <body>                        
         
         <div data-role="page" id="mainpage" data-theme="f" class="fullheight"  > 
              <div class="header"> 
@@ -45,7 +48,7 @@
 
                      <div id="profile_txt_h">
                         Profile
-                        <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
+                         <!--<div id="profile_icon_h"><img src="img/profile_icon.png" ></div>--> 
                     </div>
 
                      <div id="notification_txt_h">
@@ -63,8 +66,8 @@
                             <li data-icon="false"><a href="job_aids.html">Job Aids</a></li>
                             <li data-icon="false"><a href="index.html">Standing Order</a></li>
                             
-                            <!--<li id="quick-login" data-icon="false"><a href="login.html" id="gator">Log In</a></li>-->
-                            <!--<li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>-->
+                            <li id="quick-login" data-icon="false"><a href="login.html" id="gator">Log In</a></li>
+                            <li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
                             <li data-icon="false"><a href="" id="quit">Quit</a></li>
 
                         </ul>
@@ -83,8 +86,8 @@
                             <p>Training</p>
                         </a>
 
-                        <a class="iconblock1" href="test_summary.html" >
-						     <img src="img/test-icon.png" />
+                        <a class="iconblock1" href="#" >
+                            <img src="img/test-icon.png" />
                             <p>Take Test (TT)</p>
                         </a>
 
@@ -114,55 +117,16 @@
                         <img src="img/help-icon.png" />
                         <p>Help</p>
                     </a>
+
                     <a class="iconblock2" href="faq.html" >
                         <img src="img/faq-icon.png" />
                         <p>Frequently Asked Questions</p>
                     </a>
                 </div>  
                 
-                
-                
-                
-                
-                
-                 <!--the session selection popup -->
-                <div class="noborder" data-role="popup" id="sessionPopup2"  data-overlay-theme="a" data-position-to="window" data-dismissible="false">
-                    <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
-                    <div class="popup_header">Select Session Type</div>
-
-                    <div class="margintop10 marginbottom10 popup_body" >
-                        <ul id="choicelist" data-role="listview"  data-theme="none">      
-                            <li class="" data-icon="false">
-                                <input class="" type="radio" name="session-choice" id="individual" value="individual" data-iconpos="right" />
-                                <label class="" data-role="button" for="individual">Individual Session</label>
-                            </li>
-                            
-                            <li class="" data-icon="false">
-                                <label for="group">Group Session</label>
-                                <input type="radio" name="session-choice" id="group" value="group" data-iconpos="right" />
-                            </li>
-                        </ul>                      
-                    </div>
-                    
-                    <div class="popup_header">
-                        <a class="pagebutton footerbutton" data-rel="back" 
-                         data-role="button"  data-inline="true" data-mini="true">Cancel</a>
-                        <a id="sessionok" class="pagebutton footerbutton" onclick="sessionPick()" 
-                         data-role="button" data-inline="true" data-mini="true">OK</a>
-                    </div>
-                    
-                </div>
-                <!--the session selection popup -->
-                
-                
-                
-                
-                
-                
-                
                      
          </div>  
-            
+            <!--content-->
             
             
          <div class="footer"> 
@@ -180,8 +144,8 @@
          </div>  
             
             
-            
         </div>
+        <!--page-->
         
     </body>
 </html>

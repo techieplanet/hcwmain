@@ -11,6 +11,10 @@
                         {
                             "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"FileOpener\"><param name=\"android-package\" value=\"com.phonegap.plugins.fileopener.FileOpener\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -30,6 +34,9 @@
     "installed_plugins": {
         "org.apache.cordova.file": {
             "PACKAGE_NAME": "com.chai.user_interface"
+        },
+        "com.phonegap.plugins.fileopener": {
+            "PACKAGE_NAME": "com.tp.hcwdeploy"
         }
     },
     "dependent_plugins": {}

@@ -565,7 +565,7 @@ padding: 2%;
 .width90{width: 90% !important;}
 
 .registration-form{ width: 85% !important;}
-.fieldrow{ text-align: center !important; border-bottom: 1px solid #ccc !important;}
+.fieldrow{ text-align: center !important; border-bottom: 0px solid #ccc !important;}
 .fieldrow label {margin-top: 6px !important;}
 .fieldrow div.ui-input-text {width: 45% !important;}
 

@@ -18,11 +18,17 @@ function populateDB(tx){
        setUpCategoryTable(tx);
        setUpTrainingModules(tx);
        setUpTopics(tx);
+       setUpTrainingToModules(tx)
        setUpWorkers(tx);
        setUpTrainingSession(tx);
        setUpTests(tx);
        setUpTestQuestions(tx);
        setUpTestSession(tx);
+       setUpCounters(tx);
+       setUpJobAids(tx);
+       setUpAidsToModules(tx);
+       setUpFAQ(tx);
+       setUpFAQToModules(tx);
 }
             
 function successCB(){
@@ -47,27 +53,39 @@ function setUpCategoryTable(tx){
 function setUpTrainingModules(tx){
     //alert('inside setmodules');
     tx.executeSql('DROP TABLE IF EXISTS cthx_training_module');
-    tx.executeSql('CREATE TABLE cthx_training_module (module_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, module_title TEXT, remarks TEXT, admin_id INTEGER, category_id INTEGER)');
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,remarks,admin_id,category_id) VALUES ("Antenatal Care Series", "this is the module for antenatal care","12","1")');
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,remarks,admin_id,category_id) VALUES ("Postnatal Care Series","this is module about post natal care","12","1")');
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,remarks,admin_id,category_id) VALUES ("Introduction to Family Planning Education","this is module on family planning","12","2")');
+    tx.executeSql('CREATE TABLE cthx_training_module (module_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, module_title TEXT, guide_file TEXT, remarks TEXT, admin_id INTEGER, category_id INTEGER)');
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Antenatal Care Series", "chai_reqs.pdf","this is the module for antenatal care","12","1")');
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Postnatal Care Series","chai_sample.pdf", "this is module about post natal care","12","1")');
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Introduction to Family Planning Education","","this is module on family planning","12","2")');
     
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,remarks,admin_id,category_id) VALUES ("Postnatal Care Series 2","this is module about post natal care","12","1")');
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,remarks,admin_id,category_id) VALUES ("Advanced Family Planning Education","this is module on family planning","12","1")');
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,remarks,admin_id,category_id) VALUES ("Family Planning Benefits","this is module on family planning","12","1")');   
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Postnatal Care Series 2","","this is module about post natal care","12","1")');
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Advanced Family Planning Education","","this is module on family planning","12","1")');
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Family Planning Benefits","","this is module on family planning","12","1")');   
 }
 
 
 function setUpTopics(tx){
     //alert('inside settopics');
     tx.executeSql('DROP TABLE IF EXISTS cthx_training');
-    tx.executeSql('CREATE TABLE cthx_training (training_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, training_title TEXT, video_file TEXT, guide_file TEXT, image_file TEXT, module_id INTEGER)');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file,module_id) VALUES ("Referring A Sick Baby","refer_sick_baby.mp4","","refer_baby.png","1")' );
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file,module_id) VALUES ("The Cold Baby","cold_baby.mp4","","cold_baby.png","1")' );
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file,module_id) VALUES ("Breathing Problems","breathing_problems.mp4","","breathing.png","1")' );
-    
+    tx.executeSql('CREATE TABLE cthx_training (training_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, training_title TEXT, video_file TEXT, image_file TEXT)');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,image_file) VALUES ("Referring A Sick Baby","refer_sick_baby.mp4","refer_baby.png")' );
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,image_file) VALUES ("The Cold Baby","cold_baby.mp4","cold_baby.png")' );
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,image_file) VALUES ("Breathing Problems","breathing_problems.mp4","breathing.png")' );
+  
     //module 2 topics
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,guide_file,image_file,module_id) VALUES ("Breathing Problems 2","breathing_problems.mp4","","breathing.png","2")' );
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file,image_file) VALUES ("Breathing Problems 2","breathing_problems.mp4","breathing.png")' );
+}
+
+
+function setUpTrainingToModules(tx){
+    tx.executeSql('DROP TABLE IF EXISTS cthx_training_to_module');
+    tx.executeSql('CREATE TABLE "cthx_training_to_module" ("module_id" INTEGER NOT NULL, "training_id" INTEGER NOT NULL, PRIMARY KEY ("module_id", "training_id"))');
+    
+    tx.executeSql('INSERT INTO "cthx_training_to_module" ("module_id","training_id") VALUES (1,1)');
+    tx.executeSql('INSERT INTO "cthx_training_to_module" ("module_id","training_id") VALUES (1,2)');
+    tx.executeSql('INSERT INTO "cthx_training_to_module" ("module_id","training_id") VALUES (2,3)');
+    
+    tx.executeSql('INSERT INTO "cthx_training_to_module" ("module_id","training_id") VALUES (3,4)');
 }
 
 
@@ -82,10 +100,10 @@ function setUpWorkers(tx){
 
 function setUpTrainingSession(tx){
     tx.executeSql('DROP TABLE IF EXISTS cthx_training_session');
-    tx.executeSql('CREATE TABLE "cthx_training_session" ("session_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "start_time" DATETIME, "end_time" DATETIME, "status" INTEGER, "session_type" INTEGER, "worker_id" INTEGER, "module_id" INTEGER, "training_id" INTEGER);');
-    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","worker_id","module_id","training_id") VALUES ("1",NULL,NULL,"2","2","1","1","1")');
-    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","worker_id","module_id","training_id") VALUES ("2","01-01-2014",NULL,"2","1","1","1","2")');
-    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","worker_id","module_id","training_id") VALUES ("3","01-01-2014",NULL,"2","1","1","1","3")');
+    tx.executeSql('CREATE TABLE "cthx_training_session" ("session_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "start_time" DATETIME, "end_time" DATETIME, "status" INTEGER, "session_type" INTEGER, "material_type" INTEGER,"worker_id" INTEGER, "module_id" INTEGER, "training_id" INTEGER);');
+    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("1",NULL,NULL,"2","2","1","1","1","1")');
+    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("2","01-01-2014",NULL,"2","1","1","1","1","2")');
+    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("3","01-01-2014",NULL,"2","1","1","1","1","3")');
 }
 
 
@@ -124,4 +142,48 @@ function setUpTestSession(tx){
     //tx.executeSql('INSERT INTO "cthx_test_session" ("session_id","date_taken","score","total","test_id","worker_id") VALUES ("1",NULL,"3","4","1","1")');
     //tx.executeSql('INSERT INTO "cthx_test_session" ("session_id","date_taken","score","total","test_id","worker_id") VALUES ("2",NULL,"1","4","1","1")');
     
+}
+
+
+
+
+/*-------------  JOB AID -----------------*/
+function setUpCounters(tx){
+    tx.executeSql('DROP TABLE IF EXISTS cthx_counters');
+    tx.executeSql('CREATE TABLE "cthx_counters" ("job_aids" INTEGER DEFAULT 0 , "standing_order" INTEGER DEFAULT 0 , "faq" INTEGER DEFAULT 0 , "help" INTEGER DEFAULT 0 )');
+    tx.executeSql('INSERT INTO "cthx_counters" ("job_aids","standing_order","faq","help") VALUES (0,0,0,0)');
+}
+
+function setUpJobAids(tx){
+    tx.executeSql('DROP TABLE IF EXISTS cthx_jobaid');
+    tx.executeSql('CREATE TABLE "cthx_jobaid" ("aid_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"aid_title" TEXT,"aid_file" TEXT)');
+    tx.executeSql('INSERT INTO "cthx_jobaid" ("aid_id","aid_title","aid_file") VALUES ("1","Job Aid 1","jobaid1.pdf")');
+    tx.executeSql('INSERT INTO "cthx_jobaid" ("aid_id","aid_title","aid_file") VALUES ("2","Job Aid 2","jobaid2.pdf")');
+    tx.executeSql('INSERT INTO "cthx_jobaid" ("aid_id","aid_title","aid_file") VALUES ("3","Job Aid 3","jobaid3.pdf")');
+}
+
+function setUpAidsToModules(tx){
+    tx.executeSql('DROP TABLE IF EXISTS cthx_jobaid_to_module');
+    tx.executeSql('CREATE TABLE "cthx_jobaid_to_module" ("aid_id" INTEGER NOT NULL, "module_id" INTEGER NOT NULL, PRIMARY KEY ("aid_id", "module_id"))');
+    tx.executeSql('INSERT INTO "cthx_jobaid_to_module" ("aid_id","module_id") VALUES ("1","1")');
+    tx.executeSql('INSERT INTO "cthx_jobaid_to_module" ("aid_id","module_id") VALUES ("2","1")');
+    tx.executeSql('INSERT INTO "cthx_jobaid_to_module" ("aid_id","module_id") VALUES ("3","1")');
+}
+
+
+function setUpFAQ(tx){
+    var text = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt";
+    tx.executeSql('DROP TABLE IF EXISTS cthx_faq');
+    tx.executeSql('CREATE TABLE "cthx_faq" ("faq_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "question" TEXT, "answer" TEXT);');
+    tx.executeSql('INSERT INTO "cthx_faq" ("faq_id","question","answer") VALUES ("1","Question 1","' + text + '")');
+    tx.executeSql('INSERT INTO "cthx_faq" ("faq_id","question","answer") VALUES ("2","Question 2","' + text + '")');
+    tx.executeSql('INSERT INTO "cthx_faq" ("faq_id","question","answer") VALUES ("3","Question 3","' + text + '")');
+}
+
+function setUpFAQToModules(tx){
+    tx.executeSql('DROP TABLE IF EXISTS cthx_faq_to_module');
+    tx.executeSql('CREATE TABLE "cthx_faq_to_module" ("faq_id" INTEGER NOT NULL, "module_id" INTEGER NOT NULL, PRIMARY KEY ("faq_id", "module_id"))');
+    tx.executeSql('INSERT INTO "cthx_faq_to_module" ("faq_id","module_id") VALUES ("1","1")');
+    tx.executeSql('INSERT INTO "cthx_faq_to_module" ("faq_id","module_id") VALUES ("2","1")');
+    tx.executeSql('INSERT INTO "cthx_faq_to_module" ("faq_id","module_id") VALUES ("3","3")');
 }
