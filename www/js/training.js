@@ -5,6 +5,12 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
     //console.log('trainingpage logging inside pageshow');
     //$('#vsPopup').popup('open');
     //setTimeout($('#vsPopup').popup('close'),2000);
+    
+    $('#sidebar_ul li a').click(function(){
+        $('#sidebar_ul li a').removeClass('active');
+        $(this).addClass('active');
+    });
+    
 });
 
 
@@ -16,9 +22,10 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
  */
  $(document ).delegate("#trainingpage", "pageinit", function() {   
      
-     //refresh video played id list and ended var 
+     //refresh video played id list and init videoFnded & guideViewed variables
      globalObj.videoPlayedList = new Array();
      globalObj.videoEnded = false;
+     globalObj.guideViewed = false;
      
      console.log('category id: ' + globalObj.categoryID);
      console.log('module id: ' + globalObj.moduleID);
@@ -26,7 +33,7 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
      console.log('users list: ' + globalObj.sessionUsersList);
      
      
-     globalObj.db.transaction(handleTopicVideo,
+     globalObj.db.transaction(handleTopicFiles,
                     function(error){alert('Error loading training video')}, //errorCB
                     function(){  //succesCB
                             //set next and previous id for video nav buttons
@@ -60,34 +67,43 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
  
  /*
  * This method fetches the video file name for the selected topic from the database
+ * but get the module details along too.
+ * Tables: training, module
  */
- function handleTopicVideo(tx){
-     var query = 'SELECT * FROM cthx_training t JOIN cthx_training_module m WHERE m.module_id=t.module_id AND ' +
-                 't.training_id='+globalObj.topicID;
-     //console.log(query);
+ function handleTopicFiles(tx){        
+       var query = 'SELECT * FROM cthx_training t JOIN cthx_training_module m ' +
+                   'WHERE m.module_id='+globalObj.moduleID + ' AND t.training_id='+globalObj.topicID;
+                 
+     console.log('handleTopicFiles: ' + query);
      tx.executeSql(query,[],
                 function(tx,resultSet){  //query success callback
-                    //console.log('length: ' + resultSet.rows.length);
+                    console.log('length: ' + resultSet.rows.length);
                     if(resultSet.rows.length > 0){
                         var row = resultSet.rows.item(0);
-                        console.log("training row: " + JSON.stringify(row));
+                        //console.log("training row: " + JSON.stringify(row));
                         //we are expecting one row but use this row to set global module vars to right values first
+                        //might be carrying wrong value from last iteration of populateTopic method loop of traininghome.js
                         globalObj.moduleID = row['module_id']
                         globalObj.moduleTitle = row['module_title']
                         
+                        console.log('after set: '+ globalObj.moduleID);
                         
                         //set the training title and popup info
                         $('#c-bar').html(row['training_title']);
                         $('.c-title, .popup_header:first-child').html(globalObj.moduleTitle);
                         $('.info').html(capitalizeFirstLetter(row['remarks']));
                         
+                        //set the video link to set up and reload this topic when clicked
+                        $('#videolink').attr('onclick','setUpVideo(' + row['training_id'] + ')')
+    
                         globalObj.videoFile = row['video_file'];  //use public variable in deviceready successCB
+                        globalObj.guideFile = row['guide_file'];
                         
                         attachVideoFile(); //find and add the video to the video tag                        
                     }
                 },
                 function(error){
-                    console.log('Error in handleTopicVideo');
+                    console.log('Error in handleTopicFiles');
                 }
         );
  }//end getvideo file
@@ -98,8 +114,8 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
   * This method fetches the actuall .mp4 video file from the dedicated videos directory on device
   * The video directory and video file name are already stored in public vars _videoDir and _videoFile respectively
   */
-function attachVideoFile(){
-     return;
+function attachVideoFile(){   
+     //return;
      
        window.requestFileSystem(
             LocalFileSystem.PERSISTENT, 0, 
@@ -125,7 +141,8 @@ function attachVideoFile(){
                         },
                         function(error){
                             //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
-                            alert("No Video Found. \n Switching to Default Video.");
+                            //alert("No Video Found: (" + filePath + ") \n Switching to Default Video.");
+                            alert("No Video Found: \n Switching to Default Video.");
                         }
                  );
                 
@@ -139,14 +156,44 @@ function attachVideoFile(){
  }//end trainingPageDeviceReady()
  
  
+ //this method sets up the the video area and appends to the focus-area
+ function setUpVideo(topicID){
+        
+         var html = '<div class="training-container padcontainer">' +
+                            '<div class="training-video ui-block" >' +
+                                '<video width="600" height="450" controls="controls" id="videoscreen">' +
+                                        '<source src="refer.mp4" type="video/mp4" />' +
+                                        //<!--<source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>-->
+                                 '</video>' +
+                             '</div>' +
+                      
+
+                            '<div class="training-video-nav ui-block padcontainer" >' + 
+                               '<a id="prevvideo" href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >' +
+                                   'Previous' +
+                               '</a>' +
+                               '<a id="nextvideo" href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">' +
+                                   'Next' +
+                               '</a>' +
+                           '</div>' +
+                    '</div>';
+                    
+            $('.focus-area').html(html);
+            $('#trainingpage').trigger('create');
+            loadTraining(topicID);
+            
+ }
+ 
+ 
  //saves a training session at start. Status is always 1 at start for incomplete
  //SESSION STATUS: 1- IN PROGESS/INCOMPLETE, 2- COMPLETED
- function saveTrainingSession(tx, sessionUserID){          
+ function saveTrainingSession(tx, sessionUserID){  
         var fields = '"start_time","end_time","status","session_type","worker_id","module_id","training_id"';
         var values = '"' + getNowDate() + '",' + //start datetime
                   'NULL,' + //end datetime,
                   '"1",' + //session status - inprogress or completed
                   '"' + globalObj.sessionType + '",' +   //session type
+                  '"' + globalObj.videoMaterial + '",' +  //video constant
                   '"' + sessionUserID + '",' +  //worker id
                   '"' + globalObj.moduleID  + '",' + //module id
                   '"' + globalObj.topicID + '"';    //training (topic) id
@@ -170,7 +217,9 @@ function attachVideoFile(){
  }
  
  
- 
+ /*
+  * this module is executed every time a video play event is fired. i.e. when a video starts play or is resumed
+  */
  function startTrainingSession(tx){
      console.log('startTrainingSession users list: ' + globalObj.sessionUsersList);
      for(var i=0; i<globalObj.sessionUsersList.length; i++){
@@ -179,15 +228,19 @@ function attachVideoFile(){
         //closure : this closure serves just the one user id involved per loop
         (function(i){
             setTimeout(function(){
-                var query = "SELECT * FROM cthx_training_session s JOIN  cthx_training t WHERE worker_id=" + globalObj.sessionUsersList[i] +
-                            " AND s.training_id="+globalObj.topicID + " AND t.training_id="+globalObj.topicID + 
-                            " AND status=1"; //any session type
+                //this query checks whether user has a session running for that topic already
+                //either at an earlier session or even in current session 
+                //regardless of session type, regardless of module where the training session was started from
+                  var query = "SELECT * FROM cthx_training_session s WHERE worker_id=" + globalObj.sessionUsersList[i] +
+                            " AND s.training_id="+globalObj.topicID + " AND status=1"; 
+                            
                   console.log('startTrainingSession query: ' + query);
                   console.log('inner iteration ' + i +  ': ' + globalObj.sessionUsersList[i]);
                   
                  console.log('update mode: ' + globalObj.videoPlaying);
-                  console.log('video ended: ' + globalObj.videoEnded);
+                 console.log('video ended: ' + globalObj.videoEnded);
                  
+                 console.log('before fetch: '+ globalObj.moduleID);
                  
                 globalObj.db.transaction(function(tx){
                            tx.executeSql(query,[],
@@ -195,7 +248,7 @@ function attachVideoFile(){
                                         //globalObj.videoEnded==false part ensures that new session is only started in new video sessions
                                         //and not every time the user replays the video while not having navigated away from the VIDEO
                                         if(resultSet.rows.length==0 && globalObj.videoEnded==false){  
-                                            
+                                            console.log('after fetch: '+ globalObj.moduleID);
                                             console.log('before save: ' + globalObj.videoPlayedList);
                                             
                                             //To ensure that a new session is not started every time the user replays a 
@@ -229,16 +282,19 @@ function attachVideoFile(){
  }
  
  
- 
+ /*
+  * this module is executed every time a video ended event is fired. i.e. when a video ends
+  */
  function endTrainingSession(tx){
      for(var i=0; i<globalObj.sessionUsersList.length; i++){
         
         //closure : this closure serves just the one user id involved per loop
         (function(i){
             setTimeout(function(){
-                var query = "SELECT * FROM cthx_training_session s JOIN  cthx_training t WHERE worker_id=" + globalObj.sessionUsersList[i] +
-                            " AND s.training_id="+globalObj.topicID + " AND t.training_id="+globalObj.topicID + 
-                            " AND status=1"; //any session type
+                 //same query as starting session. does same work for when video has finished playing
+                 var query = "SELECT * FROM cthx_training_session s WHERE worker_id=" + globalObj.sessionUsersList[i] +
+                            " AND s.training_id="+globalObj.topicID + " AND status=1"; 
+                 
                  console.log('update mode: ' + globalObj.videoPlaying);
                  
                  
@@ -259,9 +315,7 @@ function attachVideoFile(){
                                         //Crucial: wait one second to execute this method. To be sure update above completes
                                         console.log('sessiontype: ' + globalObj.sessionType);
                                         if(globalObj.sessionType==1)  //since test taken only on individual sessions
-                                            setTimeout(checkTestable(tx),1000);
-                                        
-                                            
+                                            setTimeout(checkTestable(tx),1000);   
                                     }   
                             );// end tx
                             
@@ -280,17 +334,27 @@ function attachVideoFile(){
  
  
  
- 
- 
+ /*
+  * This method is to set the next and previous IDs for the respective buttons
+  * it selects all the trainings in a module and orders by their id to set the next and previous
+  * trainings with respect to the current.
+  * Tables: training, training_to_module
+  */
  function setNextPrevious(topicID, moduleID){
      //console.log('inside startNextPrevious. module id: ' + moduleID + ', topic id: ' + topicID);
      globalObj.db.transaction(function(tx){
-                       var query = 'SELECT * FROM cthx_training WHERE module_id='+moduleID + ' ORDER BY training_id';
+//                       var query = 'SELECT * FROM cthx_training t JOIN cthx_training_to_module tm '
+//                                   'WHERE t.training_id=tm.training_id AND tm.module_id='+moduleID + ' ORDER BY training_id';
+                          
+                          var query = 'SELECT * FROM cthx_training_to_module tm JOIN cthx_training t JOIN cthx_training_module m ' +
+                                      'WHERE t.training_id=tm.training_id AND m.module_id=tm.module_id ' + 
+                                      'AND tm.module_id=' + globalObj.moduleID;
+                          
                        console.log('query: ' + query);
                        tx.executeSql(query,[],
                             function(tx,resultSet){
                                 var len = resultSet.rows.length;
-                                console.log('number of topics in module: ' + len);
+                                console.log('setNextPrevious length: ' + len);
                                 if(len>0){
                                     var firstID = resultSet.rows.item(0)['training_id'];
                                     var lastID = resultSet.rows.item(len-1)['training_id'];
@@ -333,7 +397,7 @@ function loadTraining(topicID){
     $('#vsPopup').popup('open');
     console.log('loadTraining- topicID: ' + globalObj.topicID + ', update mode: ' + globalObj.videoEnded);
     globalObj.topicID = topicID;
-    globalObj.db.transaction(handleTopicVideo,
+    globalObj.db.transaction(handleTopicFiles,
                     function(error){alert('Training Nav: Error loading training video')}, //errorCB
                     function(){  //succesCB
                             
@@ -345,13 +409,23 @@ function loadTraining(topicID){
 }
 
 
+/*
+ * This method tests if the logged in user has taken all the tests in the current module
+ * If so, prompt user to take test
+ * Tables: training_session
+ */
 function checkTestable(tx){
 //    var query = 'SELECT * FROM cthx_training t LEFT JOIN cthx_training_session s ON ' +
 //                't.module_id=s.module_id AND t.training_id=s.training_id ' +
 //                'WHERE t.module_id=' + _moduleID + ' AND s.worker_id=' + _loggedInUserID;
-    var query = 'SELECT status FROM cthx_training t LEFT JOIN cthx_training_session s ON ' + 
-                't.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
-                ' WHERE t.module_id='+globalObj.moduleID;
+//    var query = 'SELECT status FROM cthx_training t LEFT JOIN cthx_training_session s ON ' + 
+//                't.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
+//                ' WHERE t.module_id='+globalObj.moduleID;
+
+     var query = 'SELECT status FROM cthx_training_to_module tm LEFT JOIN cthx_training_session s ON ' + 
+                'tm.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
+                ' WHERE tm.module_id='+globalObj.moduleID;
+
     console.log('check query: ' + query);
     
     tx.executeSql(query,[],function(tx,resultSet){
@@ -364,10 +438,18 @@ function checkTestable(tx){
                       
                       console.log('this row: ' + JSON.stringify(row));
                       //check if the training is either not taken or its session not completed
-                      if(row['status'] != 2) {
-                          allTaken = false;
-                          break;
+                      if(row['material_type']==2){
+                          //regardless of any other conditions, the training is completed as long
+                          //as training guide has been viewed
+                          //Break out, no need to keep checking.
+                            allTaken = true;
+                            break;
                       }
+                      else if(row['material_type']==1 && row['status'] != 2) {
+                          //material_type 1 is video. Status != 2 means the video was not completed
+                          //But keep checking as we do not know if training guide was viewed later
+                          allTaken = false;
+                       }
                   }
                   
                   console.log('alltaken: ' + allTaken);
@@ -401,7 +483,7 @@ function changeToTest(){
                                         var len = resultSet.rows.length;
                                         if(len>0){
                                             globalObj.testID = resultSet.rows.item(0)['test_id'];
-                                            $.mobile.changePage('index.html');
+                                            $.mobile.changePage('question.html');
                                         }
                                     }
                      );
@@ -413,5 +495,107 @@ function changeToTest(){
 function stopVideo() {
     globalObj.videoEnded = false;
     var video = document.getElementById('videoscreen');
-    video.pause();
+    if(video != null)
+        video.pause();
 }  
+
+
+
+function launchGuide(){
+//    alert('launching guide');
+    if(globalObj.guideViewed==false){
+            globalObj.guideViewed = true;
+            globalObj.db.transaction(function(tx){
+                            for(var i=0; i<globalObj.sessionUsersList.length; i++)
+                                saveGuideSession(tx,globalObj.sessionUsersList[i]);
+                    },
+                    function(error){
+                        alert('Error saving guide session');
+                    }
+                );
+    }//end if
+    
+     //launch pop if individual sesseion 
+     setTimeout(function(){
+          if(globalObj.sessionType==1) //inidividual session
+              $('#testPopup').popup('open');
+      },2000)
+        return;
+                             
+    
+    window.requestFileSystem(
+            LocalFileSystem.PERSISTENT, 0, 
+            function(fileSystem){
+                var rootDirectoryEntry = fileSystem.root;
+                //alert('root: ' + fileSystem.root.fullPath);
+                
+                var filePath = globalObj.guidesDir + "/" + globalObj.guideFile;
+                //alert('Guide file filePath: ' + filePath);
+                
+                 /*
+                    * This method (getFile) is used to look up a directory. It does not create a non-existent direcory.
+                    * Args:
+                    * DirectoryEntry object: provides file look up method
+                    * dirPath: path to directory to look up relative to DirectoryEntry
+                 */
+                rootDirectoryEntry.getFile(
+                        filePath, {create: false}, 
+                        function(entry){
+                            //alert('guide file entry.toURL: '+ entry.toURL());
+                            if(!entry.isFile) return;
+                            //window.open(entry.toURL(), '_blank', 'location=yes');
+                            window.plugins.fileOpener.open(entry.toURL());
+                            
+                            //update the session table
+                            //test first if viewing again in same session 
+                            if(globalObj.guideViewed==false){
+                                    globalObj.guideViewed = true;
+                                    globalObj.db.transaction(function(tx){
+                                                    for(var i=0; i<globalObj.sessionUsersList.length; i++)
+                                                        saveGuideSession(tx,globalObj.sessionUsersList[i]);
+                                            },
+                                            function(error){
+                                                alert('Error saving guide session');
+                                            }
+                                        );
+                            }
+                             
+                             
+                             //launch pop if individual sesseion 
+                             //setTimeout(function(){
+                                  if(globalObj.sessionType==1) //inidividual session
+                                      $('#testPopup').popup('open');
+                              //},2000)
+                             
+                            
+                        },
+                        function(error){
+                            //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
+                            alert("No Guide Found.");
+                        }
+                 );
+                
+            }, 
+            function(error) {
+                alert("File System Error: " + JSON.stringify(error));
+            }
+          );
+              
+}
+
+
+//saves a training guide usage session
+//
+ function saveGuideSession(tx, sessionUserID){  
+        var fields = '"start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id"';
+        var values = '"' + getNowDate() + '",' + //start datetime
+                  '"' + getNowDate() + '",' + //end datetime
+                  '"2",' + //session status - inprogress or completed
+                  '"' + globalObj.sessionType + '",' +   //session type
+                  '"' + globalObj.guideMaterial + '",' +  //guide constant
+                  '"' + sessionUserID + '",' +  //worker id
+                  '"' + globalObj.moduleID  + '",' + //module id
+                  '"' + globalObj.topicID + '"';    //training (topic) id
+        
+        DAO.save(tx, 'cthx_training_session', fields, values);      
+  }

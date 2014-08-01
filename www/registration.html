@@ -11,7 +11,7 @@
     </head>
     <body >                        
         
-        <div data-role="page" data-theme="f" class="fullheight"  > 
+        <div id="regpage" data-role="page" data-theme="f" class="fullheight"  > 
              <div class="header"> 
                  <div id="logo_icon_h"><img src="img/logo_icon.png" ></div> 
                  <div id="title_txt_h" class="notextdecoration textwhite textfontarialblack20">
@@ -31,7 +31,8 @@
                         <span class="noticecount">2</span> 
                      </div>
                      <div id="help_txt_h">
-                         <a href="help_user_guides.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
+
+                         <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
                      </div>
 
                      <div id="home_icon">
@@ -48,10 +49,10 @@
                  <ul id="sidebar_ul"  class="sidebar-notification-counter" data-icon="false">
                   
                          <li id="link">
-                             <a href="registration_personal_information.html" id="active">Personal Information</a>
+                             <a id="personal" href="" class="active">Personal Information</a>
                          </li>
                          <li >
-                             <a href="registration_login_details.html">Login Detail</a>
+                             <a id="login" href="">Login Detail</a>
                          </li>
                  </ul>
                  
@@ -69,21 +70,22 @@
                  <div class="c-list">
                      
                      <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                         <li data-role="list-divider"><span id="column-width">Personal Information</span><div class="floatright textfontarial12"><a href="profile_personal_information_edit.html" class="notextdecoration textwhite" >Save</a></div></li>   
+                         <li id="c-bar" data-role="list-divider">
+                             <!--<span id="column-width">Personal Information</span><div class="floatright textfontarial12"><a href="profile_personal_information_edit.html" class="notextdecoration textwhite" >Save</a></div>-->
+                         </li>   
                      </ul>  
             
 
-                <div data-role="collapsibleset" class="focus-area width90" >
-                    <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
-                       
-                            <p class="marginbottom10"><strong>Fullname:</strong></p>
+                <div  class="focus-area" >
+                    <div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">
+                            <p class="marginbottom10"><strong>Full Name:</strong></p>
                             <p>
-                              <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="firstname" id="firstname" value="" placeholder="First Name"/></span>
+                              <span class=""><input class="styleinputtext" data-role="none" size="20" type="text" name="firstname" id="firstname" value="" placeholder="First Name"/></span>
                               <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="middlename" id="middlename" value="" placeholder="Middle Name" /></span>
                               <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="lastname" id="lastname" value="" placeholder="Last Name" /></span>
                             </p>
                    </div>
-                   <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
+                   <div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">
                             <p class="marginbottom10"><strong>Cadre:</strong></p>
                             <p>
                               <span class="marginleft10">
@@ -96,19 +98,19 @@
                               </span>
                             </p>
                    </div>
-                    <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
+                    <div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">
                             <p class="marginbottom10"><strong>Phone:</strong></p>
                             <p>
                               <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="phonenumber" id="phonenumber" value="" placeholder="Phone Number" /></span>
                             </p>
                    </div> 
-                    <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
+                    <div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">
                             <p class="marginbottom10"><strong>Email:</strong></p>
                             <p>
                               <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="email" id="email" value="" placeholder="Email Address" /></span>
                             </p>
                    </div> 
-                    <div class="textfontarial12 width90 bottomborder padcontainer marginleft25 marginbottom10">
+                    <div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">
                             <p class="marginbottom10"><strong>Gender:</strong></p>
                             <p>
                               <span class="marginleft10"><input class="styleinputtext" data-role="none" size="20" type="text" name="gender" id="gender" value="" placeholder="Gender" /></span>
@@ -119,7 +121,24 @@
 
                  </div> 
              </div>
-             <!-- content area -->           
+             <!-- content area --> 
+             
+             <!--this is the status popup-->
+                 <div class="noborder" data-role="popup" id="statusPopup" data-overlay-theme="f" data-dismissible="false">
+                    <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
+                    <div class="popup_header">HCW LMS</div>
+
+                    <div class="popup_body" >
+                        <p class="statusmsg textcenter"></p>
+                    </div>
+                    
+                    <div class="popup_header">
+                        <a href="" id="okbutton" class="pagebutton footerbutton width90" onclick="" 
+                         data-role="button"  data-inline="true" data-mini="true">OK</a>
+                    </div>
+                    
+                </div>
+                <!--this is the status popup-->
          </div>  
 
          <div class="footer"> 

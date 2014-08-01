@@ -18,6 +18,8 @@
         <script src="js/DAO.js"></script> 
         <script src="js/populator.js"></script>
         <script src="js/functions.js"></script> 
+        <script src="js/printdb.js"></script> 
+        <script src="js/worker.js"></script>
 
         
         <!--corresponding js files for .html files-->
@@ -25,11 +27,18 @@
         <script src="js/traininghome.js"></script> 
         <script src="js/login.js"></script> 
         <script src="js/training.js"></script> 
-        
+        <script src="js/jobaids.js"></script> 
+        <script src="js/faq.js"></script> 
+        <script src="js/help.js"></script> 
+        <script src="js/question.js"></script> 
+        <script src="js/test.js"></script>
+        <script src="js/profile.js"></script>
+        <script src="js/reg.js"></script>
+        <script src="js/notifications.js"></script>
         
     </head>
 
-    <body >                        
+    <body>                        
         
         <div data-role="page" id="mainpage" data-theme="f" class="fullheight"  > 
              <div class="header"> 
@@ -44,7 +53,7 @@
                       </div>
 
                      <div id="profile_txt_h">
-                        <a href="profile_usage.html" class="notextdecoration textwhite textfontarialblack13">Profile</a>
+                        <a href="" onclick="accessProfile();return false;" class="notextdecoration textwhite textfontarialblack13">Profile</a>
                         <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
                     </div>
 
@@ -53,7 +62,7 @@
                         <span class="noticecount">2</span> 
                      </div>
                      <div id="help_txt_h">
-                         <a href="help_user_guides.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
+                         <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
                      </div>
                  </div>     
                  
@@ -66,8 +75,8 @@
                             <li data-icon="false"><a href="job_aids.html">Job Aids</a></li>
                             <li data-icon="false"><a href="index.html">Standing Order</a></li>
                             
-                            <!--<li id="quick-login" data-icon="false"><a href="login.html" id="gator">Log In</a></li>-->
-                            <!--<li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>-->
+                            <li id="quick-login" data-icon="false"><a href="login.html" id="gator">Log In</a></li>
+                            <li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
                             <li data-icon="false"><a href="" id="quit">Quit</a></li>
 
                         </ul>
@@ -86,8 +95,8 @@
                             <p>Training</p>
                         </a>
 
-                        <a class="iconblock1" href="test_summary.html" >
-						     <img src="img/test-icon.png" />
+                        <a class="iconblock1" href="#" onclick="accessTests()" >
+                            <img src="img/test-icon.png" />
                             <p>Take Test (TT)</p>
                         </a>
 
@@ -105,7 +114,7 @@
         
                 <div class="home-menu height40">
 
-                    <a class="iconblock2" href="profile_usage.html" >
+                    <a class="iconblock2" href="#" onclick="accessProfile();return false;" >
                         <img src="img/my-profile-icon.png" />
                         <p>My Profile</p>
                     </a>
@@ -113,16 +122,25 @@
                         <img src="img/reg-icon.png" />
                         <p>Registration</p>
                     </a>
+<<<<<<< HEAD
                     <a class="iconblock2" href="help_user_guides.html" >
+=======
+                    <a class="iconblock2" href="help.html" >
+>>>>>>> upstream/master
                         <img src="img/help-icon.png" />
                         <p>Help</p>
                     </a>
+
                     <a class="iconblock2" href="faq.html" >
                         <img src="img/faq-icon.png" />
                         <p>Frequently Asked Questions</p>
                     </a>
                 </div>  
                 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
                  <!--the session selection popup -->
                 <div class="noborder" data-role="popup" id="sessionPopup2"  data-overlay-theme="a" data-position-to="window" data-dismissible="false">
                     <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
@@ -153,26 +171,26 @@
                 <!--the session selection popup -->
                 
          </div>  
-            
+            <!--content-->
             
             
          <div class="footer"> 
 
                     <div id="footer_text1">   
-                                        <strong>XYZ Health Center,</strong>
-                                        <div>Plot 2-5, Trans Amadi, Port Hacourt,</div>
-                                        <div>Nigeria. </div> 
+                        <strong>XYZ Health Center,</strong>
+                        <div>Plot 2-5, Trans Amadi, Port Hacourt,</div>
+                        <div>Nigeria. </div> 
                     </div> 
                      <div id="footer_text2">   
-                                       <strong>Facility Supervisor</strong>
-                                        <div>Adebayo A. Salako</div>
-                                        <div>08012345678 </div> 
+                        <strong>Facility Supervisor</strong>
+                        <div>Adebayo A. Salako</div>
+                        <div>08012345678 </div> 
                     </div> 
          </div>  
             
             
-            
         </div>
+        <!--page-->
         
     </body>
 </html>

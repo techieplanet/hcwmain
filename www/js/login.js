@@ -1,14 +1,14 @@
-
 //$(document ).delegate("#loginpage", "pageremove", function() {
 //    globalObj.loginMode = '';
 //});
 
 $(document ).delegate("#loginpage", "pageinit", function() {        
         
-        //sample initial string to split on - /phonegap/hcwdeploy/www/login.html?pagemode=i
+        //sample initial string to split on - /phonegap/hcwdeploy/www/login.html?pagemode=1
         var pageMode = $('#loginpage').attr('data-url').split('?')[1].split('=')[1];
+        //pageMode = 1;
         
-        if(pageMode==1){
+        if(pageMode==1){ //individual login
             $('#indtab').addClass('active');
             if(globalObj.loginMode == 'test'){
                 $('#context-bar').html('Accessing Tests');
@@ -20,10 +20,12 @@ $(document ).delegate("#loginpage", "pageinit", function() {
             }
             else{//profile login
                 $('#context-bar').html('Profile Login');
+                $('#grouptab').addClass('hidden');
+                $('#regtab').removeClass('hidden');
                 $('#login').attr('onclick','login(\'\')');
             }
         }
-        else if(pageMode==2){
+        else if(pageMode==2){ //group
             $('#context-bar').html('Select Group Members');
             $('#grouptab').addClass('active');
             getUsersList();
@@ -49,6 +51,15 @@ function login(mode){
                                      var row = resultSet.rows.item(0);
                                      globalObj.loggedInUserID = row['worker_id'];  //register user as logged in
                                      
+                                     
+                                    /*
+                                    * DROP EXISTING USAGE VIEW NOW AGAINST WHEN THE LOGGED IN USER NEEDS TO 
+                                    * ACCESS USAGE INFO AND ANOTHER FRESH ONE WILL BE CREATED FOR THE USER
+                                    * THE dropView METHOD IS FOUND ON profile.js
+                                    */
+                                    globalObj.db.transaction(dropView,function(error){console.log('Error dropping view')});   
+                                     
+                                     
                                      //switch toolbar login button
                                      //$('#toolbar-login').addClass('hidden');
                                      //$('#toolbar-login').removeClass('hidden');
@@ -64,7 +75,7 @@ function login(mode){
                                          $.mobile.changePage( "training.html" );
                                       }
                                       else if(mode == 'test'){
-                                          $.mobile.changePage( "tests.html" );
+                                          $.mobile.changePage( "test.html?pagemode=1" );
                                       }
                                      else  // go to profile page if logging in but not accessing training yest
                                          $.mobile.changePage( "profile.html" );
@@ -120,7 +131,6 @@ function login(mode){
                     },
                     function (error){}                    
             );
-       
    }
    
    
@@ -132,6 +142,5 @@ function login(mode){
         globalObj.sessionUsersList.push(checked[i].id);
         
     globalObj.sessionType = 2;   //set session type
-    $.mobile.changePage( "training.html" );
-    
+    $.mobile.changePage( "training.html" );   
 }

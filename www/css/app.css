@@ -75,7 +75,7 @@ html{height: 100%;}
     color: #fff;
     float: left;
     text-align: center;
-    margin-left:10% !important;
+    margin-left:6% !important;
     margin-top: .4% !important;
     width: 20%;
 }
@@ -323,7 +323,7 @@ span#column-width
    width:25.1%;
    display: inline-block;
    text-align: center;
-   margin-left: 1%;
+   /*margin-left: 1%;*/
 }
 span#column-width-1
 {
@@ -369,6 +369,11 @@ span#column-width-1
     padding: 15px;
     display: block;
 }
+
+.c-inner-content p {
+    padding: 1% 2%;
+}
+
 .c-inner-content p img
 {
 float: right;
@@ -402,8 +407,8 @@ video { margin-top: -20px;}
 .content-listing li
 {
    width: 90%;
-   padding: 1% 0;
-   margin-left: 5%;
+   padding: 1% 0 !important;
+   margin-left: 3%;
    border-bottom: 1px solid 	#ccc;
    list-style: none;
 }
@@ -427,8 +432,8 @@ padding: 2%;
 }
 .row-content div
 {
-   width: 90%;
-   margin-left: 4%;
+   /*width: 95%;*/
+   /*margin-left: 4%;*/
    border-bottom: 1px solid 	#ccc;
    text-align: center;
 }
@@ -453,14 +458,19 @@ padding: 2%;
     text-align: center;
   
 }
-.row-content-col-btn
-{
+.row-content-col-btn{
     width: 25%;
+    display: inline-block;
+    margin-left: 4% !important;
 }
+.row-content-col-btn a { display: block; margin-bottom: 2% !important; }
+
 .styleinputtext
 { 
     border: 1px solid 	#003366;
-    padding: .3%;
+    padding: 5px 3px;
+    box-sizing: border-box;
+    
 }
 
 /*Footer*/
@@ -501,6 +511,14 @@ padding: 2%;
    
 }
 
+.full-length-box{
+    height:100px;
+    font-weight:normal !important;
+    width: 98% !important;
+    overflow-y:auto; 
+    text-align:justify;
+}
+
 
 /*
     UTILITY
@@ -526,7 +544,8 @@ padding: 2%;
 .marginleft20 {margin-left: 20% !important;}
 .marginright20 {margin-right: 20px !important;}
 .hidden {display: none !important;}
-.bold {font-weight: bold;}
+.bold {font-weight: bold !important;}
+.uppercase {text-transform: uppercase; }
 .date {color:#ccc; font-size: 10px !important;}
 .articleblock  {margin-bottom: 1px !important; }
 .articleblock p {font-size: 13px;}
@@ -545,15 +564,17 @@ padding: 2%;
 .textwhite{color: #fff !important;}
 .textlemon{color: #009900 !important;}
 .textccc{color: #ccc !important;}
+.text999{color: #999 !important;}
+
 
 /*******    ALIGNMENT   *******/
-.textleft {text-align: left; }
-.ui-block {text-align: center;}
-.textcenter {text-align: center;}
-.textright {text-align: right; }
-.centerpage {margin: auto;}
-.floatleft {float: left;}
-.floatright {float: right;}
+.textleft {text-align: left !important;}
+.ui-block {text-align: center !important;}
+.textcenter {text-align: center !important;}
+.textright {text-align: right !important;}
+.centerpage {margin: auto !important;}
+.floatleft {float: left !important;}
+.floatright {float: right !important;}
 
 
 /*******    CONTROLS   *******/
@@ -583,9 +604,10 @@ padding: 2%;
 .width50{width: 50% !important;}
 .width60{width: 60% !important;}
 .width90{width: 90% !important;}
+.width95{width: 95% !important;}
 
 .registration-form{ width: 85% !important;}
-.fieldrow{ text-align: center !important; border-bottom: 1px solid #ccc !important;}
+.fieldrow{ text-align: center !important; border-bottom: 0px solid #ccc !important;}
 .fieldrow label {margin-top: 6px !important;}
 .fieldrow div.ui-input-text {width: 45% !important;}
 
@@ -604,7 +626,7 @@ padding: 2%;
 .popup_body{
     background: #fff !important;
     padding: 5% !important;
-    min-width: 400px;
+    min-width: 300px;
 }
 .popup_body ul{background: #fff !important;}
 .popup_body ul li:last-child{border-bottom: 0 !important;}

@@ -6,45 +6,36 @@
 **********************/
 
 $(document ).delegate("#traininghomepage", "pageinit", function() {   
-    
+        //openDb();
         globalObj.db.transaction(queryCategories,
                                 function(error){console.log('Database error: ' + JSON.stringify(error));
                             }
                        );  
                            
                     $('div[data-role="collapsible"]').trigger("collapse");
+        
+        
+        //set active sidebar element on click
+        $('#sidebar_ul li a').click(function(){
+            $('#sidebar_ul li a').removeClass('active');
+            $(this).addClass('active');
+        });
+        
+        var pageModeArray = $('#traininghomepage').attr('data-url').split('?');
+        if(pageModeArray.length>1){
+            pageMode = pageModeArray[1].split('=')[1];
+            if(pageMode=='retake')
+              setUpRetake();
+        }
+        
 
-        //$('#moduletitle a').attr('onclick','return false;');
-//        
-//        $('#moduletitle').attr('onclick','return false;');
-//        $('#moduletitle').click(function(){
-//            alert('module titlie');
-//        });
  });
 
-$( document ).delegate("#traininghomepage", "pageshow", function() {
+
+$( document ).delegate("#traininghomepage", "pageshow", function() {        
     
-        
-    $('#sidebar_ul li a').click(function(){
-        $('#sidebar_ul li a').removeClass('active');
-        $(this).addClass('active');
-    });
     
-//    $('#traininghomepage .moduletitle').click(function(e){
-//        //e.preventDefault();
-//        //console.log($(this).parent())
-//        var collapsible = $(this).next('.ui-collapsible-content');
-//        
-//        collapsible.one('expand',function(){
-//            //console.log('expanded')
-//            $('div.ui-collapsible-content').trigger("collapse");
-//            $(this).slideDown(600, function(){
-//                $(this).trigger("expand");
-//            })
-//        });
-//        
-//        collapsible.one('collapse',function(){console.log('collapsed')})
-//    });
+
 });
 
 function moduleSlide(){
@@ -71,11 +62,17 @@ function moduleSlide(){
                         for (var i=0; i<len; i++){
                              var row = resultSet.rows.item(i);
                              html += '<li>' +
-                                        '<a href="" onclick="loadModule(' + row['category_id']+ '); return false;">' +
+                                        '<a id="cat_' + row['category_id'] + '" href="" onclick="loadModule(' + row['category_id']+ '); return false;">' +
                                             row['category_name']    +
                                         '</a>' +
                                      '</li>';
                         }
+                        
+//                        html += '<li>' +
+//                                        '<a href="" onclick="expand(); return false;" >' +
+//                                           'Expand'   +
+//                                        '</a>' +
+//                                     '</li>';
                         
                         html += '</ul>';  //close ul
                     }
@@ -90,6 +87,12 @@ function moduleSlide(){
                 
  }
  
+ function expand(){
+     console.log('expanding' );
+     //$('#coll_mod_1').collapsible( "option", "collapsed", false )
+     $('#coll_mod_1').collapsible( "option", "expand", true )
+     //$('#coll_mod_1').attr('data-collapsed','false');
+ }
  
  function toggleTopics(){
      alert('toggleTopics');
@@ -98,7 +101,7 @@ function moduleSlide(){
 function loadModule(cat_id){
     
     globalObj.categoryID = cat_id;
-    globalObj.db.transaction(populateModule,function(error){alert("error populating modules.")});
+    globalObj.db.transaction(populateModule,function(error){alert("error populating modules " + JSON.stringify(error))});
     
     $('#collapsible_content').html('');
 }
@@ -123,7 +126,7 @@ function populateModule(tx){
                                         globalObj.moduleID = row['module_id'];
                                         globalObj.moduleTitle = row['module_title'];
                                         globalObj.db.transaction(populateTopic);
-                                    },i*500);
+                                    },i*200);
                                     
                                 })(i);
                                 
@@ -141,16 +144,24 @@ function populateModule(tx){
 }
 
 
+/*
+ * This method retrieves the topics for each module and registers it under the module 
+ * in the interface collapsible.
+ * Tables: training, training_to_module, module
+ */
 var html ='';
 function populateTopic(tx){
-    var query = 'SELECT * FROM cthx_training WHERE module_id=' + globalObj.moduleID;
+    var query = 'SELECT * FROM cthx_training_to_module tm JOIN cthx_training t JOIN cthx_training_module m ' +
+                'WHERE t.training_id=tm.training_id AND m.module_id=tm.module_id ' + 
+                'AND tm.module_id=' + globalObj.moduleID;
     //console.log('topics : ' + query);
+    
     tx.executeSql(query,[],
                     function(tx,result){
                         var len = result.rows.length;
-                        
+                        //console.log(globalObj.moduleID + ' len: ' + len);
                         //var empty = len>0 ? '' : 'empty';
-                        html += '<div id="coll_mod_'+ globalObj.moduleID + '" data-role="collapsible" data-icon="arrow-d" data-iconpos="right"  class="c-inner-content">';
+                        html += '<div id="coll_mod_'+ globalObj.moduleID + '" data-role="collapsible" data-icon="arrow-d" data-iconpos="right" data-collapsed="true" class="c-inner-content">';
                         html += '<h1 class="moduletitle" >' + globalObj.moduleTitle + '</h1>';
                             
                         if(len==0)
@@ -158,7 +169,7 @@ function populateTopic(tx){
                         
                         for(var i=0; i<len; i++){
                             var row = result.rows.item(i);
-                            html += '<p><a onclick="topicStarter(' + row['training_id'] + '); return false;" href="#">' + row['training_title'] + '</a></p>';
+                            html += '<p><a onclick="topicStarter(' + row['training_id'] + ',' + globalObj.moduleID + '); return false;" href="#">' + row['training_title'] + '</a></p>';
                         }
                         
                         html += '</div>';
@@ -174,8 +185,9 @@ function populateTopic(tx){
 }
 
 
-function topicStarter(topic_id){
+function topicStarter(topic_id,module_id){
     globalObj.topicID = topic_id; //selected topic id
+    globalObj.moduleID = module_id;
     
     if(globalObj.loggedInUserID > -1){  //user is logged in, group is 0
         $.mobile.changePage( "training.html" );
@@ -199,3 +211,39 @@ function sessionPick(){
         $.mobile.changePage( "login.html?pagemode=2");
     }
 }        
+
+/*
+ * This method sets up the UI when user is trying to retake a module OR
+ * when redirected to take module training from test section before taking test
+ * this works with the current global module id
+ * Table: training_module
+ */
+function setUpRetake(){
+    globalObj.db.transaction(function(tx){                         
+                            //first, get the category the module belongs to and use that to set up the UI
+                            var query = 'SELECT * FROM cthx_training_module WHERE module_id='+ globalObj.moduleID;
+                            console.log('retake query: ' + query);
+                            
+                            tx.executeSql(query,[],
+                                     function(tx,result){
+                                        var row = result.rows.item(0);
+                                        console.log('retake row: ' + JSON.stringify(row))
+                                        //set the active category
+                                        $('#cat_'+row['category_id']).addClass('active');
+                                        
+                                        var expandID = 'coll_mod_'+globalObj.moduleID;
+                                        
+                                        //load the modules in the category as if the category was clicked
+                                        loadModule(row['category_id']);
+                                        
+                                        //expand the right module in the list
+                                        $('#'+expandID).collapsible( "option", "collapsed", false );
+                                        console.log('collapsible element: ' + '#coll_mod_'+globalObj.moduleID);
+                                    });
+                    },
+                    function(error){
+                        console.log('Error setting up retake UI');
+                    }
+                
+        );
+}
