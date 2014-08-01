@@ -20,3 +20,46 @@ function getNowDate(){
     var now = yyyy+'-'+mm+'-'+dd;
     return now;
 }
+
+
+function launchPDF(dirname,filename){
+    console.log('launching PDF: ' + filename);                             
+    //counterUpdate('job_aids');
+    
+    window.requestFileSystem(
+            LocalFileSystem.PERSISTENT, 0, 
+            function(fileSystem){
+                var rootDirectoryEntry = fileSystem.root;
+                //alert('root: ' + fileSystem.root.fullPath);
+                
+                var filePath = dirname + "/" + filename;
+                //alert('Guide file filePath: ' + filePath);
+                
+                 /*
+                    * This method (getFile) is used to look up a directory. It does not create a non-existent direcory.
+                    * Args:
+                    * DirectoryEntry object: provides file look up method
+                    * dirPath: path to directory to look up relative to DirectoryEntry
+                 */
+                rootDirectoryEntry.getFile(
+                        filePath, {create: false}, 
+                        function(entry){
+                            //alert('help file entry.toURL: '+ entry.toURL());
+                            if(!entry.isFile) return;
+                            //window.open(entry.toURL(), '_blank', 'location=yes');
+                            window.plugins.fileOpener.open(entry.toURL());
+                             
+                        },
+                        function(error){
+                            //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
+                            alert("File not found.");
+                        }
+                 );
+                
+            }, 
+            function(error) {
+                alert("File System Error: " + JSON.stringify(error));
+            }
+          );
+              
+}

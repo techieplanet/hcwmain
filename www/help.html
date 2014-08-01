@@ -14,116 +14,110 @@
     </head>
     <body >                        
         
-        <div data-role="page" data-theme="f" class="fullheight"  > 
+        <div id="helppage" data-role="page" data-theme="f" class="fullheight"  > 
              <div class="header"> 
                  <div id="logo_icon_h"><img src="img/logo_icon.png" ></div> 
+                 <div id="title_txt_h" class="notextdecoration textwhite textfontarialblack20">
+                         Help
+                     </div>
                  
                  <div class="header-right">
                      
                      <div id="menu_icon_h"><img src="img/menu_icon.png"  ></div>
 
                      <div id="profile_txt_h">
-                        Profile
+                        <a href="profile_usage.html" class="notextdecoration textwhite textfontarialblack13">Profile</a>
                         <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
                     </div>
 
                      <div id="notification_txt_h">
-                        <span>Notifications</span> 
-                        <span class="noticecount">2</span> 
+                        <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
+                        <span class="noticecount">2</span>
                      </div>
-
                      <div id="home_icon">
                         <a href="index.html"><img src="img/home-icon.png" ></a>
                     </div>
                  </div>
-                 
-             
              </div> 
-
-            
             <div id="content" data-role="content" class="fullheight"  > 
 
              <div class="sidebar fullheight">
-                 <ul id="sidebar_ul"  class="sidebar-notification-counter" data-role="listview" data-icon="false">
+                 <ul id="sidebar_ul"  class="sidebar-notification-counter" data-icon="false">
                   
                          <li id="link" data-icon="false">
-                             <a href="profile_usage.html" class="textfontarial15" >Usage</a>
+                             <a href="#" onclick="getHelpFiles()" class="textfontarial15" id="active">User Guides</a>
                          </li>
+                         
                          <li data-icon="false">
-                             <a href="profile_personal_information.html" class="textfontarial15">Personal Information</a>
+                             <a href="#" onclick="getFAQ(2);return false;" class="textfontarial15">FAQ</a>
                          </li>
-              
-                       
+                         
                          <li data-icon="false" >
-                             <a href="profile_notifications.html" class="textfontarial15" id="active">Notifications<span id="sidebar-noti" class="ui-li-count">57</span></a>
+                             <a href="#" onclick="getInfo()" class="textfontarial15" >Information</a>
                          </li>
                       
               
                          <li data-icon="false">
-                             <a href="profile_login_details.html" class="textfontarial15">Login Details</a>
+                             <a href="#" onclick="getAbout()" class="textfontarial15">About</a>
                          </li>
                  </ul>
                  
              </div>
-
-
-
              <div class="content-area fullheight">
                  
                  
                  <div class="c-header">
-                     <div class="c-title">Adejoke Nophisat Adebayo</div>
+                     <div class="c-title">Help</div>
                  </div>
   
 
                  <div class="c-list">
                      
                      <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                        <li data-role="list-divider">Notifications</li>   
+                        <li id="c-bar" data-role="list-divider"></li>   
                      </ul>  
             
 
                 <div  class="focus-area">
                     
-                   <ul class="content-listing textfontarial12" data-role="listview">
-                       <li  data-icon="false" class="bottomborder marginleft15">
+                    
+                    
+                    
+                    
+                    
+<!--                   <ul class="content-listing textfontarial12" data-role="listview">
+                       <li  data-icon="false" class="bottomborder ">
                            <a href="#" class="margintop10 notextdecoration textblack">
-                           <p class="textlemon bold">Due Training Session:</p>
                            <p class="bold">Emergency Obstetric Care - Antenatal Care</p>
-                           <p class="textccc">Due Date: 01-01-2014</p>
                            </a>
                        </li>
-                       <li  data-icon="false" class="bottomborder marginleft15">
+                       <li  data-icon="false" class="bottomborder">
                            <a href="#" class="margintop10 notextdecoration textblack">
-                           <p class="textlemon bold">Due Training Session:</p>
                            <p class="bold">Emergency Obstetric Care - Antenatal Care</p>
-                           <p class="textccc">Due Date: 01-01-2014</p>
                            </a>
                        </li>
-                       <li  data-icon="false" class="bottomborder marginleft15">
+                       <li  data-icon="false" class="bottomborder">
                            <a href="#" class="margintop10 notextdecoration textblack">
-                           <p class="textlemon bold">Due Training Session:</p>
                            <p class="bold">Emergency Obstetric Care - Antenatal Care</p>
-                           <p class="textccc">Due Date: 01-01-2014</p>
                            </a>
                        </li>
-                   </ul>
+                       <li  data-icon="false" class="bottomborder">
+                           <a href="#" class="margintop10 notextdecoration textblack">
+                           <p class="bold">Emergency Obstetric Care - Antenatal Care</p>
+                           </a>
+                       </li>
+                   </ul>-->
+
+
+
+
                    
                 </div> 
 
                  </div> 
-                 
-
-
              </div>
-             <!-- content area -->
-        
-                      
-                     
+             <!-- content area -->      
          </div>  
-            
-            
-            
          <div class="footer"> 
 
                     <div id="footer_text1">   
@@ -137,9 +131,6 @@
                                         <div>08012345678 </div> 
                     </div> 
          </div>  
-            
-            
-            
         </div>
         
     </body>

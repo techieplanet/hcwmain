@@ -30,9 +30,10 @@ var globalObj = {   //begin class
     /*
      *  SETUP
      */
-    videoDir : 'CHAI/Videos', //video default directory on device
-    guidesDir : 'CHAI/Guides', //guides default directory on device
-    jobaidsDir : 'CHAI/JobAids', //job aids default directory on device
+    videoDir : 'HCW/Videos', //video default directory on device
+    guidesDir : 'HCW/Guides', //guides default directory on device
+    jobaidsDir : 'HCW/JobAids', //job aids default directory on device
+    helpDir : 'HCW/Help', //help default directory on device
     
    
   
@@ -53,8 +54,8 @@ var globalObj = {   //begin class
   testTotal: 0,
   testTitle: '',
   testID : 0,
-  questionID: 0  
-  //testQuestionIDList:new Array()
+  questionID: 0,  
+  questionIDList:new Array()
   
   
 }// end class

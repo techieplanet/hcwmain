@@ -17,19 +17,24 @@
         <div id="trainingpage" data-role="page" data-theme="f" class="fullheight"  > 
              <div class="header"> 
                  <div id="logo_icon_h"><img src="img/logo_icon.png" ></div> 
-                 
+                 <div id="title_txt_h" class="notextdecoration textwhite textfontarialblack20">
+                         Training
+                     </div>
                  <div class="header-right">
                      
                      <div id="menu_icon_h"><img src="img/menu_icon.png"  ></div>
 
                      <div id="profile_txt_h">
-                        Profile
+                        <a href="profile_usage.html" class="notextdecoration textwhite textfontarialblack13">Profile</a>
                         <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
                     </div>
 
                      <div id="notification_txt_h">
-                        <span>Notifications</span> 
+                        <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
                         <span class="noticecount">2</span> 
+                     </div>
+                     <div id="help_txt_h">
+                         <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
                      </div>
 
                      <div id="home_icon">
@@ -46,7 +51,7 @@
              <div class="sidebar fullheight">
                  <ul id="sidebar_ul">
                          <li>
-                             <a class="active" href="#">Videos</a>
+                             <a id="videolink" class="active" href="#">Videos</a>
                          </li>
                          <li>
                              <a href="#" onclick="launchGuide();return false;" >Training Guide</a>
@@ -54,9 +59,9 @@
                          <li>
                              <a href="#" onclick="getJobAids(1);return false;" >Job Aids</a>
                          </li>
-                         <li>
+                         <!--<li>
                              <a href="#" onclick="getFAQ(1);return false;" >FAQ</a>
-                         </li>
+                         </li>-->
                          <li>
                              <a href="training_home.html" >Exit</a> 
                          </li>
@@ -106,13 +111,13 @@
                      </ul>  
             
 
-                <div data-role="collapsibleset" class="focus-area">
+                <div  class="focus-area">
                     
                     <div class="training-container padcontainer">
                             <div class="training-video ui-block" >
                                 <video width="600" height="450" controls="controls" id="videoscreen">
                                       <source src="refer.mp4" type="video/mp4" />
-                                      <!--<source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>-->
+                                      <source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>
                                 </video>
                             </div>
                         

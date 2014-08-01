@@ -19,6 +19,7 @@
         <script src="js/populator.js"></script>
         <script src="js/functions.js"></script> 
         <script src="js/printdb.js"></script> 
+        <script src="js/worker.js"></script>
 
         
         <!--corresponding js files for .html files-->
@@ -28,7 +29,12 @@
         <script src="js/training.js"></script> 
         <script src="js/jobaids.js"></script> 
         <script src="js/faq.js"></script> 
-        
+        <script src="js/help.js"></script> 
+        <script src="js/question.js"></script> 
+        <script src="js/test.js"></script>
+        <script src="js/profile.js"></script>
+        <script src="js/reg.js"></script>
+        <script src="js/notifications.js"></script>
         
     </head>
 
@@ -47,13 +53,16 @@
                       </div>
 
                      <div id="profile_txt_h">
-                        Profile
-                         <!--<div id="profile_icon_h"><img src="img/profile_icon.png" ></div>--> 
+                        <a href="" onclick="accessProfile();return false;" class="notextdecoration textwhite textfontarialblack13">Profile</a>
+                        <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
                     </div>
 
                      <div id="notification_txt_h">
-                        <span>Notifications</span> 
+                        <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
                         <span class="noticecount">2</span> 
+                     </div>
+                     <div id="help_txt_h">
+                         <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
                      </div>
                  </div>     
                  
@@ -86,7 +95,7 @@
                             <p>Training</p>
                         </a>
 
-                        <a class="iconblock1" href="#" >
+                        <a class="iconblock1" href="#" onclick="accessTests()" >
                             <img src="img/test-icon.png" />
                             <p>Take Test (TT)</p>
                         </a>
@@ -105,7 +114,7 @@
         
                 <div class="home-menu height40">
 
-                    <a class="iconblock2" href="profile_usage.html" >
+                    <a class="iconblock2" href="#" onclick="accessProfile();return false;" >
                         <img src="img/my-profile-icon.png" />
                         <p>My Profile</p>
                     </a>
@@ -113,7 +122,7 @@
                         <img src="img/reg-icon.png" />
                         <p>Registration</p>
                     </a>
-                    <a class="iconblock2" href="#" >
+                    <a class="iconblock2" href="help.html" >
                         <img src="img/help-icon.png" />
                         <p>Help</p>
                     </a>
@@ -124,7 +133,36 @@
                     </a>
                 </div>  
                 
-                     
+
+                 <!--the session selection popup -->
+                <div class="noborder" data-role="popup" id="sessionPopup2"  data-overlay-theme="a" data-position-to="window" data-dismissible="false">
+                    <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
+                    <div class="popup_header">Select Session Type</div>
+
+                    <div class="margintop10 marginbottom10 popup_body" >
+                        <ul id="choicelist" data-role="listview"  data-theme="none">      
+                            <li class="" data-icon="false">
+                                <input class="" type="radio" name="session-choice" id="individual" value="individual" data-iconpos="right" />
+                                <label class="" data-role="button" for="individual">Individual Session</label>
+                            </li>
+                            
+                            <li class="" data-icon="false">
+                                <label for="group">Group Session</label>
+                                <input type="radio" name="session-choice" id="group" value="group" data-iconpos="right" />
+                            </li>
+                        </ul>                      
+                    </div>
+                    
+                    <div class="popup_header">
+                        <a class="pagebutton footerbutton" data-rel="back" 
+                         data-role="button"  data-inline="true" data-mini="true">Cancel</a>
+                        <a id="sessionok" class="pagebutton footerbutton" onclick="sessionPick()" 
+                         data-role="button" data-inline="true" data-mini="true">OK</a>
+                    </div>
+                    
+                </div>
+                <!--the session selection popup -->
+                
          </div>  
             <!--content-->
             
@@ -132,14 +170,14 @@
          <div class="footer"> 
 
                     <div id="footer_text1">   
-                                        <strong>XYZ Health Center,</strong>
-                                        <div>Plot 2-5, Trans Amadi, Port Hacourt,</div>
-                                        <div>Nigeria. </div> 
+                        <strong>XYZ Health Center,</strong>
+                        <div>Plot 2-5, Trans Amadi, Port Hacourt,</div>
+                        <div>Nigeria. </div> 
                     </div> 
                      <div id="footer_text2">   
-                                       <strong>Facility Supervisor</strong>
-                                        <div>Adebayo A. Salako</div>
-                                        <div>08012345678 </div> 
+                        <strong>Facility Supervisor</strong>
+                        <div>Adebayo A. Salako</div>
+                        <div>08012345678 </div> 
                     </div> 
          </div>  
             

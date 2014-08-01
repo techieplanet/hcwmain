@@ -1,6 +1,12 @@
 $(document ).delegate("#jobaidspage", "pageinit", function() {        
-                        console.log('jobaidspage');
+                        //console.log('jobaidspage');
+                        
                         getJobAids(2);
+                        
+                        $('#sidebar_ul li a').click(function(){
+                            $('#sidebar_ul li a').removeClass('active');
+                            $(this).addClass('active');
+                        });
                     }
             );
 
@@ -25,11 +31,13 @@ function getJobAids(mode){
                                 console.log('aids len: ' + len);
                                 if(len>0){
                                     //console.log('rows: ' + JSON.stringify(resultSet.rows.item(0)))
-                                    html += '<ul id="choicelist"  data-role="listview"  >';
+                                    html += '<ul class="content-listing textfontarial12" id="choicelist"  data-role="listview"  >';
                                     for(var i=0; i<resultSet.rows.length; i++){
                                         var row = resultSet.rows.item(i);
-                                        html += '<li class="" data-icon="false" >';
-                                        html +=        '<a href="#" onclick="launchAid(\''+ row['aid_file'] + '\')">' + row['aid_title'] + '</a>';
+                                        html += '<li class="bottomborder " data-icon="false" >';
+                                        html +=        '<a class="margintop10 notextdecoration textblack" href="#" onclick="launchAid(\''+ row['aid_file'] + '\')">';
+                                        html +=             '<p class="bold">' + row['aid_title'] + '</p>';
+                                        html +=        '</a>';
                                         html += '</li>';
                                     }
 
@@ -58,10 +66,10 @@ function launchAid(aid_file){
             LocalFileSystem.PERSISTENT, 0, 
             function(fileSystem){
                 var rootDirectoryEntry = fileSystem.root;
-                alert('root: ' + fileSystem.root.fullPath);
+                //alert('root: ' + fileSystem.root.fullPath);
                 
                 var filePath = globalObj.jobaidsDir + "/" + aid_file;
-                alert('Guide file filePath: ' + filePath);
+                //alert('Guide file filePath: ' + filePath);
                 
                  /*
                     * This method (getFile) is used to look up a directory. It does not create a non-existent direcory.
@@ -72,7 +80,7 @@ function launchAid(aid_file){
                 rootDirectoryEntry.getFile(
                         filePath, {create: false}, 
                         function(entry){
-                            alert('guide file entry.toURL: '+ entry.toURL());
+                            //alert('guide file entry.toURL: '+ entry.toURL());
                             if(!entry.isFile) return;
                             //window.open(entry.toURL(), '_blank', 'location=yes');
                             window.plugins.fileOpener.open(entry.toURL());
