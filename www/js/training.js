@@ -5,6 +5,12 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
     //console.log('trainingpage logging inside pageshow');
     //$('#vsPopup').popup('open');
     //setTimeout($('#vsPopup').popup('close'),2000);
+    
+    $('#sidebar_ul li a').click(function(){
+        $('#sidebar_ul li a').removeClass('active');
+        $(this).addClass('active');
+    });
+    
 });
 
 
@@ -74,7 +80,7 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
                     console.log('length: ' + resultSet.rows.length);
                     if(resultSet.rows.length > 0){
                         var row = resultSet.rows.item(0);
-                        console.log("training row: " + JSON.stringify(row));
+                        //console.log("training row: " + JSON.stringify(row));
                         //we are expecting one row but use this row to set global module vars to right values first
                         //might be carrying wrong value from last iteration of populateTopic method loop of traininghome.js
                         globalObj.moduleID = row['module_id']
@@ -87,6 +93,9 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
                         $('.c-title, .popup_header:first-child').html(globalObj.moduleTitle);
                         $('.info').html(capitalizeFirstLetter(row['remarks']));
                         
+                        //set the video link to set up and reload this topic when clicked
+                        $('#videolink').attr('onclick','setUpVideo(' + row['training_id'] + ')')
+    
                         globalObj.videoFile = row['video_file'];  //use public variable in deviceready successCB
                         globalObj.guideFile = row['guide_file'];
                         
@@ -105,8 +114,8 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
   * This method fetches the actuall .mp4 video file from the dedicated videos directory on device
   * The video directory and video file name are already stored in public vars _videoDir and _videoFile respectively
   */
-function attachVideoFile(){
-     return;
+function attachVideoFile(){   
+     //return;
      
        window.requestFileSystem(
             LocalFileSystem.PERSISTENT, 0, 
@@ -132,7 +141,8 @@ function attachVideoFile(){
                         },
                         function(error){
                             //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
-                            alert("No Video Found. \n Switching to Default Video.");
+                            //alert("No Video Found: (" + filePath + ") \n Switching to Default Video.");
+                            alert("No Video Found: \n Switching to Default Video.");
                         }
                  );
                 
@@ -144,6 +154,35 @@ function attachVideoFile(){
               
      
  }//end trainingPageDeviceReady()
+ 
+ 
+ //this method sets up the the video area and appends to the focus-area
+ function setUpVideo(topicID){
+        
+         var html = '<div class="training-container padcontainer">' +
+                            '<div class="training-video ui-block" >' +
+                                '<video width="600" height="450" controls="controls" id="videoscreen">' +
+                                        '<source src="refer.mp4" type="video/mp4" />' +
+                                        //<!--<source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>-->
+                                 '</video>' +
+                             '</div>' +
+                      
+
+                            '<div class="training-video-nav ui-block padcontainer" >' + 
+                               '<a id="prevvideo" href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >' +
+                                   'Previous' +
+                               '</a>' +
+                               '<a id="nextvideo" href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">' +
+                                   'Next' +
+                               '</a>' +
+                           '</div>' +
+                    '</div>';
+                    
+            $('.focus-area').html(html);
+            $('#trainingpage').trigger('create');
+            loadTraining(topicID);
+            
+ }
  
  
  //saves a training session at start. Status is always 1 at start for incomplete
@@ -399,10 +438,18 @@ function checkTestable(tx){
                       
                       console.log('this row: ' + JSON.stringify(row));
                       //check if the training is either not taken or its session not completed
-                      if(row['status'] != 2) {
-                          allTaken = false;
-                          break;
+                      if(row['material_type']==2){
+                          //regardless of any other conditions, the training is completed as long
+                          //as training guide has been viewed
+                          //Break out, no need to keep checking.
+                            allTaken = true;
+                            break;
                       }
+                      else if(row['material_type']==1 && row['status'] != 2) {
+                          //material_type 1 is video. Status != 2 means the video was not completed
+                          //But keep checking as we do not know if training guide was viewed later
+                          allTaken = false;
+                       }
                   }
                   
                   console.log('alltaken: ' + allTaken);
@@ -436,7 +483,7 @@ function changeToTest(){
                                         var len = resultSet.rows.length;
                                         if(len>0){
                                             globalObj.testID = resultSet.rows.item(0)['test_id'];
-                                            $.mobile.changePage('index.html');
+                                            $.mobile.changePage('question.html');
                                         }
                                     }
                      );
@@ -448,30 +495,32 @@ function changeToTest(){
 function stopVideo() {
     globalObj.videoEnded = false;
     var video = document.getElementById('videoscreen');
-    video.pause();
+    if(video != null)
+        video.pause();
 }  
 
 
 
 function launchGuide(){
-    //alert('launching guide');
-//    if(globalObj.guideViewed==false){
-//            globalObj.guideViewed = true;
-//            globalObj.db.transaction(function(tx){
-//                            for(var i=0; i<globalObj.sessionUsersList.length; i++)
-//                                saveGuideSession(tx,globalObj.sessionUsersList[i]);
-//                    },
-//                    function(error){
-//                        alert('Error saving guide session');
-//                    }
-//                );
-//    }//end if
-//    
-//     //launch pop if individual sesseion 
-//     setTimeout(function(){
-//          if(globalObj.sessionType==1) //inidividual session
-//              $('#testPopup').popup('open');
-//      },2000)
+//    alert('launching guide');
+    if(globalObj.guideViewed==false){
+            globalObj.guideViewed = true;
+            globalObj.db.transaction(function(tx){
+                            for(var i=0; i<globalObj.sessionUsersList.length; i++)
+                                saveGuideSession(tx,globalObj.sessionUsersList[i]);
+                    },
+                    function(error){
+                        alert('Error saving guide session');
+                    }
+                );
+    }//end if
+    
+     //launch pop if individual sesseion 
+     setTimeout(function(){
+          if(globalObj.sessionType==1) //inidividual session
+              $('#testPopup').popup('open');
+      },2000)
+        return;
                              
     
     window.requestFileSystem(
@@ -481,7 +530,7 @@ function launchGuide(){
                 //alert('root: ' + fileSystem.root.fullPath);
                 
                 var filePath = globalObj.guidesDir + "/" + globalObj.guideFile;
-                alert('Guide file filePath: ' + filePath);
+                //alert('Guide file filePath: ' + filePath);
                 
                  /*
                     * This method (getFile) is used to look up a directory. It does not create a non-existent direcory.
@@ -550,7 +599,3 @@ function launchGuide(){
         
         DAO.save(tx, 'cthx_training_session', fields, values);      
   }
-  
-  
-  
- 

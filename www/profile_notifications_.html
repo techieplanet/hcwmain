@@ -17,19 +17,25 @@
         <div data-role="page" data-theme="f" class="fullheight"  > 
              <div class="header"> 
                  <div id="logo_icon_h"><img src="img/logo_icon.png" ></div> 
+                 <div id="title_txt_h" class="notextdecoration textwhite textfontarialblack20">
+                         Profile
+                     </div>
                  
                  <div class="header-right">
                      
                      <div id="menu_icon_h"><img src="img/menu_icon.png"  ></div>
 
                      <div id="profile_txt_h">
-                        Profile
+                        <a href="profile_usage.html" class="notextdecoration textwhite textfontarialblack13">Profile</a>
                         <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
                     </div>
 
                      <div id="notification_txt_h">
-                        <span>Notifications</span> 
+                        <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
                         <span class="noticecount">2</span> 
+                     </div>
+                     <div id="help_txt_h">
+                         <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
                      </div>
 
                      <div id="home_icon">
@@ -47,7 +53,7 @@
                  <ul id="sidebar_ul"  class="sidebar-notification-counter" data-role="listview" data-icon="false">
                   
                          <li id="link" data-icon="false">
-                             <a href="profile_usage.html" class="textfontarial15" id="active">Usage</a>
+                             <a href="profile_usage.html" class="textfontarial15" >Usage</a>
                          </li>
                          <li data-icon="false">
                              <a href="profile_personal_information.html" class="textfontarial15">Personal Information</a>
@@ -55,7 +61,7 @@
               
                        
                          <li data-icon="false" >
-                             <a href="profile_notifications.html" class="textfontarial15">Notifications<span id="sidebar-noti" class="ui-li-count">57</span></a>
+                             <a href="profile_notifications.html" class="textfontarial15" id="active">Notifications<span id="sidebar-noti" class="ui-li-count">57</span></a>
                          </li>
                       
               
@@ -79,17 +85,34 @@
                  <div class="c-list">
                      
                      <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                        <li data-role="list-divider">Usage Information</li>   
+                        <li data-role="list-divider">Notifications</li>   
                      </ul>  
             
 
                 <div  class="focus-area">
                     
-                   <ul class="content-listing textfontarial12" data-role="listview"  >
-                       <li  data-icon="false"><p>Number of training taken<span id="totaltest" class=ui-li-count>57</span></p></li>
-                       <li  data-icon="false"><p>Number of training due<span id="totalpassed" class=ui-li-count>44</span></p></li>
-                       <li data-icon="false"><p>Number of tests passed<span id="totalfailed" class=ui-li-count>13</span></p></li>
-                       <li data-icon="false"><p>Number of tests failed<span id="averagescore" class=ui-li-count>123</span></p></li>
+                   <ul class="content-listing textfontarial12" data-role="listview">
+                       <li  data-icon="false" class="bottomborder marginleft15">
+                           <a href="#" class="margintop10 notextdecoration textblack">
+                           <p class="textlemon bold">Due Training Session:</p>
+                           <p class="bold">Emergency Obstetric Care - Antenatal Care</p>
+                           <!--<p class="textccc">Due Date: 01-01-2014</p>-->
+                           </a>
+                       </li>
+                       <li  data-icon="false" class="bottomborder marginleft15">
+                           <a href="#" class="margintop10 notextdecoration textblack">
+                           <p class="textlemon bold">Due Training Session:</p>
+                           <p class="bold">Emergency Obstetric Care - Antenatal Care</p>
+                           <!--<p class="textccc">Due Date: 01-01-2014</p>-->
+                           </a>
+                       </li>
+                       <li  data-icon="false" class="bottomborder marginleft15">
+                           <a href="#" class="margintop10 notextdecoration textblack">
+                           <p class="textlemon bold">Due Training Session:</p>
+                           <p class="bold">Emergency Obstetric Care - Antenatal Care</p>
+                           <!--<p class="textccc">Due Date: 01-01-2014</p>-->
+                           </a>
+                       </li>
                    </ul>
                    
                 </div> 

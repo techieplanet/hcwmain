@@ -33,24 +33,29 @@ $(document ).delegate("#mainpage", "pageinit", function() {
  *  this function is like a gateway for tests. it forcess the user to login IF they aren't.
  */
 function accessTests(){
-//    _loggedInUserID = 1;
-//    _sessionType=1;
-//    _sessionUsersList = [_loggedInUserID];
+    //globalObj.loggedInUserID = 1;
+    //globalObj.sessionType=1;
+    //globalObj.sessionUsersList = [globalObj.loggedInUserID];
     
-    if(_loggedInUserID>0)
-        $.mobile.changePage('tests.html');
+    if(globalObj.loggedInUserID>0)
+        //mode 1 opens summary, mode 2 opens certificate
+        $.mobile.changePage('test.html?pagemode=1');  
     else{
         globalObj.loginMode = 'test';
-        $.mobile.changePage('login.html');
+        $.mobile.changePage( "login.html?pagemode=1" );
     }
 }
 
 function accessProfile(){
-    if(_loggedInUserID>0)
-        ;//$.mobile.changepage('tests.html');
+//    globalObj.loggedInUserID = 1;
+//    globalObj.sessionType=1;
+//    globalObj.sessionUsersList = [globalObj.loggedInUserID];
+    
+    if(globalObj.loggedInUserID>0)
+        $.mobile.changePage('profile.html');  
     else{
         globalObj.loginMode = 'profile';
-        $.mobile.changePage('login.html');
+        $.mobile.changePage( "login.html?pagemode=1" );
     }
 }
 

@@ -14,22 +14,27 @@
     </head>
     <body >                        
         
-        <div data-role="page" data-theme="f" class="fullheight"  > 
+        <div id="testpage" data-role="page" data-theme="f" class="fullheight"  > 
              <div class="header"> 
                  <div id="logo_icon_h"><img src="img/logo_icon.png" ></div> 
-                 
+                 <div id="title_txt_h" class="notextdecoration textwhite textfontarialblack20">
+                         Test
+                     </div>
                  <div class="header-right">
                      
                      <div id="menu_icon_h"><img src="img/menu_icon.png"  ></div>
 
                      <div id="profile_txt_h">
-                        Profile
+                        <a href="profile_usage.html" class="notextdecoration textwhite textfontarialblack13">Profile</a>
                         <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
                     </div>
 
                      <div id="notification_txt_h">
-                        <span>Notifications</span> 
+                        <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
                         <span class="noticecount">2</span> 
+                     </div>
+                     <div id="help_txt_h">
+                         <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
                      </div>
 
                      <div id="home_icon">
@@ -43,83 +48,77 @@
             
             <div id="content" data-role="content" class="fullheight"  > 
 
-<!--             <div class="sidebar fullheight">
+             <div class="sidebar fullheight">
                  <ul id="sidebar_ul">
                   
                          <li id="link">
-                             <a href="training.html" id="active">Videos</a>
+                             <a href="#" onclick="showSummary()" id="active">Summary</a>
                          </li>
                          <li>
-                             <a href="job_aids.html" >Job Aids</a>
+                             <a href="#" onclick="showPending()"  >Pending</a>
                          </li>
                          <li>
-                             <a href="#" >Training Guide</a>
-                         </li>
-                          <li>
-                             <a href="#" >FAQ</a>
-                         </li>
-                         <li>
-                             <a href="#" >Exit</a>
+                             <a href="#" onclick="showResults()" >Results</a>
                          </li>
                  </ul>
                  
-             </div>-->
+             </div>
 
 
 
-             <div class="content-question fullheight">
+             <div class="content-area fullheight">
                  
                  
                  <div class="c-header">
-                     <div class="c-title">Emergency Obstetric Care</div>
+                     <div class="c-title">Summary</div>
                  </div>
   
 
                  <div class="c-list">
                      
                      <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                         <li data-role="list-divider">Question 1</li>   
+                        <li id="context-bar" data-role="list-divider">Detail</li>   
                      </ul>  
-                     <div  class="focus-area">
-                     <ul class="content-listing textfontarial15">
-                         <li>
-                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
-                                nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. 
-                             </p>
-                         </li>
-                         
-                         <li id="coloredbgcontent" data-icon="false">
-                             
-                             <div class="c-inner-content textleft">
-                                <input class="" type="radio" name="session-choice" id="optiona" value="optiona" data-iconpos="right"  />
-                                <label class="" data-role="button" data-corners="false" for="optiona"><span class="question-opt" >&nbsp;A&nbsp;&nbsp;</span>Referring a Sick Baby</label>
-                                <input class="" type="radio" name="session-choice" id="optionb" value="optionb" data-iconpos="right" />
-                                <label class="" data-role="button" data-corners="false" for="optionb"><span class="question-opt">&nbsp;B&nbsp;&nbsp;</span>The Cold Baby</label>
-                                <input class="" type="radio" name="session-choice" id="optionc" value="optionc" data-iconpos="right" />
-                                <label class="" data-role="button" data-corners="false" for="optionc"><span class="question-opt">&nbsp;C&nbsp;&nbsp;</span>Breathing Problems</label>
-                                <input class="" type="radio" name="session-choice" id="optiond" value="optiond" data-iconpos="right" />
-                                <label class="" data-role="button" data-corners="false" for="optiond"><span class="question-opt">&nbsp;D&nbsp;&nbsp;</span>Vomiting</label>
-                            </div>
-                         </li>
-                         
-                         <li>
-                            <div class="training-video-nav ui-block padcontainer" >
-                                 <a id="prevvideo" href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >
-                                 Previous
-                                 </a>
-                                 <a id="nextvideo" href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">
-                                 Next
-                                 </a>
-                            </div>  
-                         </li>
-                     </ul>
+            
 
-
+                <div  class="focus-area">
+                    
+                   <ul class="content-listing textfontarial12" data-role="listview"  >
+                       <li  data-icon="false"><p>Total Tests<span id="totaltest" class=ui-li-count>57</span></p></li>
+                       <li  data-icon="false"><p>Total Passed<span id="totalpassed" class=ui-li-count>44</span></p></li>
+                       <li data-icon="false"><p>Total Failed<span id="totalfailed" class=ui-li-count>13</span></p></li>
+                       <li data-icon="false"><p>Average Score (%)<span id="averagescore" class=ui-li-count>123</span></p></li>
+                   </ul>
+                   
+                </div> 
 
                  </div> 
                  
+                    
+                            <!--    the test call popup-->
+                            <div class="noborder" data-role="popup" id="testcheckPopup" data-overlay-theme="f" data-dismissible="false">
+                               <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
+                               <div class="popup_header">HCW LMS</div>
 
-                 </div>
+                               <div class="popup_body" >
+                                   <p class="">
+                                       Hmmm! You are yet to complete all the trainings in this module.
+                                        <br/>
+                                        Would you like to take the module training now?
+                                   </p>
+                                   
+                               </div>
+
+                               
+                               <div class="popup_header">
+                                    <a class="pagebutton footerbutton width40" onclick="$('#testcheckPopup').popup('close'); return false;" 
+                                     data-role="button"  data-inline="true" data-mini="true">No, thanks</a>
+                                    <a id="sessionok" class="pagebutton footerbutton width40" onclick="changeToTraining()" 
+                                     data-role="button" data-inline="true" data-mini="true">Go to training</a>
+                                </div>
+
+                           </div>
+                           <!--    the test call popup-->
 
              </div>
              <!-- content area -->
