@@ -218,6 +218,14 @@ float:left;
     overflow: hidden;
     padding-top: 2%;
 }
+.sidebar div#sidebar_div div
+{
+    font-family: Arial;
+    font-size: 15px; 
+    text-align: left;
+    border-bottom: 0px solid 	#ccc;
+    padding: 9%;
+}
 .sidebar ul#sidebar_ul li
 {
     font-family: Arial;
@@ -516,9 +524,13 @@ padding: 2%;
     UTILITY
 ------------------------------------------------------------------------------*/
 .padcontainer{padding:1% 0%;}
+.paddthree{padding: 3% !important;}
+.nopadding{padding: 0 !important;}
 .noborder{border: 0 !important;}
 .noradius{border-radius: 0 !important;}
 .nomargin {margin: 0 !important;}
+.setcountermargin{margin-right: -75% !important;}
+.nobackground{background: none !important;}
 .margintop10 {margin-top: 10px !important;}
 .margintop20 {margin-top: 20px !important;}
 .margintop40 {margin-top: 40px !important;}
@@ -650,8 +662,6 @@ padding: 2%;
 	border-top-left-radius: 0px !important;
 }
 
-/*btn text formating Line: 2194*/
-.ui-btn-inner { font-size: 13px !important;  font-family: Arial !important; font-weight:normal !important;}
 
 /*btn text formating Lines: 884-887*/
 .ui-btn-active:visited,
@@ -685,8 +695,19 @@ padding: 2%;
 	border-top: none !important;
         border-bottom:  1px solid 	#ccc;
 	border-color: 		#ccc !important;
+        font-size: 13px !important;  font-family: Arial !important; font-weight:normal !important;
 }
-
+h1#sidebar-collapsible-link a.ui-btn-up-f {background: none !important;}
+h1#sidebar-collapsible-link a:hover.ui-btn-up-f {background: none !important;}
+h1#sidebar-collapsible-link a{padding: 4% !important;}
+h1#sidebar-collapsible-link span.ui-li-count{right: -30px !important;}
+h1#sidebar-collapsible-link span.ui-btn-inner{
+    	border-top: none !important;
+        border-bottom:  0px solid 	#ccc !important;
+	border-color: 		#ccc !important;
+        font-size: 15px !important;  font-family: Arial !important; font-weight:normal !important;
+}
+/*.ui-btn-inner-sidebar{border-bottom-width: 0px !important; font-size: 15px !important;}*/
 .ui-btn-active 
 {
 color: #000 !important;    
@@ -695,7 +716,7 @@ color: #000 !important;
 /* Spacing between collapsibles Line: 2277
 -----------------------------------------------------------------------------------------------------------*/
 .ui-collapsible-inset { margin: 1.0em 0 !important; }
-
+.ui-collapsible-inset-sidebar { margin: 0.0em 0 !important; }
 
 /* Collapsible content block styling Line: 2277
 -----------------------------------------------------------------------------------------------------------*/

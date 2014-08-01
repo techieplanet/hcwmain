@@ -20,11 +20,14 @@
                  <div id="title_txt_h" class="notextdecoration textwhite textfontarialblack20">
                          Help
                      </div>
-                 
                  <div class="header-right">
                      
-                     <div id="menu_icon_h"><img src="img/menu_icon.png"  ></div>
-
+                     <div id="menu_icon_h">
+                         <a href="#quickMenu" data-rel="popup" data-position-to="origin">
+                             <img src="img/menu_icon.png" />
+                         </a>
+                      </div>
+                     
                      <div id="profile_txt_h">
                         <a href="profile_usage.html" class="notextdecoration textwhite textfontarialblack13">Profile</a>
                         <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
@@ -32,8 +35,18 @@
 
                      <div id="notification_txt_h">
                         <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
+<<<<<<< HEAD:www/profile_usage.html
+                        <span class="noticecount">2</span> 
+                     </div>
+
+                     <div id="help_txt_h">
+                         <a href="help_user_guides.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
+                     </div>
+
+=======
                         <span class="noticecount">2</span>
                      </div>
+>>>>>>> upstream/master:www/help.html
                      <div id="home_icon">
                         <a href="index.html"><img src="img/home-icon.png" ></a>
                     </div>
@@ -51,15 +64,44 @@
                          <li data-icon="false">
                              <a href="#" onclick="getFAQ(2);return false;" class="textfontarial15">FAQ</a>
                          </li>
+<<<<<<< HEAD:www/profile_usage.html
+<!--                         <li data-icon="false" >
+                             <a href="profile_notifications.html" class="textfontarial15">Notifications<span id="sidebar-noti" class="ui-li-count">57</span></a>
+                             </li>-->
+=======
                          
                          <li data-icon="false" >
                              <a href="#" onclick="getInfo()" class="textfontarial15" >Information</a>
                          </li>
                       
               
+>>>>>>> upstream/master:www/help.html
                          <li data-icon="false">
                              <a href="#" onclick="getAbout()" class="textfontarial15">About</a>
                          </li>
+                         <li data-icon="false" >
+                            
+
+                          <div data-role="collapsible"  class=" nomargin nobackground ui-collapsible-inset-sidebar nopadding">
+                            <h1 id="sidebar-collapsible-link">Notifications<span  class="ui-li-count setcountermargin">57</span></h1>
+                            
+                              <ul data-role="listview" data-icon="false">
+                  
+                                 <li  data-icon="false" class="noborder">
+                                     <a href="#" class="textfontarial12 paddthree marginleft20">Uncompleted Training<span class="ui-li-count">27</span></a>
+                                 </li>
+                                 <li  data-icon="false" class="noborder">
+                                     <a href="#" class="textfontarial12 paddthree marginleft20">Waiting Assessment<span  class="ui-li-count">10</span></a>
+                                 </li>
+                                 <li  data-icon="false" class="noborder">
+                                     <a href="#" class="textfontarial12 paddthree marginleft20">Failed Assessment<span  class="ui-li-count">20</span></a>
+                                 </li>
+                                 
+                              </ul>
+                            
+                          </div>                     
+                          
+                        </li>
                  </ul>
                  
              </div>
