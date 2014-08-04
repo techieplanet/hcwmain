@@ -256,6 +256,32 @@ function retakeTraining(test_id, module_id){
  * Tables: training_to_module, training_session
  */
 function checkStatusForTest(tx){
+    var query = 'SELECT * FROM cthx_training_to_module ttm WHERE ' +
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.module_id NOT IN (SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE trs1.module_id=' + globalObj.moduleID + ' AND material_type=2 AND worker_id=' + globalObj.loggedInUserID + ')' +
+                 'AND ' +
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.training_id NOT IN (SELECT trs.training_id FROM cthx_training_session trs WHERE trs.module_id=' + globalObj.moduleID + ' AND status=2 AND worker_id=' + globalObj.loggedInUserID + ')))';
+             
+    console.log('check query: ' + query);
+    
+    tx.executeSql(query,[],
+                    function(tx,result){
+                        var len = result.rows.length;
+                        console.log('check length: ' + len);
+                        if(len==0){
+                                console.log('check result: go to test')
+                                changeToTest();
+                          }
+                          else{
+                              console.log('check result: go to training')
+                                $('#testcheckPopup').popup('open');
+                            }
+                    }
+             );
+}
+
+
+
+function checkStatusForTest_(tx){
 //     var query = 'SELECT status FROM cthx_training_to_module tm LEFT JOIN cthx_training_session s ON ' + 
 //                 'tm.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
 //                 ' WHERE tm.module_id='+globalObj.moduleID;
@@ -314,6 +340,7 @@ function checkStatusForTest(tx){
               }
     });
 }
+
 
 function changeToTraining(){
     $.mobile.changePage( "training_home.html?pageMode=retake");
@@ -381,15 +408,15 @@ function getGradeLongText(ptage){
     var str = '';
     if(ptage < 40){
         str = 'Wow! ' + ptage + '% is below par. You may want to retake this test<br/><br/>';
-        str += '<a style="padding:4%;" href="question.html" class="pagebutton width60" data-theme="b" data-role="button" >Retake Test</a>';
+        str += '<a href="question.html" class="pagebutton width60"  data-theme="d" data-role="button" >Retake Test</a>';
     }
     else if(ptage >= 40 && ptage < 60){
         str = 'Hmmm! ' + ptage + '% not so good. You may want to retake this test for higher scores<br/><br/>';
-        str += '<a style="padding:4%;" href="question.html" class="pagebutton width60" data-theme="b" data-role="button" >Retake Test</a>';
+        str += '<a href="question.html" class="pagebutton width60" data-theme="d"  data-role="button" >Retake Test</a>';
     }
     else if(ptage >= 60 && ptage < 80){
         str = 'Good! ' + ptage + '% is okay but you may want to retake this test for even higher scores<br/><br/>';
-        str += '<a style="padding:4%;" href="question.html" class="pagebutton width60" data-theme="b" data-role="button" >Retake Test</a>';
+        str += '<a href="question.html" class="pagebutton width60" data-theme="d" data-role="button" >Retake Test</a>';
     }
     else {
         str = 'Bravo! ' + ptage + '% is great. Good job!';

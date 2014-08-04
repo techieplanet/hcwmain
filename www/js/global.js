@@ -11,6 +11,7 @@ var globalObj = {   //begin class
     
     videoMaterial: 1,
     guideMaterial: 2,  
+    materialType:0,
     guideViewed: false,
 
     db : '',   //database object

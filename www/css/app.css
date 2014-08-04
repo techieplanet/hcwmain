@@ -420,7 +420,7 @@ padding: 2%;
 }
 .content-listing li p span
 {
-    float:  right;
+    /*float:  right;*/
 }
 .row-content div
 {
@@ -654,22 +654,22 @@ padding: 2%;
 .ui-btn-inner { font-size: 13px !important;  font-family: Arial !important; font-weight:normal !important;}
 
 /*btn text formating Lines: 884-887*/
-.ui-btn-active:visited,
+/*.ui-btn-active:visited,
 .ui-btn-active:hover,
 .ui-btn-active a.ui-link-inherit {
-	color: 					#003366 !important /*{global-active-color}*/;
-}
+	color: 					#003366 !important {global-active-color};
+}*/
 
 /*a:active button*/
-.ui-btn-active {
+/*.ui-btn-active {
         border: none !important;       
-	background: none !important /*{global-active-background-color}*/;
+	background: none !important {global-active-background-color};
 	font-weight: normal !important;
-	color: 					#003366 /*{global-active-color}*/;
-	text-shadow: 0 /*{global-active-shadow-x}*/ 0px /*{global-active-shadow-y}*/ 0 /*{global-active-shadow-radius}*/ url(img/btn-line.png) /*{global-active-shadow-color}*/ !important;
+	color: 					#003366 {global-active-color};
+	text-shadow: 0 {global-active-shadow-x} 0px {global-active-shadow-y} 0 {global-active-shadow-radius} url(img/btn-line.png) {global-active-shadow-color} !important;
 	text-decoration: none;
 	background-image: none !important;
-}
+}*/
 
 
 /* corner rounding classes
@@ -687,10 +687,10 @@ padding: 2%;
 	border-color: 		#ccc !important;
 }
 
-.ui-btn-active 
+/*.ui-btn-active 
 {
 color: #000 !important;    
-}
+}*/
 
 /* Spacing between collapsibles Line: 2277
 -----------------------------------------------------------------------------------------------------------*/
@@ -793,7 +793,7 @@ margin-left: 0px !important;
 .ui-btn {
 /*width: 15%;*/
 /*margin-left: 200px !important;*/
-margin-bottom:0 !important;
+/*margin-bottom:0 !important;*/
 }
 
 

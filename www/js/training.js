@@ -115,7 +115,7 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
   * The video directory and video file name are already stored in public vars _videoDir and _videoFile respectively
   */
 function attachVideoFile(){   
-     //return;
+     return;
      
        window.requestFileSystem(
             LocalFileSystem.PERSISTENT, 0, 
@@ -188,12 +188,12 @@ function attachVideoFile(){
  //saves a training session at start. Status is always 1 at start for incomplete
  //SESSION STATUS: 1- IN PROGESS/INCOMPLETE, 2- COMPLETED
  function saveTrainingSession(tx, sessionUserID){  
-        var fields = '"start_time","end_time","status","session_type","worker_id","module_id","training_id"';
+        var fields = '"start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id"';
         var values = '"' + getNowDate() + '",' + //start datetime
                   'NULL,' + //end datetime,
                   '"1",' + //session status - inprogress or completed
                   '"' + globalObj.sessionType + '",' +   //session type
-                  '"' + globalObj.videoMaterial + '",' +  //video constant
+                  '"' + globalObj.materialType + '",' +  //material type constant: video -1, guide -2
                   '"' + sessionUserID + '",' +  //worker id
                   '"' + globalObj.moduleID  + '",' + //module id
                   '"' + globalObj.topicID + '"';    //training (topic) id
@@ -222,6 +222,9 @@ function attachVideoFile(){
   */
  function startTrainingSession(tx){
      console.log('startTrainingSession users list: ' + globalObj.sessionUsersList);
+     //set the material type, video
+     globalObj.materialType = 1;
+     
      for(var i=0; i<globalObj.sessionUsersList.length; i++){
         console.log('outer iteration ' + i +  ': ' + globalObj.sessionUsersList[i]);
         
@@ -409,12 +412,39 @@ function loadTraining(topicID){
 }
 
 
+
 /*
  * This method tests if the logged in user has taken all the tests in the current module
+ * Or at least, taken the module training guide.
  * If so, prompt user to take test
  * Tables: training_session
  */
 function checkTestable(tx){
+    var query = 'SELECT * FROM cthx_training_to_module ttm WHERE ' +
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.module_id NOT IN (SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE trs1.module_id=' + globalObj.moduleID + ' AND material_type=2 AND worker_id=' + globalObj.loggedInUserID + ') ' +
+                 'AND ' +
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.training_id NOT IN (SELECT trs.training_id FROM cthx_training_session trs WHERE trs.module_id=' + globalObj.moduleID + ' AND status=2 AND worker_id=' + globalObj.loggedInUserID + ')))';
+             
+    console.log('check query: ' + query);
+    
+    tx.executeSql(query,[],
+                    function(tx,result){
+                        var len = result.rows.length;
+                        console.log('check length: ' + len);
+                        if(len==0){
+                                console.log('check result: go to test')
+                                $('#testPopup').popup('open');
+                          }
+                          else{
+                              console.log('check result: stay on page')
+                              //changeToTest();
+                            }
+                    }
+             );
+}
+
+
+function checkTestable_(tx){
 //    var query = 'SELECT * FROM cthx_training t LEFT JOIN cthx_training_session s ON ' +
 //                't.module_id=s.module_id AND t.training_id=s.training_id ' +
 //                'WHERE t.module_id=' + _moduleID + ' AND s.worker_id=' + _loggedInUserID;
@@ -422,9 +452,10 @@ function checkTestable(tx){
 //                't.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
 //                ' WHERE t.module_id='+globalObj.moduleID;
 
-     var query = 'SELECT status FROM cthx_training_to_module tm LEFT JOIN cthx_training_session s ON ' + 
-                'tm.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
-                ' WHERE tm.module_id='+globalObj.moduleID;
+     var query = 'SELECT * FROM cthx_training_to_module ttm WHERE ' +
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.module_id NOT IN (SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE trs1.module_id=' + globalObj.moduleID + ' AND material_type=2 AND worker_id=' + globalObj.loggedInUserID + ')' +
+                 'AND ' +
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.training_id NOT IN (SELECT trs.training_id FROM cthx_training_session trs WHERE trs.module_id=' + globalObj.moduleID + ' AND status=2 AND worker_id=' + globalObj.loggedInUserID + ')))';
 
     console.log('check query: ' + query);
     
@@ -503,11 +534,14 @@ function stopVideo() {
 
 function launchGuide(){
 //    alert('launching guide');
+    //set the material type, Guide
+     globalObj.materialType = 2;
+     
     if(globalObj.guideViewed==false){
             globalObj.guideViewed = true;
             globalObj.db.transaction(function(tx){
                             for(var i=0; i<globalObj.sessionUsersList.length; i++)
-                                saveGuideSession(tx,globalObj.sessionUsersList[i]);
+                                saveTrainingSession(tx,globalObj.sessionUsersList[i]);
                     },
                     function(error){
                         alert('Error saving guide session');
@@ -552,7 +586,7 @@ function launchGuide(){
                                     globalObj.guideViewed = true;
                                     globalObj.db.transaction(function(tx){
                                                     for(var i=0; i<globalObj.sessionUsersList.length; i++)
-                                                        saveGuideSession(tx,globalObj.sessionUsersList[i]);
+                                                        saveTrainingSession(tx, sessionUserID)(tx,globalObj.sessionUsersList[i]);
                                             },
                                             function(error){
                                                 alert('Error saving guide session');
@@ -586,16 +620,16 @@ function launchGuide(){
 
 //saves a training guide usage session
 //
- function saveGuideSession(tx, sessionUserID){  
-        var fields = '"start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id"';
-        var values = '"' + getNowDate() + '",' + //start datetime
-                  '"' + getNowDate() + '",' + //end datetime
-                  '"2",' + //session status - inprogress or completed
-                  '"' + globalObj.sessionType + '",' +   //session type
-                  '"' + globalObj.guideMaterial + '",' +  //guide constant
-                  '"' + sessionUserID + '",' +  //worker id
-                  '"' + globalObj.moduleID  + '",' + //module id
-                  '"' + globalObj.topicID + '"';    //training (topic) id
-        
-        DAO.save(tx, 'cthx_training_session', fields, values);      
-  }
+// function saveGuideSession(tx, sessionUserID){  
+//        var fields = '"start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id"';
+//        var values = '"' + getNowDate() + '",' + //start datetime
+//                  '"' + getNowDate() + '",' + //end datetime
+//                  '"2",' + //session status - inprogress or completed
+//                  '"' + globalObj.sessionType + '",' +   //session type
+//                  '"' + globalObj.guideMaterial + '",' +  //guide constant
+//                  '"' + sessionUserID + '",' +  //worker id
+//                  '"' + globalObj.moduleID  + '",' + //module id
+//                  '"' + globalObj.topicID + '"';    //training (topic) id
+//        
+//        DAO.save(tx, 'cthx_training_session', fields, values);      
+//  }

@@ -33,9 +33,9 @@ $(document ).delegate("#mainpage", "pageinit", function() {
  *  this function is like a gateway for tests. it forcess the user to login IF they aren't.
  */
 function accessTests(){
-    //globalObj.loggedInUserID = 1;
-    //globalObj.sessionType=1;
-    //globalObj.sessionUsersList = [globalObj.loggedInUserID];
+    globalObj.loggedInUserID = 1;
+    globalObj.sessionType=1;
+    globalObj.sessionUsersList = [globalObj.loggedInUserID];
     
     if(globalObj.loggedInUserID>0)
         //mode 1 opens summary, mode 2 opens certificate
