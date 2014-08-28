@@ -13,68 +13,15 @@
         <div id="traininghomepage" data-role="page" data-theme="f" class="fullheight"  > 
 
              <div class="header"> 
-                 <div id="logo_icon_h"><img src="img/logo_icon.png" ></div> 
-                 <div id="title_txt_h" class="notextdecoration textwhite textfontarialblack20">
-                         Training
-                     </div>
-                 <div class="header-right">
-                     
-                     <div id="menu_icon_h">
-                         <a href="#quickMenu" data-rel="popup" data-position-to="origin">
-                             <img src="img/menu_icon.png" />
-                         </a>
-                      </div>
-
-                     <div id="profile_txt_h">
-                        <a href="profile_usage.html" class="notextdecoration textwhite textfontarialblack13">Profile</a>
-                        <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
-                    </div>
-
-                     <div id="notification_txt_h">
-                        <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
-                        <span class="noticecount">2</span> 
-                     </div>
-                     
-                     <div id="help_txt_h">
-                         <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
-                     </div>
-                     
-                     <div id="home_icon">
-
-                        <a href="index.html"><img src="img/home-icon.png" ></a>
-                     </div>
-                     
-                 </div>     
-                 
-                 <!--context menu-->
-                    <div data-role="popup" id="quickMenu" >
-                        <ul id="choicelist" data-role="listview" >
-                            <li data-icon="false"><a href="index.html" id="main">Main Menu </a></li>
-                            <li data-icon="false"><a href="training_home.html">Training</a></li>
-                            <li data-icon="false"><a href="index.html">Take Test</a></li>
-                            <li data-icon="false"><a href="index.html">Job Aids</a></li>
-                            <li data-icon="false"><a href="index.html">Standing Order</a></li>
-                            
-                            <li id="quick-login" data-icon="false"><a href="login.html" id="gator">Log In</a></li>
-                            <li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
-                            <li data-icon="false"><a href="" id="quit">Quit</a></li>
-
-                        </ul>
-                    
-                 <!--context menu-->
-                 
-             </div>
+                <!--insert the header html-->
              </div>
 
-            
             <div id="content" data-role="content" class="fullheight" style="/*border:0px solid #000;padding-top: 70px !important;*/"  > 
                 
                 
                 
              <div id="sidebar" class="sidebar fullheight">
-                 <ul id="sidebar_ul">
-                  
-                 </ul>
+                 <ul id="sidebar_ul"></ul>
              </div>
                 
 
@@ -82,23 +29,21 @@
              <div class="content-area fullheight">
                  
                  <div class="c-header">
-                     <div class="c-title">Emergency Obstetric Care </div>
+                     <div class="c-title">Select Training Category </div>
                  </div>
   
 
                  <div class="c-list">
                      
-                     <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                        <li data-role="list-divider">Modules</li>   
+                     <ul  data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop hidden"> 
+                        <li id="context-bar" data-role="list-divider">Modules</li>   
                      </ul>  
             
                      <div class="focus-area">
                          
-                         
                             <div id="collapsible_content" data-role="collapsible-set" class="">
                                 Select a category on the left to show its modules here.
                             </div>
-                         
                          
                     </div>
                     <!--focus area-->
@@ -145,6 +90,22 @@
                 <!--the session selection popup--> 
                 
                 
+                
+                <!--the general two buttons popup--> 
+                <div class="twobuttons noborder" data-role="popup" id="twobuttonspopup" data-overlay-theme="f" data-dismissible="false">
+
+                    <div class="popup_header"></div>
+
+                    <div class="popup_body">
+                        <p class="statusmsg"></p>
+                    </div>
+
+                    <div class="popup_footer">
+                        <a id="cancelbutton" class="pagebutton footerbutton width40" data-role="button"  data-inline="true" data-mini="true">Cancel</a>
+                        <a id="okbutton" class="pagebutton footerbutton width40" data-role="button" data-inline="true" data-mini="true">OK</a>
+                    </div>
+                </div>
+                <!--the confirm reset popup--> 
                      
          </div>  
             <!--content-->

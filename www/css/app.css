@@ -70,6 +70,19 @@ html{height: 100%;}
     margin-left: 25px;
     float:left;   
 }
+
+.header #pageheading{
+    width: 28%;
+    margin-top: 5px;
+    padding: 5px 10px;
+    float: left;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    font-family: Arial;
+    letter-spacing: 1px;
+}
+
 .header #title_txt_h
 {
     color: #fff;
@@ -92,18 +105,23 @@ html{height: 100%;}
     float: right;
     margin: 1.5% 1% !important;
     width: 23%;
-    background: url(../img/notification_icon.png) center right no-repeat;
+    /*background: url(../img/notification_icon.png) center right no-repeat;*/
 }
 .header #notification_icon_h
 {
-    margin-top: 15px;
+/*    margin-top: 15px;
     width: 5%;
-    float:left;
+    float:left;*/
 }
+
 .noticecount {
     float: right;
     font-weight: bold;
     margin-right: 5%;
+    background: #900;
+    border-radius: 7px;
+    padding: 2px 5px 1px;
+    font-size: 12px;
 }
 
 .header #profile_txt_h
@@ -270,7 +288,7 @@ float:left;
 {
     font-family: Arial;
     font-size: 20px;
-    width:85%;
+    width:99%;
     float: left;
     margin-bottom: 5px;
 }
@@ -431,7 +449,7 @@ padding: 2%;
 }
 .row-content div:last-child
 {
-   border-bottom: 0;
+   /*border-bottom: 0;*/
 }
 .row-content div p
 {
@@ -465,13 +483,32 @@ padding: 2%;
     
 }
 
+input.error {
+    /*background: pink;*/
+    /*color: white !important;*/
+    /*border: red;*/
+}
+label.error {
+    color: red;
+    margin-left: 5px;
+}
+
+select{
+    height: 35px;
+    width: 40%;
+    padding: 5px;
+}
+input[type="text"]{
+    height: 35px;
+}
+
 /*Footer*/
 .footer {
    
     background-color:#003366;
     border: 1px solid #006666;
     width: 100%;
-    /*height: 8%; /*49px;*/
+    min-height: 50px;
     position:absolute;
     margin-top: 0px !important;
     bottom: 0;  
@@ -516,10 +553,19 @@ padding: 2%;
     UTILITY
 ------------------------------------------------------------------------------*/
 .padcontainer{padding:1% 0%;}
+.nobackground{background: none !important;}
+.setcountermargin{margin-right: -5% !important;}
+.setcountermargin2 {margin-right: 12% !important;}
+.padtwo{padding: 2% !important;}
+.padthree{padding: 3% !important;}
+.padfour{padding: 4% !important;}
+.paddthree{padding: 3% !important;}
+.nopadding{padding: 0 !important;}
 .noborder{border: 0 !important;}
 .noradius{border-radius: 0 !important;}
-.nomargin {margin: 0 !important;}
+.nomargin{ margin: 0 !important;}
 .margintop10 {margin-top: 10px !important;}
+.margintop15 {margin-top: 15px !important;}
 .margintop20 {margin-top: 20px !important;}
 .margintop40 {margin-top: 40px !important;}
 .marginbottom10 {margin-bottom: 10px !important;}
@@ -530,8 +576,11 @@ padding: 2%;
 .marginright10 {margin-right: 10px !important;}
 .marginleft10 {margin-left: 10px !important;}
 .marginleft20 {margin-left: 20% !important;}
+.marginleft20px {margin-left: 20px !important;}
 .marginright20 {margin-right: 20px !important;}
 .hidden {display: none !important;}
+.block{display: block;}
+.inlineblock{display: inline-block;}
 .bold {font-weight: bold !important;}
 .uppercase {text-transform: uppercase; }
 .date {color:#ccc; font-size: 10px !important;}
@@ -553,6 +602,7 @@ padding: 2%;
 .textlemon{color: #009900 !important;}
 .textccc{color: #ccc !important;}
 .text999{color: #999 !important;}
+.error { color:red; }
 
 
 /*******    ALIGNMENT   *******/
@@ -568,12 +618,37 @@ padding: 2%;
 /*******    CONTROLS   *******/
 .marginb10 {margin: -10px !important;}
 
+.forgot{
+    text-decoration: underline;
+    font-weight: normal !important;
+}
+
 .pagebutton{
     margin:auto !important;
     background: #036 !important;
     color: #fff !important;
     border: 0 !important;
     border-radius: 0!important;
+    text-decoration: none;
+}
+.pagebuttonpadding{
+    padding: 5px 10px;
+}
+
+.actionbutton{
+    border: 0;
+    color: white;
+    padding: 4px 10px;
+    background: green;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: -5px;
+}
+
+.contextbar{
+    background: #036;
+    color: #fff;
+    padding: 1%;
 }
 
 .footerbutton{
@@ -587,10 +662,12 @@ padding: 2%;
 
 .width10{width: 10% !important;}
 .width20{width: 20% !important;}
+.width25{width: 25% !important;}
 .width30{width: 30% !important;}
 .width40{width: 40% !important;}
 .width50{width: 50% !important;}
 .width60{width: 60% !important;}
+.width70{width: 70% !important;}
 .width90{width: 90% !important;}
 .width95{width: 95% !important;}
 
@@ -611,6 +688,14 @@ padding: 2%;
     font-weight:bold;
 }
 
+.popup_footer {
+    background: #036;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    font-weight:bold;
+}
+
 .popup_body{
     background: #fff !important;
     padding: 5% !important;
@@ -624,12 +709,49 @@ padding: 2%;
     min-width: 100px;
 }
 
+.wizardbigtext{
+    padding: 10% 2% 5%;
+    font-size: 20px !important; 
+    font-weight: bold !important; 
+}
 
 
-#choicelist { width: 100%;}
-#choicelist li {border-bottom: 1px solid #ccc; }
+#choicelist { width: 100%; list-style-type: none;}
+#choicelist li {border-bottom: 1px solid #ccc; list-style-type: none;}
 #choicelist li label{border-radius:0 !important;}
 #choicelist li label span.ui-btn-inner {border:0 !important;}
+
+#choicelist2 { width: 100%; list-style-type: none;}
+#choicelist2 li {border-bottom: 1px solid #ccc; padding: 10px 0; list-style-type: none;}
+#choicelist2 li label{border-radius:0 !important; display: block;}
+#choicelist2 li label input[type="checkbox"],#choicelist2 li label input[type="radio"] {
+    float: right; margin-top: 1.4%; 
+}
+#choicelist2 li label span.ui-btn-inner {border:0 !important;}
+
+.lockbutton{
+    background: url(../img/lock.png)  !important;
+}
+
+/* the notifications sidebar area */
+h1#sidebar-collapsible-link a.ui-btn-up-f {background: none !important;}
+h1#sidebar-collapsible-link a:hover.ui-btn-up-f {background: none !important;}
+h1#sidebar-collapsible-link a{padding: 0 0 0 9% !important;}
+h1#sidebar-collapsible-link span.ui-li-count{}
+h1#sidebar-collapsible-link span.ui-btn-inner{
+    	border-top: none !important;
+        border-bottom:  0px solid 	#ccc !important;
+        border-color: 		#ccc !important;
+        font-size: 15px !important;  
+        font-family: Arial !important; 
+        font-weight:normal !important;
+        padding-left: 0px !important;
+}
+h1#sidebar-collapsible-link span.ui-btn-inner .ui-icon {display:none !important;}
+#notification_li { padding:5px 0 5px 0; }
+#notification_li div.ui-collapsible-inset { margin: 0 !important; }
+h1#sidebar-collapsible-link span.ui-btn-text {display: block !important;}
+
 
 /*
     OVERRIDES
@@ -650,8 +772,7 @@ padding: 2%;
 	border-top-left-radius: 0px !important;
 }
 
-/*btn text formating Line: 2194*/
-.ui-btn-inner { font-size: 13px !important;  font-family: Arial !important; font-weight:normal !important;}
+
 
 /*btn text formating Lines: 884-887*/
 .ui-btn-active:visited,
@@ -685,11 +806,16 @@ padding: 2%;
 	border-top: none !important;
         border-bottom:  1px solid 	#ccc;
 	border-color: 		#ccc !important;
+        font-size: 13px !important;  
+        font-family: Arial !important; 
+        font-weight:normal !important;
 }
+
+
 
 .ui-btn-active 
 {
-color: #000 !important;    
+/*color: #000 !important;*/    
 }
 
 /* Spacing between collapsibles Line: 2277

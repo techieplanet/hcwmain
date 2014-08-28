@@ -44,10 +44,10 @@
                         <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
                     </div>
 
-                     <div id="notification_txt_h">
-                        <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
+<!--                     <div id="notification_txt_h" >
+                        <a href="" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
                         <span class="noticecount">2</span>
-                     </div>
+                     </div>-->
                      <div id="help_txt_h">
                          <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
                      </div>
@@ -73,11 +73,8 @@
                      </li>
                      <li>
                          <a id="grouptab" href="#" >Group Session</a>
-                         <a id="regtab" class="hidden" href="registration.html" >Register</a>
                      </li>
                  </ul>
-
-                 
              </div>
 
 
@@ -86,7 +83,7 @@
                  
                  
                  <div class="c-header">
-                     <div class="c-title">HCW LMS LOGIN </div>
+                     <div class="c-title"> </div>
                  </div>
   
 
@@ -118,7 +115,14 @@
                                 
                                 <li class="noborder" data-icon="false">
                                     <div data-role="fieldcontain" class="fieldrow nomargin">
-                                            <a id="login" class="pagebutton" onclick="" data-theme="d" data-role="button"  data-inline="true">Login</a>
+                                            <a id="login" class="pagebutton" onclick="login('')" data-theme="d" data-role="button"  data-inline="true">Login</a>
+                                    </div>
+                                </li>
+                                
+                                  <li class="noborder" data-icon="false">
+                                    <div data-role="fieldcontain" class="fieldrow nomargin">
+                                        <!--<a class="forgot" onclick="processForgot()" data-theme="d"  data-inline="true">Forgot Password</a>-->
+                                        <a id="login" class="pagebutton" onclick="login('')" data-theme="d" data-role="button"  data-inline="true">Login</a>
                                     </div>
                                 </li>
 
@@ -146,7 +150,7 @@
                     <div class="popup_header">HCW LMS</div>
 
                     <div class="popup_body" >
-                        <p class="">Wrong username or password. Try again.</p>
+                        <p id="loginmsg" class="">Wrong username or password. Try again.</p>
                     </div>
                     
                     <div class="popup_header">
@@ -156,6 +160,25 @@
                     
                 </div>
                 <!--this is the wrong login popup-->
+                
+                
+               
+                <!--the confirm reset popup--> 
+                <div class="twobuttons noborder" data-role="popup" id="twobuttonspopup" data-overlay-theme="f" data-dismissible="false">
+
+                    <div class="popup_header"></div>
+
+                    <div class="popup_body">
+                        <p class="statusmsg"></p>
+                    </div>
+
+                    <div class="popup_footer">
+                        <a id="cancelbutton" class="pagebutton footerbutton width40" data-role="button"  data-inline="true" data-mini="true">Cancel</a>
+                        <a id="okbutton" class="pagebutton footerbutton width40" data-role="button" data-inline="true" data-mini="true">OK</a>
+                    </div>
+
+                </div>
+                <!--the confirm reset popup--> 
                 
                 
                 

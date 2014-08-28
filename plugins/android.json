@@ -15,6 +15,22 @@
                         {
                             "xml": "<feature name=\"FileOpener\"><param name=\"android-package\" value=\"com.phonegap.plugins.fileopener.FileOpener\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"SMSPlugin\"><param name=\"android-package\" value=\"info.asankan.phonegap.smsplugin.SmsPlugin\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Sms\"><param name=\"android-package\" value=\"org.apache.cordova.plugin.sms.Sms\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -24,6 +40,20 @@
                     "/*": [
                         {
                             "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
+                            "count": 1
+                        }
+                    ],
+                    "/manifest": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.SEND_SMS\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-feature android:name=\"android.hardware.telephony\" android:required=\"false\" />",
                             "count": 1
                         }
                     ]
@@ -37,6 +67,15 @@
         },
         "com.phonegap.plugins.fileopener": {
             "PACKAGE_NAME": "com.tp.hcwdeploy"
+        },
+        "org.apache.cordova.dialogs": {
+            "PACKAGE_NAME": "com.tp.hcwdeploy"
+        },
+        "org.apache.cordova.plugin.sms": {
+            "PACKAGE_NAME": "com.tp.hcwdeploy"
+        },
+        "org.apache.cordova.network-information": {
+            "PACKAGE_NAME": "com.tp.mtrapp"
         }
     },
     "dependent_plugins": {}

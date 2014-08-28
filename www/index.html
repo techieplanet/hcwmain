@@ -14,154 +14,65 @@
         <script src="cordova.js"></script> 
         <script src="js/jquery-1.10.2.min.js"></script>
         <script src="js/jquery.mobile-1.3.2.min.js"></script>
+        <script src="js/jquery.validate.min.js"></script>
         <script src="js/global.js"></script>
         <script src="js/DAO.js"></script> 
         <script src="js/populator.js"></script>
-        <script src="js/functions.js"></script> 
         <script src="js/printdb.js"></script> 
-        <script src="js/worker.js"></script>
+        <!--<script src="js/worker.js"></script>-->
 
         
         <!--corresponding js files for .html files-->
         <script src="js/home.js"></script> 
+        <script src="js/firstuse.js"></script> 
         <script src="js/traininghome.js"></script> 
         <script src="js/login.js"></script> 
         <script src="js/training.js"></script> 
         <script src="js/jobaids.js"></script> 
         <script src="js/faq.js"></script> 
         <script src="js/help.js"></script> 
+        <script src="js/notifications.js"></script>
         <script src="js/question.js"></script> 
         <script src="js/test.js"></script>
         <script src="js/profile.js"></script>
         <script src="js/reg.js"></script>
-        <script src="js/notifications.js"></script>
+        <script src="js/sms.js"></script>
+        <script src="js/admin.js"></script>
+        <script src="js/forgot.js"></script>
         
+        <script src="js/functions.js"></script> 
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     </head>
 
     <body>                        
         
         <div data-role="page" id="mainpage" data-theme="f" class="fullheight"  > 
              <div class="header"> 
-                 <div id="logo_icon_h"><img src="img/logo_icon.png" ></div> 
-                 
-                 <div class="header-right">
-                     
-                     <div id="menu_icon_h">
-                         <a href="#quickMenu" data-rel="popup" data-position-to="origin">
-                             <img src="img/menu_icon.png" />
-                         </a>
-                      </div>
-
-                     <div id="profile_txt_h">
-                        <a href="" onclick="accessProfile();return false;" class="notextdecoration textwhite textfontarialblack13">Profile</a>
-                        <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
-                    </div>
-
-                     <div id="notification_txt_h">
-                        <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
-                        <span class="noticecount">2</span> 
-                     </div>
-                     <div id="help_txt_h">
-                         <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
-                     </div>
-                 </div>     
-                 
-                 <!--context menu-->
-                    <div data-role="popup" id="quickMenu" >
-                        <ul id="choicelist" data-role="listview" >
-                            <li data-icon="false"><a href="index.html" id="main">Main Menu </a></li>
-                            <li data-icon="false"><a href="training_home.html">Training</a></li>
-                            <li data-icon="false"><a href="test.html">Take Test</a></li>
-                            <li data-icon="false"><a href="job_aids.html">Job Aids</a></li>
-                            <li data-icon="false"><a href="index.html">Standing Order</a></li>
-                            
-                            <li id="quick-login" data-icon="false"><a href="login.html" id="gator">Log In</a></li>
-                            <li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
-                            <li data-icon="false"><a href="" id="quit">Quit</a></li>
-
-                        </ul>
-                    </div>
-                 <!--context menu-->
-                 
+                 <!--insert header markup--> 
              </div> 
 
             
             <div id="content" data-role="content" class="fullheight" > 
-
-             <div class="home-menu height60">
-                 
-                        <a class="iconblock1" href="training_home.html" >
-                            <img src="img/training-video-icon.png" />
-                            <p>Training</p>
-                        </a>
-
-                        <a class="iconblock1" href="#" onclick="accessTests()" >
-                            <img src="img/test-icon.png" />
-                            <p>Take Test (TT)</p>
-                        </a>
-
-                        <a class="iconblock1" href="job_aids.html" >
-                            <img src="img/job-aids-icon.png" />
-                            <p>Job Aids (JA)</p>
-                        </a>
-
-                        <a class="iconblock1" href="#" >
-                            <img src="img/standing-order-icon.png" />
-                            <p><br/>Standing Order</p>
-                        </a> 
-             </div>
-
-        
-                <div class="home-menu height40">
-
-                    <a class="iconblock2" href="#" onclick="accessProfile();return false;" >
-                        <img src="img/my-profile-icon.png" />
-                        <p>My Profile</p>
-                    </a>
-                    <a class="iconblock2" href="registration_personal_information.html" >
-                        <img src="img/reg-icon.png" />
-                        <p>Registration</p>
-                    </a>
-                    <a class="iconblock2" href="help.html" >
-                        <img src="img/help-icon.png" />
-                        <p>Help</p>
-                    </a>
-
-                    <a class="iconblock2" href="faq.html" >
-                        <img src="img/faq-icon.png" />
-                        <p>Frequently Asked Questions</p>
-                    </a>
-                </div>  
+                <form class="fullheight" name="wizardForm" id="wizardForm" action="" method="post">
+                    <!--<div class="dummyholder"></div>-->
+                </form>
                 
+                    <!--first time popup
+                    <div class="noborder" data-role="popup" id="drivePopup" data-overlay-theme="f" data-dismissible="false">
+                       <div class="popup_header">mTrapp</div>
 
-                 <!--the session selection popup -->
-                <div class="noborder" data-role="popup" id="sessionPopup2"  data-overlay-theme="a" data-position-to="window" data-dismissible="false">
-                    <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
-                    <div class="popup_header">Select Session Type</div>
+                       <div class="popup_body" >
+                           <p class="" id="wizardarea">
+                           </p>
+                       </div>
 
-                    <div class="margintop10 marginbottom10 popup_body" >
-                        <ul id="choicelist" data-role="listview"  data-theme="none">      
-                            <li class="" data-icon="false">
-                                <input class="" type="radio" name="session-choice" id="individual" value="individual" data-iconpos="right" />
-                                <label class="" data-role="button" for="individual">Individual Session</label>
-                            </li>
-                            
-                            <li class="" data-icon="false">
-                                <label for="group">Group Session</label>
-                                <input type="radio" name="session-choice" id="group" value="group" data-iconpos="right" />
-                            </li>
-                        </ul>                      
-                    </div>
-                    
-                    <div class="popup_header">
-                        <a class="pagebutton footerbutton" data-rel="back" 
-                         data-role="button"  data-inline="true" data-mini="true">Cancel</a>
-                        <a id="sessionok" class="pagebutton footerbutton" onclick="sessionPick()" 
-                         data-role="button" data-inline="true" data-mini="true">OK</a>
-                    </div>
-                    
-                </div>
-                <!--the session selection popup -->
+                       <div class="popup_footer">
+                            <a class="pagebutton footerbutton width40" onclick="$('#testcheckPopup').popup('close'); return false;" 
+                             data-role="button"  data-inline="true" data-mini="true">No, thanks</a>
+                        </div>
+                   </div>
+                       first time popup-->
                 
          </div>  
             <!--content-->
@@ -179,9 +90,8 @@
                         <div>Adebayo A. Salako</div>
                         <div>08012345678 </div> 
                     </div> 
-         </div>  
-            
-            
+         </div>           
+              
         </div>
         <!--page-->
         

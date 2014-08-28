@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+        <title>HCW LMS</title>
+
+        
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
+        <!--<link rel="stylesheet" href="css/jquery.mobile.theme-1.3.2.css">-->
+        <link rel="stylesheet" href="css/jquery.mobile-1.3.2.css">
+
+        <!--general use-->
+        <script src="cordova.js"></script> 
+        <script src="js/jquery-1.10.2.min.js"></script>
+        <script src="js/jquery.mobile-1.3.2.min.js"></script>
+        <script src="js/global.js"></script>
+        <script src="js/DAO.js"></script> 
+        <script src="js/populator.js"></script>
+        <script src="js/functions.js"></script> 
+        <script src="js/printdb.js"></script> 
+
+        
+        <!--corresponding js files for .html files-->
+        <script src="js/home.js"></script> 
+        <script src="js/traininghome.js"></script> 
+        <script src="js/login.js"></script> 
+        <script src="js/training.js"></script> 
+        <script src="js/jobaids.js"></script> 
+        <script src="js/faq.js"></script> 
+        <script src="js/help.js"></script> 
+        <script src="js/question.js"></script>
+        <script src="js/test.js"></script>
+        
+    </head>
+    <body >                        
+        
+        <div id="forgotpage" data-role="page" data-theme="f" class="fullheight"  > 
+            
+             <div class="header"> 
+                 <!--insert header markup-->
+             </div> 
+
+            
+            <div id="content" data-role="content" class="fullheight"  > 
+
+             <div class="content-question fullheight" style="display: block; margin: auto;">
+                 
+                 <form class="fullheight" name="forgotForm" id="forgotForm" action="" method="post">
+                 
+                    <div class="c-header">
+                        <div class="c-title">Password Recovery</div>
+                    </div>
+  
+
+                        <div class="c-list">
+
+                            <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
+                                <li id="question_number" data-role="list-divider">Recovery Information</li>   
+                            </ul>  
+
+                            <div  class="focus-area">
+
+
+
+                                <!--this is the status popup-->
+                               <div class="noborder" data-role="popup" id="statusPopup" data-overlay-theme="f" data-dismissible="false">
+                                  <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
+                                  <div class="popup_header">HCW LMS</div>
+
+                                  <div class="popup_body" >
+                                      <p class="statusmsg textcenter"></p>
+                                  </div>
+
+                                  <div class="popup_footer">
+                                      <a href="" id="okbutton" class="pagebutton footerbutton width90" onclick="" 
+                                       data-role="button"  data-inline="true" data-mini="true">OK</a>
+                                  </div>
+                              </div>
+                              <!--this is the status popup-->
+
+                        </div> 
+
+
+                        </div>
+                 </form>
+
+             </div>
+             <!-- content area -->
+        
+                      
+                     
+         </div>  
+            
+            
+            
+         <div class="footer"> 
+
+         </div>  
+            
+            
+            
+        </div>
+        
+    </body>
+</html>

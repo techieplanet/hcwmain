@@ -1,3 +1,88 @@
+function logUserIn(id){
+      globalObj.loggedInUserID = id;
+      globalObj.sessionType=id;
+      globalObj.sessionUsersList = [globalObj.loggedInUserID];
+}
+
+
+function accessStandingOrder(orderFileName){
+    launchPDF(globalObj.jobaidsDir, orderFileName, 'standing_order');
+}
+
+/*
+ *  this function is like a gateway for tests. it forcess the user to login IF they aren't.
+ */
+function accessTests(){
+//    globalObj.loggedInUserID = 1;
+//    globalObj.sessionType=1;
+//    globalObj.sessionUsersList = [globalObj.loggedInUserID];
+    
+    if(globalObj.loggedInUserID>0)
+        //mode 1 opens summary, mode 2 opens certificate
+        $.mobile.changePage('test.html?pagemode=1');  
+    else{
+        globalObj.loginMode = 'test';
+        $.mobile.changePage( "login.html?pagemode=1" );
+    }
+}
+
+function accessProfile(){
+//    globalObj.loggedInUserID = 1;
+//    globalObj.sessionType=1;
+//    globalObj.sessionUsersList = [globalObj.loggedInUserID];
+    
+    if(globalObj.loggedInUserID>0)
+        $.mobile.changePage('profile.html');  
+    else{
+        globalObj.loginMode = 'profile';
+        $.mobile.changePage( "login.html?pagemode=1" );
+    }
+}
+
+function accessAdminArea(){
+    if(globalObj.loggedInUserID == adminObj.adminID){
+        $.mobile.changePage('admin.html');  
+    }
+    else{
+        globalObj.loginMode = 'admin';
+        $.mobile.changePage( "login.html?pagemode=1" );
+    }
+}
+
+function resetGlobals(){
+    globalObj.categoryID = 0;
+    globalObj.moduleID = 0;
+    globalObj.topicID = 0;
+    globalObj.testID = 0;
+    globalObj.questionID = 0;
+}
+
+function logout(){
+    //console.log('inside logout');
+    //$('#quickMenu').popup('close');
+    //$('#logoutpopup').popup('open');
+    globalObj.loggedInUserID = -1;
+    globalObj.sessionType = 0;
+    globalObj.sessionUsersList = [];
+    globalObj.loginMode = '';
+    globalObj.db.transaction(dropView);
+    
+    $.mobile.changePage( "index.html" );
+    
+}
+
+function quitApp(){
+    navigator.notification.confirm(
+        'Are you sure you want to quit?', // message
+         function(index){
+             if(index==2) 
+                 navigator.app.exitApp(); // callback to invoke with index of button pressed
+         },            
+         globalObj.appName,           // title
+        ['No','Yes']     // buttonLabels
+    );
+}
+
 function clearInputs(){
     $('input[type="text"],input[type="password"]').val("");
 }
@@ -6,6 +91,18 @@ function capitalizeFirstLetter(s)
 {
     var str = s.toString();
     return str.substring(0,1).toUpperCase() + str.substring(1,str.length);
+}
+
+function getFirstLetter(s)
+{
+    var str = s.toString();
+    return str.substring(0,1);
+}
+
+function getNameInitial(s){
+    var str = s.toString();
+    if(s.length>0)
+        return str.substring(0,1).toUpperCase() + '.';
 }
 
 function getNowDate(){
@@ -21,10 +118,90 @@ function getNowDate(){
     return now;
 }
 
+/*
+ * Select the admin user id to the global var
+ */
+//function setUpAdminObject(){
+//    globalObj.db.transaction(function(tx){
+//        var query = 'SELECT * from cthx_health_worker WHERE supervisor=1'
+//        tx.executeSql(query,[],function(tx,result){
+//            if(result.rows.length>0){
+//                adminObj.adminID = result.rows.item(0)['worker_id'];
+//            }
+//        })
+//    });
+//}
 
-function launchPDF(dirname,filename){
-    console.log('launching PDF: ' + filename);                             
-    //counterUpdate('job_aids');
+
+function setUpSettingsObject(){
+    var query = 'SELECT * FROM cthx_settings WHERE id=1';
+    globalObj.db.transaction(function(tx){
+        tx.executeSql(query,[],function(tx,result){
+            var row = result.rows.item(0);
+            settingsObj = JSON.parse(row['jsontext']);
+            console.log('setSettingsVars: ' + JSON.stringify(settingsObj));
+        })
+    });
+}
+
+function setUpAdminObject(){
+    var query = 'SELECT * FROM cthx_health_worker WHERE supervisor=1';
+    globalObj.db.transaction(function(tx){
+        tx.executeSql(query,[],function(tx,result){
+            var row = result.rows.item(0);
+            adminObj.adminID = row['worker_id'];
+            adminObj.firstname = row['firstname'];
+            adminObj.middlename = row['middlename'];
+            adminObj.lastname = row['lastname'];
+            adminObj.phone = row['phone'];
+            adminObj.email = row['email'];
+            adminObj.qualification = row['qualification'];
+            adminObj.username = row['username'];
+            adminObj.password = row['password'];
+            adminObj.gender = row['cadre'];
+            adminObj.cadreID = row['cadre_id'];
+            adminObj.supervisor = row['supervisor'];
+            
+            console.log('admin object: ' + JSON.stringify(adminObj));
+        })
+    });
+}
+
+
+function createTwoButtonPopup(pageid){
+    //remove the popup from dom if it exists
+    var parent = $('#'+pageid + ' #twobuttonspopup').parent();
+    var child = $('#twobuttonspopup');
+    if( parent.length != 0){ 
+        //then element exists, remove it
+        parent.removeChild(child)
+    }
+    
+    //create the popup
+    var html='';
+    html += '<div class="popup-box" data-role="popup" id="twobuttonspopup" data-overlay-theme="f" data-dismissible="false">';
+
+    html +=     '<div class="popup_header"></div>';      //------------------- 1
+
+    html +=         '<div class="popup_body" ><p class="statusmsg"></p></div>';  //------------------- 2
+
+    html +=     '<div class="popup_footer">' +
+                    '<a id="cancelbutton" href="#" class="pagebutton footerbutton width40" data-role="button"  data-inline="true" data-mini="true">Cancel</a>' +
+                    '<a id="okbutton" href="#" class="pagebutton footerbutton width40" data-role="button" data-inline="true" data-mini="true">OK</a>' +
+                '</div>';
+
+    html += '</div>';
+        
+        
+    //append to page
+    $('#'+pageid).append(html);
+    
+}
+
+
+function launchPDF(dirname,filename,counter_key){
+    //console.log('launching PDF: ' + filename);                             
+    //console.log('dirname: ' + dirname,'filename: ' + filename,'counter_key: ' + counter_key);
     
     window.requestFileSystem(
             LocalFileSystem.PERSISTENT, 0, 
@@ -33,7 +210,7 @@ function launchPDF(dirname,filename){
                 //alert('root: ' + fileSystem.root.fullPath);
                 
                 var filePath = dirname + "/" + filename;
-                //alert('Guide file filePath: ' + filePath);
+                //alert('PDF file filePath: ' + filePath);
                 
                  /*
                     * This method (getFile) is used to look up a directory. It does not create a non-existent direcory.
@@ -48,6 +225,9 @@ function launchPDF(dirname,filename){
                             if(!entry.isFile) return;
                             //window.open(entry.toURL(), '_blank', 'location=yes');
                             window.plugins.fileOpener.open(entry.toURL());
+                            
+                            //update the counts table
+                            counterUpdate(counter_key);  //found on jobaids.js
                              
                         },
                         function(error){
@@ -62,4 +242,117 @@ function launchPDF(dirname,filename){
             }
           );
               
+}
+
+function setHeaderNotificationCount(pageid){   
+    //if logged in and there is a notification to attend to
+    if(globalObj.loggedInUserID>0 && globalObj.totalNotificationCount>0){
+        $('#' + pageid + ' #notification_txt_h').removeClass('hidden');
+        console.log('setHeaderNotificationCount: ' + globalObj.totalNotificationCount);
+        $('.noticecount').html(globalObj.totalNotificationCount);
+    }
+    else{
+        $('#' + pageid + ' #notification_txt_h').addClass('hidden');
+    }
+}
+
+
+function createHeader(pageid,pageheading){    
+    //logo
+    var html =      '<div id="logo_icon_h"><img src="img/logo_icon.png" ></div>' ;
+
+    //page title/heading
+    html +=       '<div id="pageheading">' + pageheading + '</div>' ;
+    
+    //if(globalObj.firstTimeUse == false){
+       html +=      '<div class="header-right"> ' +
+                        
+                        //quick menu
+                        '<div id="menu_icon_h">' +
+                            '<a href="#quickMenu" data-rel="popup" data-position-to="origin">' +
+                                '<img src="img/menu_icon.png" />' +
+                            '</a>' +
+                         '</div>' + 
+
+                         //profile
+                        '<div id="profile_txt_h">' +
+                            '<a href="" onclick="accessProfile();return false;" class="notextdecoration textwhite textfontarialblack13">Profile</a>' +
+                        '</div>' +
+                     
+                        //notification
+                        '<div id="notification_txt_h">' +
+                            '<a href="profile.html?pageMode=1" class="notextdecoration textwhite textfontarialblack13">Notifications</a>' +
+                            '<span id="total_noti" class="noticecount ui-li-count"></span>' +
+                        '</div>' +
+                     
+                        //help
+                        '<div id="help_txt_h">' +
+                            '<a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>' +
+                        '</div>' +
+                        
+                        '<div id="home_icon">' +
+                            '<a href="index.html"><img src="img/home-icon.png" ></a>' +
+                        '</div>' +
+                      '</div>';    //header right
+            
+                        
+            
+            
+            //<!--context menu-->
+            html +=     '<div data-role="popup" id="quickMenu" data-history="false">' +
+                            '<ul id="choicelist" data-role="listview" >' +
+                                '<li data-icon="false"><a href="index.html" id="main">Main Menu </a></li>' +
+                                '<li data-icon="false"><a href="training_home.html">Training</a></li>' +
+                                '<li data-icon="false"><a href="" onclick="accessTests()">Take Test</a></li>' +
+                                '<li data-icon="false"><a href="job_aids.html">Job Aids</a></li>' +
+                                '<li data-icon="false"><a href="#" onclick="accessStandingOrder(standing_order.pdf)">Standing Order</a></li>';
+
+            html +=             (globalObj.loggedInUserID == adminObj.adminID) ? 
+                                            '<li data-icon="false"><a href="admin.html" >Admin Area</a></li>' : '' ;                        
+
+            html +=             (globalObj.loggedInUserID <= 0) ? //no logged in user
+                                    '<li data-icon="false"><a href="" onclick="accessProfile()">Log In</a></li>':
+                                    '<li data-icon="false"><a href="#" onclick="logout()">Log Out</a></li>';
+
+                                //<li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
+
+            html +=             '<li data-icon="false"><a href="" onclick="quitApp();" id="quit">Quit</a></li>' +
+                             '</ul>' +
+                        '</div>' ;
+           //<!--context menu-->
+    //}//end if first time
+                              
+             
+           $('#' + pageid + ' .header').html(html)
+           
+           //hide all header links in sandbox mode
+           if(globalObj.sandboxMode==true){
+               //$('#' + pageid + ' .header > div > a').attr('href','#');
+               $('#' + pageid + ' .header-right').addClass('hidden');
+           }
+             
+}
+
+
+function createFooter(pageid){
+    console.log('footer: ' + pageid);
+    if(adminObj.firstname.length>0 && adminObj.lastname.length>0){
+        var html = '<div id="footer_text1">' +   
+                        '<strong>' + settingsObj.facilityName + '</strong>' +
+                        '<div>' + settingsObj.facilityAddrLine1 + '</div>' +
+                        '<div>' + settingsObj.facilityAddrLine2 + '</div>' +
+                    '</div> ' +
+
+                    '<div id="footer_text2">' +   
+                        '<strong>Facility Supervisor</strong>' +
+                         '<div>' + capitalizeFirstLetter(adminObj.firstname) + ' ' + getNameInitial(adminObj.middlename) + ' ' + capitalizeFirstLetter(adminObj.lastname) + '</div>' +
+                         '<div>' + adminObj.phone + '</div>' +
+                    '</div>';
+
+            $('#' + pageid + ' .footer').html(html)
+    }
+    else{
+        $('#' + pageid + ' .footer').html("")
+    }
+        
 }
