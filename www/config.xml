@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.tp.hcwdeploy" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>HCW LMS</name>
+<widget id="com.tp.mtrapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>mTrapp</name>
     <description>
-        HCW LMS Solution
+        mTraining Solution
     </description>
     <author email="support@phonegap.com" href="http://phonegap.com">
         Techie Planet
     </author>
+    <preference name="orientation" value="landscape" />
     <preference name="permissions" value="none" />
     <preference name="phonegap-version" value="3.5.0" />
-    <preference name="orientation" value="default" />
     <preference name="target-device" value="universal" />
     <preference name="fullscreen" value="true" />
     <preference name="webviewbounce" value="true" />

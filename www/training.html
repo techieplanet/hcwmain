@@ -16,33 +16,7 @@
         
         <div id="trainingpage" data-role="page" data-theme="f" class="fullheight"  > 
              <div class="header"> 
-                 <div id="logo_icon_h"><img src="img/logo_icon.png" ></div> 
-                 <div id="title_txt_h" class="notextdecoration textwhite textfontarialblack20">
-                         Training
-                     </div>
-                 <div class="header-right">
-                     
-                     <div id="menu_icon_h"><img src="img/menu_icon.png"  ></div>
-
-                     <div id="profile_txt_h">
-                        <a href="profile_usage.html" class="notextdecoration textwhite textfontarialblack13">Profile</a>
-                        <!-- <div id="profile_icon_h"><img src="img/profile_icon.png" ></div> -->
-                    </div>
-
-                     <div id="notification_txt_h">
-                        <a href="profile_notifications.html" class="notextdecoration textwhite textfontarialblack13">Notifications</a>
-                        <span class="noticecount">2</span> 
-                     </div>
-                     <div id="help_txt_h">
-                         <a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>
-                     </div>
-
-                     <div id="home_icon">
-                        <a href="index.html"><img src="img/home-icon.png" ></a>
-                    </div>
-                 </div>
-                 
-             
+                 <!--insert header html-->
              </div> 
 
             
@@ -75,10 +49,10 @@
                  
                  
                  <div class="c-header">
-                     <div class="c-title"></div>
+                     <div class="c-title">
+                         <span id="module_title"></span>
                      
-                     
-                     <div class="c-popup" >
+                     <div class="c-popup floatright" >
                          <a href="#infoPopup" data-rel="popup" data-position-to=".content-area">
                          <img src="img/info-icon.png"/>
                         </a>
@@ -86,7 +60,7 @@
                      <!--module info popup  -->
                         <div class="noborder" data-role="popup" id="infoPopup" data-overlay-theme="f" data-dismissible="false">
                            <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
-                           <div class="popup_header">HCW LMS</div>
+                           <div class="popup_header">mTrapp</div>
 
                            <div class="margintop10 marginbottom10 popup_body" >
                                <p class="info"></p>
@@ -97,8 +71,8 @@
                                 data-role="button"  data-inline="true" data-mini="true">OK</a>
                            </div>
 
-                       </div>
-                       <!--module info popup  -->
+                       </div><!--module info popup  -->
+                     </div>
                          
                  </div>
                  </div>
@@ -117,7 +91,7 @@
                             <div class="training-video ui-block" >
                                 <video width="600" height="450" controls="controls" id="videoscreen">
                                       <source src="refer.mp4" type="video/mp4" />
-                                      <source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>
+                                      <!--<source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>-->
                                 </video>
                             </div>
                         
@@ -162,6 +136,8 @@
                 <!--test popup-->
 
 
+                
+                
              </div>
              <!-- content area -->
         

@@ -3,7 +3,7 @@ var globalObj = {   //begin class
   /*
    *    GENERAL
    */
-    appName : 'HCW LMS',
+    appName : 'mTrapp',
     
     loginMode : '',
     
@@ -26,6 +26,11 @@ var globalObj = {   //begin class
     
     sessionUsersList : [], //list of logged in users. super useful for group sessions
     
+    retakeMode : false,     //determines if trainig landing page is in retake mode
+    
+    sandboxMode : false,    //puts the systm in user sandbox mode
+    
+    firstTimeUse : true,    //remains true until otherwise proven not so
     
     /*
      *  SETUP
@@ -55,7 +60,71 @@ var globalObj = {   //begin class
   testTitle: '',
   testID : 0,
   questionID: 0,  
-  questionIDList:new Array()
+  questionIDList:new Array(),
   
   
+  //NOTIFICATIONS
+  waitingTests : 0,
+  uncompletedTrainings : 0,
+  failedTests : 0,
+  totalNotificationCount : 0,
+  
+  //FACILITY 
+  supervisorID : 0,
+  
+  secret_questions : ['','What is your favorite colour?','What city were you born?','What is your favorite food?']
+  
+  
+}// end class
+
+
+var workerObj = {   //begin class
+    
+    workerID : 0,
+    firstname : '',
+    middlename : '',
+    lastname : '',
+    gender : '',
+    email : '',
+    phone : '',
+    qualification : '',
+    supervisor : 0,
+    cadreID : 0,
+    
+    username : '',
+    password: '',
+    
+    secret_question : 0,
+    secret_answer : ''
+    
+   
+}// end class
+
+var adminObj = {   //begin class
+    
+    adminID : '',
+    firstname : '',
+    middlename : '',
+    lastname : '',
+    gender : '',
+    email : '',
+    phone : '',
+    qualification : '',
+    supervisor : 0,
+    cadreID : 0,
+    
+    username : '',
+    password: ''
+    
+   
+}// end class
+
+
+var settingsObj = {   //begin class 
+    smscount : 0,
+    shortcode : 0,
+    facilityID : 0,
+    facilityAddrLine1 : '',
+    facilityAddrLine2 : '',
+    facilityName : ''
 }// end class

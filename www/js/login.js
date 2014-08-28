@@ -1,6 +1,12 @@
-//$(document ).delegate("#loginpage", "pageremove", function() {
-//    globalObj.loginMode = '';
-//});
+$( document ).delegate("#loginpage", "pagebeforecreate", function() {    
+    createHeader('loginpage','Login');
+    createFooter('loginpage');
+    setNotificationCounts();
+});
+
+$(document ).delegate("#loginpage", "pageshow", function() {        
+    setHeaderNotificationCount('loginpage');
+});
 
 $(document ).delegate("#loginpage", "pageinit", function() {        
         
@@ -11,34 +17,109 @@ $(document ).delegate("#loginpage", "pageinit", function() {
         if(pageMode==1){ //individual login
             $('#indtab').addClass('active');
             if(globalObj.loginMode == 'test'){
+                createLoginForm();
                 $('#context-bar').html('Accessing Tests');
-                $('#login').attr('onclick','login(\'test\')');
+                $('#grouptab').parent().addClass('hidden');
             }
             else if(globalObj.loginMode == 'training'){
+                createLoginForm();
                 $('#context-bar').html('Accessing Trainings');
-                $('#login').attr('onclick','login(\'training\')');
+                //$('#login').attr('onclick','login(\'training\')');
+            }
+            else if(globalObj.loginMode == 'admin'){
+                createLoginForm();
+                $('#grouptab').parent().addClass('hidden');
+                $('#indtab').html('Admin Session');
+                $('.c-title').html('Admin Session');
+                $('#context-bar').html('Admin Login');
+                $('#login').attr('onclick','adminLogin()');
             }
             else{//profile login
+                globalObj.loginMode = 'profile';
+                createLoginForm();
                 $('#context-bar').html('Profile Login');
-                $('#grouptab').addClass('hidden');
-                $('#regtab').removeClass('hidden');
-                $('#login').attr('onclick','login(\'\')');
+                $('#grouptab').parent().addClass('hidden');
+                //$('#regtab').removeClass('hidden');
             }
+            
+            $('#grouptab').attr('onclick','switchToGroupSession()');
         }
         else if(pageMode==2){ //group
-            $('#context-bar').html('Select Group Members');
-            $('#grouptab').addClass('active');
-            getUsersList();
+            switchToGroupSession();
         }
         
 });
+
+function switchToGroupSession(){
+     $('#context-bar').html(
+                     '<span id="column-width width30">Select Group Memberss</span>' +
+                     '<span class="floatright textfontarial13">' +
+                             '<a href="" onclick="groupLogin()" class="notextdecoration actionbutton textwhite" >Done</a>' +
+                     '</span>'
+                )  
+    $('#grouptab').addClass('active');
+    $('#indtab').removeClass('active');
+    getUsersList('loginpage');
+    $('.c-title').html('Group Session');
+    $('#indtab').attr('onclick','switchToIndividualSession()');
+}
+
+
+function switchToIndividualSession(){
+    globalObj.loginMode = 'training';
+    createLoginForm();
+    $('#indtab').addClass('active');
+    $('#grouptab').removeClass('active');
+    $('#context-bar').html('Accessing Trainings');
+    //$('#login').attr('onclick','login(\'training\')');
+    $('#grouptab').attr('onclick','switchToGroupSession()');
+}
+
+
+function createLoginForm(){
+    var html = '<ul   data-role="listview">';
+    
+        html +=     '<li class="" data-icon="false">' +
+                        '<div data-role="fieldcontain" class="fieldrow nomargin" >' +
+                            '<label class="" for="username">Username</label>' +
+                             '<input class="iconifiedinput username" type="text" name="username" id="username" value=""  />' +
+                        '</div>' +
+                    '</li>';
+
+        html +=     '<li class="noborder" data-icon="false">' +
+                        '<div data-role="fieldcontain" class="fieldrow nomargin">' +
+                            '<label class="" for="password">Password</label>' +
+                             '<input class="iconifiedinput password" type="password" name="password" id="password" value=""  />' +
+                         '</div>' +
+                     '</li>';
+                                
+        html +=     '<li class="noborder" data-icon="false">' +
+                        '<div data-role="fieldcontain" class="fieldrow nomargin">' +
+                            '<a id="login" class="pagebutton" onclick="login()" data-theme="d" data-role="button"  data-inline="true">Login</a>' +
+                        '</div>' +
+                    '</li>';
+                    
+                    // forgot password
+        html +=     '<li class="noborder margintop20" data-icon="false">' +
+                        '<div data-role="fieldcontain" class="fieldrow nomargin">' +
+                            '<a class="notextdecoration actionbutton textwhite" onclick="processForgot()" data-theme="d"  data-inline="true">Forgot Password</a>' +
+                        '</div>' +
+                    '</li>';
+                     
+
+       html +=  '</ul>';
+       
+       $('.focus-area').html(html);
+       $('.c-title').html('Single User Session');
+       $('#loginpage').trigger('create');
+}
 
 
 /*
  *  This function handles individual login actions that come via the topics -> session popup route.
  *  It will always go to the training page after login. 
  */
-function login(mode){
+function login(){
     
        var user = $('#username').val();
        var pass = $('#password').val();
@@ -48,6 +129,7 @@ function login(mode){
                         tx.executeSql(query,[],
                              function(tx,resultSet){
                                  if(resultSet.rows.length > 0){
+                                     console.log('login length: ' + resultSet.rows.length);
                                      var row = resultSet.rows.item(0);
                                      globalObj.loggedInUserID = row['worker_id'];  //register user as logged in
                                      
@@ -69,16 +151,73 @@ function login(mode){
                                      globalObj.sessionType = 1;
                                      globalObj.sessionUsersList = [globalObj.loggedInUserID];
                                      
-                                     
-                                      if(mode == 'training'){
+                                     //set Notifications for user
+                                     //if(globalObj.loginMode != 'profile')
+                                         //setNotificationCounts();
+                                      
+                                      if(globalObj.loginMode == 'training'){
                                          //set up array containing logged in user
                                          $.mobile.changePage( "training.html" );
                                       }
-                                      else if(mode == 'test'){
+                                      else if(globalObj.loginMode == 'test'){
                                           $.mobile.changePage( "test.html?pagemode=1" );
                                       }
                                      else  // go to profile page if logging in but not accessing training yest
                                          $.mobile.changePage( "profile.html" );
+                                     
+                                 }
+                                 else{
+                                     $('.popup_body p').html('Wrong username or password. Try again')
+                                     $('#loginPopup').popup('open');
+                                 }
+                             }
+                         );
+                   },
+                function (error){},  //errorCB
+                function (){} //successCB
+        );//end transaction
+            
+   } 
+   
+   
+ /*
+ *  This function handles admin login process
+ *  It will always go to the admin page after login. 
+ */
+function adminLogin(){
+    
+       var user = $('#username').val();
+       var pass = $('#password').val();
+       var query = "SELECT * FROM cthx_health_worker WHERE username='" + user + "' AND password='" + pass + "'";
+       
+       globalObj.db.transaction(function(tx){
+                        tx.executeSql(query,[],
+                             function(tx,resultSet){
+                                 if(resultSet.rows.length > 0){
+                                     var row = resultSet.rows.item(0);
+                                     
+                                     if(adminObj.adminID == row['worker_id']){
+                                        globalObj.loggedInUserID = row['worker_id'];  //register user as logged in
+                                     
+                                     
+                                        /*
+                                        * DROP EXISTING USAGE VIEW NOW AGAINST WHEN THE LOGGED IN USER NEEDS TO 
+                                        * ACCESS USAGE INFO AND ANOTHER FRESH ONE WILL BE CREATED FOR THE USER
+                                        * THE dropView METHOD IS FOUND ON profile.js
+                                        */
+                                        globalObj.db.transaction(dropView,function(error){console.log('Error dropping view')});   
+                                     
+                                     
+                                        //set common vars
+                                        globalObj.sessionType = 1;
+                                        globalObj.sessionUsersList = [globalObj.loggedInUserID];
+                                     
+                                         $.mobile.changePage( "admin.html" );
+                                     }
+                                     else{
+                                         $('.popup_body p').html('Wrong admin details. Try again')
+                                         $('#loginPopup').popup('open');
+                                     }
                                      
                                  }
                                  else{
@@ -92,9 +231,9 @@ function login(mode){
         );//end transaction
             
    } 
-   
-   
-   function getUsersList(){
+
+
+function getUsersList(pageid){
        var html = '';
         globalObj.db.transaction(function(tx){
                             tx.executeSql('SELECT * FROM cthx_health_worker ORDER BY firstname',[],
@@ -102,28 +241,33 @@ function login(mode){
                                     //console.log('len: ' + resultSet.rows.length);
                                     if(resultSet.rows.length>0){
                                         //console.log('rows: ' + JSON.stringify(resultSet.rows.item(0)))
-                                        html += '<ul id="choicelist"  data-role="listview"  >';
+                                        html += '<ul id="choicelist2" data-role="listview"  data-theme="none">';
                                         for(var i=0; i<resultSet.rows.length; i++){
                                             var member = resultSet.rows.item(i);
-                                            html += '<li class="" data-icon="false" >';
-                                            html +=     '<label>';
-                                            html +=        capitalizeFirstLetter(member['firstname']) + ' ' + capitalizeFirstLetter(member['middlename']) + ' ' + capitalizeFirstLetter(member['lastname']);
-                                            html +=        '<input type="checkbox" name="group-checkbox" data-iconpos="right" id="'+ member['worker_id'] + '"/>';                                            
-                                            html +=     '</label>';
-                                            html += '</li>';
+                                            html +=     '<li class="" data-icon="false">' +
+                                                            '<label class="" data-role="button" for="' + member['worker_id']+ '">' + 
+                                                                capitalizeFirstLetter(member['firstname']) + ' ' + capitalizeFirstLetter(member['middlename']) + ' ' + capitalizeFirstLetter(member['lastname']) +
+                                                                '<input class="" type="checkbox" name="group-checkbox" id="'+ member['worker_id'] + '" data-iconpos="right" />' +
+                                                            '</label>' +
+                                                        '</li>';
+                            
+                                                //<input class="" type="radio" name="session-choice" id="individual" value="individual" data-iconpos="right" />
+                                                //<label class="" data-role="button" for="individual">Individual Session</label>
                                         }
                                         
                                         
-                                        html += '<li class="noborder" data-icon="false">';
-                                        html +=     '<div data-role="fieldcontain" class="fieldrow nomargin">';
-                                        html +=         '<a id="login" class="pagebutton" onclick="groupLogin()" data-role="button"  data-inline="true">OK</a>'
-                                        html +=     '</div>';
-                                        html += '</li>';
-                                        html += '</ul>';
-                                        
+                                        //the button at end of list...transferred to the top
+//                                        html += '<li class="noborder" data-icon="false">';
+//                                        html +=     '<div data-role="fieldcontain" class="fieldrow nomargin">';
+//                                        html +=         '<a id="grouplogin" class="pagebutton width20" style="padding: 5px 20px; display: block; " onclick="groupLogin()" data-role="button"  data-inline="true">OK</a>'
+//                                        html +=     '</div>';
+//                                        html += '</li>';
+                                     
+                                     html += '</ul>';
+                                      
                                         //console.log('html: ' + html);
-                                        $('.focus-area').html(html);
-                                        $("#loginpage").trigger('create');
+                                        $('.focus-area').html(html); 
+                                        $("#"+pageid).trigger('create');
                                     }
                                     //else
                                       //  $('#membersList').html(html);
@@ -138,9 +282,61 @@ function login(mode){
     var checked = $('input[type="checkbox"]:checked'); var count='';
     globalObj.sessionUsersList = [];
     
-    for(var i=0; i < checked.length; i++)
-        globalObj.sessionUsersList.push(checked[i].id);
+    if(checked.length>1){
+        for(var i=0; i < checked.length; i++)
+            globalObj.sessionUsersList.push(checked[i].id);
+
+        globalObj.sessionType = 2;   //set session type
+        $.mobile.changePage( "training.html" );   
+    }
+    else{
+        $('.popup_body p').html('Select at least 2 group members')
+        $('#loginPopup').popup('open');
+    }
         
-    globalObj.sessionType = 2;   //set session type
-    $.mobile.changePage( "training.html" );   
+}
+
+/*
+ * Starts up the password reset process 
+ */
+function processForgot(){
+    var username = $('#username').val();
+    if(username =='' || username==null){ //no username
+        $('#loginmsg').html('Please enter username first');
+        $('#loginPopup').popup('open');
+    }
+    else{ //user entered username
+        var query = "SELECT * FROM cthx_health_worker WHERE username='" + username + "'";
+        globalObj.db.transaction(function(tx){
+            tx.executeSql(query,[],function(tx,result){
+                var len = result.rows.length;
+                if(len>0){//username found
+                     //setup the workerObject
+                     var row = result.rows.item(0);
+                     workerObj.workerID = row['worker_id'];
+                     workerObj.firstname = row['firstname'];
+                     workerObj.middlename = row['middlename'];
+                     workerObj.lastname = row['lastname'];
+                     workerObj.gender = row['gender'];
+                     workerObj.email = row['email'];
+                     workerObj.phone = row['phone'];
+                     workerObj.qualification = row['qualification'];
+                     workerObj.supervisor = row['supervisor'];
+                     workerObj.cadreID = row['cadre_id'];
+                     workerObj.username = row['username'];
+                     workerObj.secret_question = row['secret_question'];
+                     workerObj.secret_answer = row['secret_answer'];
+                    
+                     $.mobile.changePage('forgot.html');
+                }
+                else{ //username not found
+                    $('#loginmsg').html('Match Not Found');
+                    $('#loginmsg').addClass('textcenter');
+                    $('#loginPopup').popup('open');
+                }
+            })
+        })
+    }
+
+      
 }

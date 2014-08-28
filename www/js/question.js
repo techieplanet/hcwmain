@@ -1,3 +1,13 @@
+$(document ).delegate("#questionpage", "pagebeforecreate", function() {
+    createHeader('questionpage','Assessment');
+    createFooter('questionpage');
+    setNotificationCounts();
+});
+
+$(document ).delegate("#questionpage", "pageshow", function() {
+    setHeaderNotificationCount('questionpage');
+});
+
 /*
  *  1. Fetches the test questions from database based on topic id selected
  *  2. Stores details of test session into database
@@ -32,7 +42,7 @@
                                               
                                               //display the test title 
                                               globalObj.testTitle = resultSet.rows.item(0)['title'];
-                                              $('.c-title').html(globalObj.testTitle + ' Assessment')
+                                              $('.c-title').html(globalObj.testTitle)
 
                                               //display first question 
                                               loadQuestion(0); //load full details for id at index 0
@@ -241,6 +251,21 @@ function saveTestSession(tx){
                   '"' + globalObj.loggedInUserID + '"';    //logged in user id - test taker
         
         DAO.save(tx, 'cthx_test_session', fields, values);      
+        
+        
+        //queue last inserted row for SMS sending 
+        //set time out 500 to wait for the update to complete
+        setTimeout(function(){
+            var query = 'SELECT session_id FROM cthx_test_session ORDER BY session_id DESC LIMIT 1';
+            globalObj.db.transaction(function(tx){
+                tx.executeSql(query,[],function(tx,result){
+                    if(result.rows.length>0){
+                        var row = result.rows.item(0);
+                        queueTestSMS(tx, row['session_id']);   
+                    }
+                });
+            });
+        },500);
 }
   
   

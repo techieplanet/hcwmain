@@ -1,3 +1,14 @@
+$(document ).delegate("#helppage", "pagebeforecreate", function() {
+    createHeader('helppage','Help');
+    createFooter('helppage');
+    setNotificationCounts();
+});
+
+$(document ).delegate("#helppage", "pageshow", function() {
+    setHeaderNotificationCount('helppage');
+});
+
+
 $(document ).delegate("#helppage", "pageinit", function() {        
                         //console.log('helppage');
                         getHelpFiles();

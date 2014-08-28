@@ -1,19 +1,11 @@
-/**********************
-*   Populates the Training Home/Landing Page with details of categories and their modules
-*    in the database
-*   Opens database, load for categories data and display it on a list.
-*   Displays first category modules in content area
-**********************/
+$( document ).delegate("#traininghomepage", "pagebeforecreate", function() {    
+    createHeader('traininghomepage','Trainings');
+    createFooter('traininghomepage');
+    setNotificationCounts();
+});
 
-$(document ).delegate("#traininghomepage", "pageinit", function() {   
-        //openDb();
-        globalObj.db.transaction(queryCategories,
-                                function(error){console.log('Database error: ' + JSON.stringify(error));
-                            }
-                       );  
-                           
-                    $('div[data-role="collapsible"]').trigger("collapse");
-        
+$( document ).delegate("#traininghomepage", "pageshow", function() {    
+        setHeaderNotificationCount('traininghomepage');
         
         //set active sidebar element on click
         $('#sidebar_ul li a').click(function(){
@@ -21,22 +13,67 @@ $(document ).delegate("#traininghomepage", "pageinit", function() {
             $(this).addClass('active');
         });
         
+        /*
+         *  This displays the category list on sidebar. The delay is necessary to ensure that the 
+         *  page DOM has completely loaded before attaching the  list
+         */
+        setTimeout(function(){
+            globalObj.db.transaction(
+                    queryCategories,
+                    function(error){
+                            console.log('Database error: ' + JSON.stringify(error));
+                        });
+        },200);
+        
+            //////////  COLLAPSIBLE ...........
+            if($("body").data('trainingHomeData')!=null){
+                //console.log('body data pageshow: ' + JSON.stringify($("body").data('trainingHomeData')));
+                //console.log('body data pageshow cat: ' + $("body").data('trainingHomeData')[0]);
+                //console.log('body data pageshow mod: ' + $("body").data('trainingHomeData')[1]);
+
+                $('#cat_'+$("body").data('trainingHomeData')[0]).addClass('active');
+                loadModule($("body").data('trainingHomeData')[0]);
+                    setTimeout(function(){
+                        $('div#coll_mod_'+ $("body").data('trainingHomeData')[1]).trigger("expand");
+                     },500);
+            }
+            //////////  COLLAPSIBLE ...........
+        
+
+
+});
+
+$( document ).delegate("#traininghomepage", "pagebeforeshow", function() {    
+    
+    
+});
+
+
+/**********************
+*   Populates the Training Home/Landing Page with details of categories and their modules
+*    in the database
+*   Opens database, load for categories data and display it on a list.
+*   Displays first category modules in content area
+**********************/
+$(document ).delegate("#traininghomepage", "pageinit", function() {           
+        
+        /*
+         *  PageMode 2: retake training mode
+         */
+        //sterilize the retakemode variable first to be sure no confusion 
+        //globalObj.retakeMode = false;
         var pageModeArray = $('#traininghomepage').attr('data-url').split('?');
         if(pageModeArray.length>1){
             pageMode = pageModeArray[1].split('=')[1];
-            if(pageMode=='retake')
-              setUpRetake();
+            if(pageMode=='2')
+              //globalObj.retakeMode = true;
+              //setUpRetake();
+              var trainingHomeData = [globalObj.categoryID,globalObj.moduleID]
+              $("body").data( "trainingHomeData" , trainingHomeData);
         }
-        
-
  });
 
 
-$( document ).delegate("#traininghomepage", "pageshow", function() {        
-    
-    
-
-});
 
 function moduleSlide(){
         var animationSpeed = 600;
@@ -52,13 +89,14 @@ function moduleSlide(){
          
 }
 
- function queryCategories(tx){
+function queryCategories(tx){
+    console.log('categoryID: ' + globalObj.categoryID + ' moduleID: ' + globalObj.moduleID + ' topicID: ' + globalObj.topicID);
+        
     tx.executeSql('SELECT * FROM cthx_category',[],
                 function(tx,resultSet){  //query success callback
                     var len = resultSet.rows.length;
+                    var html = '';  //'<ul id="sidebar_ul">';
                     if(len>0){  //if not empty table
-                        //console.log('Categories length: ' + len);
-                        var html = '<ul id="sidebar_ul">';
                         for (var i=0; i<len; i++){
                              var row = resultSet.rows.item(i);
                              html += '<li>' +
@@ -66,26 +104,21 @@ function moduleSlide(){
                                             row['category_name']    +
                                         '</a>' +
                                      '</li>';
-                        }
-                        
-//                        html += '<li>' +
-//                                        '<a href="" onclick="expand(); return false;" >' +
-//                                           'Expand'   +
-//                                        '</a>' +
-//                                     '</li>';
-                        
-                        html += '</ul>';  //close ul
+                        }                        
                     }
-                    else{
-                        html += '</ul>';  //close ul
-                    }
-                     
-                    $("#sidebar").html(html);  
-                    $("#traininghomepage").trigger("create");  
+                    
+                    console.log('html: ' + html);
+                    
+                    $('#sidebar_ul').html(html);
+                    
+                    
+                    
+                    //$("#traininghomepage").trigger("create");
+                    
                 }
            );
-                
  }
+ 
  
  function expand(){
      console.log('expanding' );
@@ -93,6 +126,7 @@ function moduleSlide(){
      $('#coll_mod_1').collapsible( "option", "expand", true )
      //$('#coll_mod_1').attr('data-collapsed','false');
  }
+ 
  
  function toggleTopics(){
      alert('toggleTopics');
@@ -107,8 +141,17 @@ function loadModule(cat_id){
 }
 
 function populateModule(tx){
+
+    $('#traininghomepage #collapsible_content').empty();
+    $('#traininghomepage #collapsible_content').html('');
+    $('#traininghomepage #context-bar').parent().removeClass('hidden');
+    //return;
+    
     var query = 'SELECT * FROM cthx_training_module m JOIN cthx_category c ON m.category_id=c.category_id AND m.category_id='+ globalObj.categoryID;
     //console.log('mods: ' + query);
+    //initialize the html var - important
+    html = '';
+    
     tx.executeSql(query,[],
                     function(tx,result){
                         var len = result.rows.length;
@@ -126,7 +169,14 @@ function populateModule(tx){
                                         globalObj.moduleID = row['module_id'];
                                         globalObj.moduleTitle = row['module_title'];
                                         globalObj.db.transaction(populateTopic);
+                                        
+//                                        if((i==(len-1)) && globalObj.retakeMode==true){
+//                                            setTimeout(function(){
+//                                                $('#coll_mod_'+ globalObj.moduleID).trigger("expand");
+//                                            },500);
+//                                        }
                                     },i*200);
+                                    
                                     
                                 })(i);
                                 
@@ -135,7 +185,7 @@ function populateModule(tx){
                             }//end for
                         }//end ifd
                         else{
-                            $('focus-area').html('<p>No modules found.</p>');
+                            $('.focus-area').html('<p>No modules found.</p>');
                         }
                         
                         
@@ -149,7 +199,7 @@ function populateModule(tx){
  * in the interface collapsible.
  * Tables: training, training_to_module, module
  */
-var html ='';
+var html ='';  //important
 function populateTopic(tx){
     var query = 'SELECT * FROM cthx_training_to_module tm JOIN cthx_training t JOIN cthx_training_module m ' +
                 'WHERE t.training_id=tm.training_id AND m.module_id=tm.module_id ' + 
@@ -174,10 +224,10 @@ function populateTopic(tx){
                         
                         html += '</div>';
                         //console.log(html);
-                        $('#collapsible_content').append(html);
+                        $('#traininghomepage #collapsible_content').append(html);
                         
-                        $('#coll_mod_'+ globalObj.moduleID).trigger('create');
-                        $('#collapsible_content').trigger('create');
+                        $('#traininghomepage #coll_mod_'+ globalObj.moduleID).trigger('create');
+                        $('#traininghomepage #collapsible_content').trigger('create');
                         html='';
                     }
                 );
@@ -189,7 +239,12 @@ function topicStarter(topic_id,module_id){
     globalObj.topicID = topic_id; //selected topic id
     globalObj.moduleID = module_id;
     
-    if(globalObj.loggedInUserID > -1){  //user is logged in, group is 0
+    //set body traininghome data
+    var trainingHomeData = [globalObj.categoryID,globalObj.moduleID]
+    $("body").data( "trainingHomeData" , trainingHomeData);
+    console.log('body data: ' + JSON.stringify($("body").data()));
+    
+    if(globalObj.loggedInUserID > 0){  //user is logged in, group is 0
         $.mobile.changePage( "training.html" );
     }
     else{
@@ -198,7 +253,7 @@ function topicStarter(topic_id,module_id){
 }
 
 
-function sessionPick(){    
+function sessionPick(){
     var selection = $("input[name='session-choice']:checked").val();
     
     if(selection == 'individual'){
@@ -210,7 +265,7 @@ function sessionPick(){
         globalObj.sessionType = 2;
         $.mobile.changePage( "login.html?pagemode=2");
     }
-}        
+}
 
 /*
  * This method sets up the UI when user is trying to retake a module OR
@@ -231,14 +286,14 @@ function setUpRetake(){
                                         //set the active category
                                         $('#cat_'+row['category_id']).addClass('active');
                                         
-                                        var expandID = 'coll_mod_'+globalObj.moduleID;
+                                        //var expandID = 'coll_mod_'+globalObj.moduleID;
                                         
                                         //load the modules in the category as if the category was clicked
                                         loadModule(row['category_id']);
                                         
                                         //expand the right module in the list
-                                        $('#'+expandID).collapsible( "option", "collapsed", false );
-                                        console.log('collapsible element: ' + '#coll_mod_'+globalObj.moduleID);
+                                        //$('#'+expandID).collapsible( "option", "collapsed", false );
+                                        //console.log('collapsible element: ' + '#coll_mod_'+globalObj.moduleID);
                                     });
                     },
                     function(error){

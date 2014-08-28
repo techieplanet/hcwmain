@@ -1,3 +1,13 @@
+$(document ).delegate("#jobaidspage", "pagebeforecreate", function() {
+    createHeader('jobaidspage','Job Aids');
+    createFooter('jobaidspage');
+    setNotificationCounts();
+});
+
+$(document ).delegate("#jobaidspage", "pageshow", function() {
+    setHeaderNotificationCount('jobaidspage');
+});
+
 $(document ).delegate("#jobaidspage", "pageinit", function() {        
                         //console.log('jobaidspage');
                         
@@ -60,7 +70,7 @@ function getJobAids(mode){
    
 function launchAid(aid_file){
     console.log('launching aid');                             
-    //counterUpdate('job_aids');
+    //alert()
     
     window.requestFileSystem(
             LocalFileSystem.PERSISTENT, 0, 
@@ -69,7 +79,7 @@ function launchAid(aid_file){
                 //alert('root: ' + fileSystem.root.fullPath);
                 
                 var filePath = globalObj.jobaidsDir + "/" + aid_file;
-                //alert('Guide file filePath: ' + filePath);
+                //alert('Aid file filePath: ' + filePath);
                 
                  /*
                     * This method (getFile) is used to look up a directory. It does not create a non-existent direcory.

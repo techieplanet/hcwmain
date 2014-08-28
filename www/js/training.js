@@ -1,3 +1,9 @@
+$(document).delegate("#trainingpage", "pagebeforecreate", function() {        
+    createHeader('trainingpage','Training');
+    createFooter('trainingpage');
+    setNotificationCounts();    
+});
+
 /*
  *  Displays a pop up to help background processes complete before user accesses videp
  */
@@ -5,14 +11,15 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
     //console.log('trainingpage logging inside pageshow');
     //$('#vsPopup').popup('open');
     //setTimeout($('#vsPopup').popup('close'),2000);
-    
+    setHeaderNotificationCount('trainingpage');
     $('#sidebar_ul li a').click(function(){
         $('#sidebar_ul li a').removeClass('active');
         $(this).addClass('active');
     });
     
+    //setHeaderNotificationCount();
+    
 });
-
 
 /*
  *  Initializes the training page
@@ -90,7 +97,7 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
                         
                         //set the training title and popup info
                         $('#c-bar').html(row['training_title']);
-                        $('.c-title, .popup_header:first-child').html(globalObj.moduleTitle);
+                        $('.c-title #module_title, .popup_header:first-child').html(globalObj.moduleTitle);
                         $('.info').html(capitalizeFirstLetter(row['remarks']));
                         
                         //set the video link to set up and reload this topic when clicked
@@ -142,7 +149,8 @@ function attachVideoFile(){
                         function(error){
                             //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
                             //alert("No Video Found: (" + filePath + ") \n Switching to Default Video.");
-                            alert("No Video Found: \n Switching to Default Video.");
+                            //alert("No Video Found: \n Switching to Default Video.");
+                            $('.focus-area').empty().html('<p>No video found.</p>');
                         }
                  );
                 
@@ -183,22 +191,37 @@ function attachVideoFile(){
             loadTraining(topicID);
             
  }
- 
- 
- //saves a training session at start. Status is always 1 at start for incomplete
+
+  
+  //saves a training session at start. Status is always 1 at start for incomplete
  //SESSION STATUS: 1- IN PROGESS/INCOMPLETE, 2- COMPLETED
  function saveTrainingSession(tx, sessionUserID){  
-        var fields = '"start_time","end_time","status","session_type","worker_id","module_id","training_id"';
+        var fields = '"start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id"';
         var values = '"' + getNowDate() + '",' + //start datetime
                   'NULL,' + //end datetime,
                   '"1",' + //session status - inprogress or completed
                   '"' + globalObj.sessionType + '",' +   //session type
-                  '"' + globalObj.videoMaterial + '",' +  //video constant
+                  '"' + globalObj.videoMaterial + '",' +  //material type constant: video -1, guide -2
                   '"' + sessionUserID + '",' +  //worker id
                   '"' + globalObj.moduleID  + '",' + //module id
                   '"' + globalObj.topicID + '"';    //training (topic) id
         
-        DAO.save(tx, 'cthx_training_session', fields, values);      
+        DAO.save(tx, 'cthx_training_session', fields, values);  
+        
+        //queue last inserted row for SMS sending 
+        //set time out 500 to wait for the update to complete
+        setTimeout(function(){
+            var query = 'SELECT session_id FROM cthx_training_session ORDER BY session_id DESC LIMIT 1';
+            globalObj.db.transaction(function(tx){
+                tx.executeSql(query,[],function(tx,result){
+                    if(result.rows.length>0){
+                        var row = result.rows.item(0);
+                        queueTrainingSMS(tx, row['session_id']);   
+                    }
+                });
+            });
+        },500);
+        
   }
  
  
@@ -213,7 +236,10 @@ function attachVideoFile(){
                   '2,' + //session status - inprogress or completed
                   globalObj.sessionType;   //session type
         
-        DAO.update(tx, 'cthx_training_session', fields, values, 'session_id', rowID );
+        DAO.update(tx, 'cthx_training_session', fields, values, 'session_id', rowID);
+        
+        //queue SMS for sending 
+        queueTrainingSMS(tx, rowID);
  }
  
  
@@ -411,67 +437,98 @@ function loadTraining(topicID){
 
 /*
  * This method tests if the logged in user has taken all the tests in the current module
+ * Or at least, taken the module training guide.
  * If so, prompt user to take test
  * Tables: training_session
  */
 function checkTestable(tx){
-//    var query = 'SELECT * FROM cthx_training t LEFT JOIN cthx_training_session s ON ' +
-//                't.module_id=s.module_id AND t.training_id=s.training_id ' +
-//                'WHERE t.module_id=' + _moduleID + ' AND s.worker_id=' + _loggedInUserID;
-//    var query = 'SELECT status FROM cthx_training t LEFT JOIN cthx_training_session s ON ' + 
-//                't.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
-//                ' WHERE t.module_id='+globalObj.moduleID;
-
-     var query = 'SELECT status FROM cthx_training_to_module tm LEFT JOIN cthx_training_session s ON ' + 
-                'tm.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
-                ' WHERE tm.module_id='+globalObj.moduleID;
-
+    var query = 'SELECT * FROM cthx_training_to_module ttm WHERE ' +
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.module_id NOT IN (SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE trs1.module_id=' + globalObj.moduleID + ' AND material_type=2 AND worker_id=' + globalObj.loggedInUserID + ') ' +
+                 'AND ' +
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.training_id NOT IN (SELECT trs.training_id FROM cthx_training_session trs WHERE trs.module_id=' + globalObj.moduleID + ' AND status=2 AND worker_id=' + globalObj.loggedInUserID + ')))';
+             
     console.log('check query: ' + query);
     
-    tx.executeSql(query,[],function(tx,resultSet){
-              var len = resultSet.rows.length;
-              console.log('check length: ' + len);
-              if(len>0){
-                  var allTaken = true;
-                  for(var i=0; i<len;i++){
-                      var row = resultSet.rows.item(i);
-                      
-                      console.log('this row: ' + JSON.stringify(row));
-                      //check if the training is either not taken or its session not completed
-                      if(row['material_type']==2){
-                          //regardless of any other conditions, the training is completed as long
-                          //as training guide has been viewed
-                          //Break out, no need to keep checking.
-                            allTaken = true;
-                            break;
-                      }
-                      else if(row['material_type']==1 && row['status'] != 2) {
-                          //material_type 1 is video. Status != 2 means the video was not completed
-                          //But keep checking as we do not know if training guide was viewed later
-                          allTaken = false;
-                       }
-                  }
-                  
-                  console.log('alltaken: ' + allTaken);
-                  if(allTaken == true){
-                      //got to test 
-                      console.log('check result: go to test')
-                      //if(_sessionType==1)
-                          $('#testPopup').popup('open');
-                  }
-                  else{
-                      console.log('check result: stay on page')
-                      //changeToTest();
-                  }
-                  
-              }
-              else{  //len is 0. Means user has no prior training session 
-                  //console.log('check result on else part: go to training')
-                      //if(_sessionType==1)
-                          //$('#trainingPopup').popup('open');
-              }
-    });
+    tx.executeSql(query,[],
+                    function(tx,result){
+                        var len = result.rows.length;
+                        console.log('check length: ' + len);
+                        if(len==0){
+                                console.log('check result: go to test')
+                                $('#testPopup').popup('open');
+                          }
+                          else{
+                              console.log('check result: stay on page')
+                              //changeToTest();
+                            }
+                    }
+             );
 }
+
+
+///*
+// * This method tests if the logged in user has taken all the tests in the current module
+// * If so, prompt user to take test
+// * Tables: training_session
+// */
+//function checkTestable(tx){
+////    var query = 'SELECT * FROM cthx_training t LEFT JOIN cthx_training_session s ON ' +
+////                't.module_id=s.module_id AND t.training_id=s.training_id ' +
+////                'WHERE t.module_id=' + _moduleID + ' AND s.worker_id=' + _loggedInUserID;
+////    var query = 'SELECT status FROM cthx_training t LEFT JOIN cthx_training_session s ON ' + 
+////                't.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
+////                ' WHERE t.module_id='+globalObj.moduleID;
+//
+//     var query = 'SELECT status FROM cthx_training_to_module tm LEFT JOIN cthx_training_session s ON ' + 
+//                'tm.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
+//                ' WHERE tm.module_id='+globalObj.moduleID;
+//
+//    console.log('check query: ' + query);
+//    
+//    tx.executeSql(query,[],function(tx,resultSet){
+//              var len = resultSet.rows.length;
+//              console.log('check length: ' + len);
+//              if(len>0){
+//                  var allTaken = true;
+//                  for(var i=0; i<len;i++){
+//                      var row = resultSet.rows.item(i);
+//                      
+//                      console.log('this row: ' + JSON.stringify(row));
+//                      //check if the training is either not taken or its session not completed
+//                      if(row['material_type']==2){
+//                          //regardless of any other conditions, the training is completed as long
+//                          //as training guide has been viewed
+//                          //Break out, no need to keep checking.
+//                            allTaken = true;
+//                            break;
+//                      }
+//                      else if(row['material_type']==1 && row['status'] != 2) {
+//                          //material_type 1 is video. Status != 2 means the video was not completed
+//                          //But keep checking as we do not know if training guide was viewed later
+//                          allTaken = false;
+//                       }
+//                  }
+//                  
+//                  console.log('alltaken: ' + allTaken);
+//                  if(allTaken == true){
+//                      //got to test 
+//                      console.log('check result: go to test')
+//                      //if(_sessionType==1)
+//                          $('#testPopup').popup('open');
+//                  }
+//                  else{
+//                      console.log('check result: stay on page')
+//                      //changeToTest();
+//                  }
+//                  
+//              }
+//              else{  //len is 0. Means user has no prior training session 
+//                  //console.log('check result on else part: go to training')
+//                      //if(_sessionType==1)
+//                          //$('#trainingPopup').popup('open');
+//              }
+//    });
+//}
 
 
 
@@ -502,26 +559,31 @@ function stopVideo() {
 
 
 function launchGuide(){
-//    alert('launching guide');
-    if(globalObj.guideViewed==false){
-            globalObj.guideViewed = true;
-            globalObj.db.transaction(function(tx){
-                            for(var i=0; i<globalObj.sessionUsersList.length; i++)
-                                saveGuideSession(tx,globalObj.sessionUsersList[i]);
-                    },
-                    function(error){
-                        alert('Error saving guide session');
-                    }
-                );
-    }//end if
+    /*----------------  PC SECTION ------------------*/
+////    alert('launching guide');
+//    if(globalObj.guideViewed==false){
+//            globalObj.guideViewed = true;
+//            globalObj.db.transaction(function(tx){
+//                            for(var i=0; i<globalObj.sessionUsersList.length; i++)
+//                                saveGuideSession(tx,globalObj.sessionUsersList[i]);
+//                    },
+//                    function(error){
+//                        alert('Error saving guide session');
+//                    }
+//                );
+//    }//end if
+//    
+//     //launch pop if individual sesseion 
+//     setTimeout(function(){
+//          if(globalObj.sessionType==1) //inidividual session
+//              $('#testPopup').popup('open');
+//      },2000)
+//        return; 
+/*----------------  PC SECTION ------------------*/
     
-     //launch pop if individual sesseion 
-     setTimeout(function(){
-          if(globalObj.sessionType==1) //inidividual session
-              $('#testPopup').popup('open');
-      },2000)
-        return;
-                             
+    //first pause any playing video
+    var video = document.getElementById('videoscreen');
+    video.pause();
     
     window.requestFileSystem(
             LocalFileSystem.PERSISTENT, 0, 
@@ -598,4 +660,18 @@ function launchGuide(){
                   '"' + globalObj.topicID + '"';    //training (topic) id
         
         DAO.save(tx, 'cthx_training_session', fields, values);      
+        
+        //queue last inserted row for SMS sending 
+        //set time out 500 to wait for the update to complete
+        setTimeout(function(){
+            var query = 'SELECT session_id FROM cthx_training_session ORDER BY session_id DESC LIMIT 1';
+            globalObj.db.transaction(function(tx){
+                tx.executeSql(query,[],function(tx,result){
+                    if(result.rows.length>0){
+                        var row = result.rows.item(0);
+                        queueTrainingSMS(tx, row['session_id']);   
+                    }
+                });
+            });
+        },500);
   }
