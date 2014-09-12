@@ -3,7 +3,7 @@
 <html>
     <head>
 
-        <title>HCW LMS</title>
+        <title>mTrain</title>
 
         
         <link rel="stylesheet" type="text/css" href="css/app.css" />
@@ -65,8 +65,16 @@
                                 nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. 
                              </p>
                          </li>
+                      </ul>
                          
-                         <li id="coloredbgcontent" data-icon="false">
+                      <ul class="content-listing textfontarial15">
+<!--                         <li>
+                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+                                nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. 
+                             </p>
+                         </li>-->
+                         
+                         <li id="coloredbgcontent" style="border-top: 1px solid #ccc;" data-icon="false">
                              
                              <div id="options" class="c-inner-content textleft">
                                 <input class="" type="radio" name="session-choice" id="optiona" value="optiona" data-iconpos="right"  />
@@ -130,7 +138,7 @@
                          <!--selection prompt-->
                             <div class="noborder" data-role="popup" id="selectionPopup" data-overlay-theme="f" data-dismissible="false">
                                <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
-                               <div class="popup_header">HCW LMS</div>
+                               <div class="popup_header">mTrain</div>
 
                                <div class="popup_body" >
                                    <p class="">Please choose an answer</p>
@@ -144,7 +152,23 @@
                            </div>
                            <!--selection prompt-->
                          
+                           <!--the confirm reset popup--> 
+                            <div class="twobuttons noborder" data-role="popup" id="twobuttonspopup" data-overlay-theme="f" data-dismissible="false">
 
+                                <div class="popup_header"></div>
+
+                                <div class="popup_body">
+                                    <p class="statusmsg"></p>
+                                </div>
+
+                                <div class="popup_footer">
+                                    <a id="cancelbutton" class="pagebutton footerbutton width40" onclick="$('#twobuttonspopup').popup('close')" data-role="button"  data-inline="true" data-mini="true">No</a>
+                                    <a id="okbutton" class="pagebutton footerbutton width40" onclick="" data-role="button" data-inline="true" data-mini="true">Yes</a>
+                                </div>
+
+                            </div>
+                            <!--the confirm reset popup-->
+                            
                  </div> 
                  
 
@@ -161,16 +185,6 @@
             
          <div class="footer"> 
 
-                    <div id="footer_text1">   
-                                        <strong>XYZ Health Center,</strong>
-                                        <div>Plot 2-5, Trans Amadi, Port Hacourt,</div>
-                                        <div>Nigeria. </div> 
-                    </div> 
-                     <div id="footer_text2">   
-                                       <strong>Facility Supervisor</strong>
-                                        <div>Adebayo A. Salako</div>
-                                        <div>08012345678 </div> 
-                    </div> 
          </div>  
             
             

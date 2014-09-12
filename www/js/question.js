@@ -191,7 +191,7 @@ function showTip(quest_ID){
     
     
     if(selectedOptionText == answer){  //correct answer
-        $('#status').html('CORRECT');
+        $('#status').html('CORRECT ANSWER');
         
         //increment score count
         var prevcount = $('#scorecount').val();
@@ -201,7 +201,7 @@ function showTip(quest_ID){
             $('#scorecount').val(parseInt(prevcount) + 1);
     }
     else {
-         $('#status').html('WRONG');
+         $('#status').html('WRONG ANSWER');
     }
      
     console.log('quest id: ' + quest_ID + ' qList: ' + globalObj.questionIDList);
@@ -209,12 +209,12 @@ function showTip(quest_ID){
     var listLength = globalObj.questionIDList.length;
     //pop the tip and move to next question when ok button on tip is clicked 
     if(quest_ID < listLength){
-        $('#tipseen').attr('onclick','loadQuestion('+ quest_ID + ')');
+        $('#tipPopup #tipseen').attr('onclick','loadQuestion('+ quest_ID + ')');
         $('#tipPopup').popup('open');
     }
     else if(quest_ID == listLength){
         var sc = $('#scorecount').val();
-        $('#tipseen').attr('onclick','changeToCert('+sc + ','+ listLength + ')');
+        $('#tipPopup #tipseen').attr('onclick','changeToCert('+sc + ','+ listLength + ')');
         $('#tipPopup').popup('open');
     }
     

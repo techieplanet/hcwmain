@@ -43,7 +43,7 @@ function showForgotForm(){
               
       //secret question
       html =   '<div class="textfontarial12 width90 bottomborder padcontainer marginbottom10">' +
-                    '<p class="marginbottom10"><strong>Secret Question:</strong></p>' +
+                    '<p class="marginbottom10"><strong>Secret Question</strong></p>' +
                     '<p>' +
                         '<span class="cadre">' + globalObj.secret_questions[workerObj.secret_question] + '</span>' +
                     '</p>' +
@@ -51,7 +51,7 @@ function showForgotForm(){
             
      //answer
      html +=    '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                    '<p class="marginbottom10"><strong>Secret Answer:</strong></p>' +
+                    '<p class="marginbottom10"><strong>Secret Answer*</strong></p>' +
                     '<p>' +
                         '<span class=""><input class="styleinputtext" data-role="none" size="30" type="text" name="answer" id="answer" value="" placeholder="Secret Answer" /></span>' +
                     '</p>' +
@@ -59,7 +59,7 @@ function showForgotForm(){
             
      //password
      html +=    '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                    '<p class="marginbottom10"><strong>Password:</strong></p>' +
+                    '<p class="marginbottom10"><strong>New Password*</strong></p>' +
                     '<p>' +
                         '<span class=""><input class="styleinputtext" data-role="none" size="20" type="password" name="password" id="password" value="" placeholder="" /></span>' +
                     '</p>' +
@@ -67,14 +67,14 @@ function showForgotForm(){
             
      //confirm
      html +=    '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                    '<p class="marginbottom10"><strong>Confirm Password:</strong></p>' +
+                    '<p class="marginbottom10"><strong>Confirm New Password*</strong></p>' +
                     '<p>' +
                         '<span class=""><input class="styleinputtext" data-role="none" size="20" type="password" name="confirm" id="confirm" value="" placeholder="" /></span>' +
                     '</p>' +
                 '</div>';
             
-     //confirm
-     html +=    '<div class="textfontarial12 width95 margintop10 padcontainer  marginbottom10">' +     
+     //reset button
+     html +=    '<div class="textfontarial12 width95 margintop10 padcontainer  marginbottom10" style="padding: 10px 0 20px !important;">' +     
                     '<p class="textcenter">' +
                         '<a id="reset" class="pagebutton padtwo" onclick="recoverPassword()" data-theme="d" data-role="button"  data-inline="true">Reset My Password</a>' +
                     '</p>' +
@@ -82,6 +82,8 @@ function showForgotForm(){
                                 
      $('.focus-area').html(html);
      $('.c-title').html(workerObj.firstname + ' ' + workerObj.middlename + ' ' + workerObj.lastname + '(' + workerObj.username + ')');
+     if($('.required-area').length==0)
+        $('.context-bar').after('<div class="required-area"><strong><em>* indicates required field</em></strong></div>'); 
 }
 
 
@@ -101,12 +103,12 @@ function recoverPassword(){
                 if(row['secret_answer'].toUpperCase()==answer.toUpperCase()){
                     DAO.update(tx, 'cthx_health_worker', 'password', password, 'worker_id', workerObj.workerID);
                     $('#statusPopup .statusmsg').html('<p>Password Reset Successful</p>'); 
-                    $('#okbutton').attr('onclick','$.mobile.changePage("login.html?pageMode=1")');
+                    $('#statusPopup #okbutton').attr('onclick','$.mobile.changePage("login.html?pageMode=1")');
                     $('#statusPopup').popup('open');
                 }
                 else{
                     $('#statusPopup .statusmsg').html('<p>Wrong answer</p>'); 
-                    $('#okbutton').attr('onclick','$("#statusPopup").popup("close")');
+                    $('#statusPopup #okbutton').attr('onclick','$("#statusPopup").popup("close")');
                     $('#statusPopup').popup('open');
                 }
             });

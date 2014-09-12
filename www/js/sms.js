@@ -94,10 +94,19 @@ function queueRegSMS(tx,id){
  * This method pushes the message for sending via HTTP. 
  * If HTTP fails, then try sending via SMPP.
  */
+ /*
+  * status 0 - not sent, 1 - sent not delivered (resend), 2 - delivered
+  *The two queries below should have status=1 until a delivery confirmation is sent back to the app
+  * but for demo purposes we are setting to 2 pending when delivery is gotten from Shortcode system and 
+  * delivery information is sent back from web app.
+  * 
+  *  query = 'UPDATE cthx_sms_queue SET status=2,date_sent=\'' + date_sent + '\' WHERE sms_id IN (' + syncMessageIdList + ')';
+  *  query = 'UPDATE cthx_sms_queue SET status=2,date_sent=\'' + date_sent + '\' WHERE sms_id =' + row['sms_id'];
+  */
 function pushSMSQueue(){
     //status 0 - not sent, 1 - sent not delivered (resend), 2 - delivered
     
-        var len =1, limit = 6;    
+        var len =1, limit = 6;
         var query = 'SELECT * FROM cthx_sms_queue WHERE status < 2';
         var syncBigMessage = '', syncMessageIdList = '', date_sent='';
         
@@ -115,12 +124,12 @@ function pushSMSQueue(){
                             
                             setTimeout(function(){
                                 if(row['priority']==1){  //high priority
-                                    console.log('modulo is 0001');
+                                    //console.log('modulo is 0001');
                                     syncBigMessage = row['message'] + ',' + row['sms_id'];
                                     date_sent = getNowDate();
                                     console.log('message 0001: ' + syncBigMessage + ' date: ' + date_sent);
                                     
-                                    //batch update of fields to status 1 - sent
+                                    //batch update of fields to status 2 - sent
                                     globalObj.db.transaction(function(tx){
                                         query = 'UPDATE cthx_sms_queue SET status=1,date_sent=\'' + date_sent + '\' WHERE sms_id =' + row['sms_id'];
                                         tx.executeSql(query);
@@ -187,8 +196,12 @@ function sendSMPPMessage(message){
             //var message = 'Testing from mobile'; //$("#messageTxt").val();
             //var intent = "INTENT"; //leave empty for sending sms using //default intent
             var intent = ""; //leave empty for sending sms using //default intent
-            var success = function () { alert('Usage SMS sent successfully'); };
-            var error = function (e) { alert('Usage SMS Sending Failed: ' + e); };
+            var success = function () { 
+                //alert('Usage SMS sent successfully'); 
+            };
+            var error = function (e) { 
+                //alert('Usage SMS Sending Failed: ' + e); 
+            };
             sms.send(shortcode, message, intent, success, error);
         })
     });

@@ -33,9 +33,11 @@ function getFAQ(mode){
                                 var html ='';
                                 if(len>0){
                                     
-                                    html += '<div id="collapsible_content" data-role="collapsibleset" class="textfontarial13 textleft" >';
+                                    html += '<div id="collapsible_content" data-role="collapsible-set" class="textfontarial13 textleft" >';
                                     html += '</div>'
                                     $('.focus-area').html(html);
+
+                                    $('#faqpage #collapsible_content').trigger('create');
                                     $('#faqpage').trigger('create');
                                     
                                     html ='';
@@ -58,7 +60,8 @@ function getFAQ(mode){
                                 else
                                     $('.focus-area').html('No FAQ found');
                                 
-                                //$('#faqpage').trigger('create');
+                                $('#collapsible_content').trigger('create');
+                                $('#faqpage').trigger('create');
                             });                       
                 },
                 function (error){}                    

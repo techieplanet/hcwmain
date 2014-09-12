@@ -3,9 +3,11 @@ var globalObj = {   //begin class
   /*
    *    GENERAL
    */
-    appName : 'mTrapp',
+    appName : 'mTrain',
     
-    loginMode : '',
+    loginMode : '', //whether the user logged in through test, training, profile or admin
+    
+    usersCount : 0, //stores the number of users in the system
     
     sessionType: 0,  //sessionType: 1 - INDIVIDUAL SESSION, 2 - GROUP SESSION, 3 - TEST SESSION
     
@@ -32,15 +34,16 @@ var globalObj = {   //begin class
     
     firstTimeUse : true,    //remains true until otherwise proven not so
     
+    currentPage : '',       //the id attribute of the current page
+    
     /*
      *  SETUP
      */
-    videoDir : 'HCW/Videos', //video default directory on device
-    guidesDir : 'HCW/Guides', //guides default directory on device
-    jobaidsDir : 'HCW/JobAids', //job aids default directory on device
-    helpDir : 'HCW/Help', //help default directory on device
-    
-   
+    videoDir : 'MTRAIN/Videos', //video default directory on device
+    guidesDir : 'MTRAIN/Guides', //guides default directory on device
+    jobaidsDir : 'MTRAIN/JobAids', //job aids default directory on device
+    helpDir : 'MTRAIN/Help', //help default directory on device
+
   
   /*
    *    TRAINING VIDEO, GUIDE, FAQ
@@ -87,7 +90,7 @@ var workerObj = {   //begin class
     gender : '',
     email : '',
     phone : '',
-    qualification : '',
+    //qualification : '',
     supervisor : 0,
     cadreID : 0,
     
@@ -109,7 +112,7 @@ var adminObj = {   //begin class
     gender : '',
     email : '',
     phone : '',
-    qualification : '',
+    //qualification : '',
     supervisor : 0,
     cadreID : 0,
     

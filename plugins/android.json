@@ -75,7 +75,7 @@
             "PACKAGE_NAME": "com.tp.hcwdeploy"
         },
         "org.apache.cordova.network-information": {
-            "PACKAGE_NAME": "com.tp.mtrapp"
+            "PACKAGE_NAME": "com.tp.mTrain"
         }
     },
     "dependent_plugins": {}

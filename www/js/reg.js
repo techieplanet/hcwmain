@@ -15,7 +15,7 @@ $(document ).delegate("#regpage", "pageshow", function() {
                email:{required:true, email:true},
                phonenumber:{required:true,digits:true, minlength:8},
                cadre:{required:true,min:1},
-               qualification:{required:true,minlength:3},
+               //qualification:{required:true,minlength:3},
                gender:{required:true,min:1},
                squestion:{required:true,min:1},
                answer: {required:true},
@@ -31,7 +31,7 @@ $(document ).delegate("#regpage", "pageshow", function() {
                phonenumber:{required:'Cannot be empty', digits:'Enter numbers only', minlength:'8 characters minimum'},
                cadre:{required:'Cannot be empty', min:'Make a selection'},
                phone:{required:'Cannot be empty', min:'8 characters minimum'},
-               qualification:{required:'Cannot be empty', minlength:'3 characters minimum'}, 
+               //qualification:{required:'Cannot be empty', minlength:'3 characters minimum'}, 
                gender:{required:'Cannot be empty', min:'Make a selection'},
                squestion:{required:'Cannot be empty', min:'Make a selection'},
                answer: {required:'Cannot be empty'},
@@ -57,8 +57,13 @@ $(document ).delegate("#regpage", "pageshow", function() {
 
 
 
-$(document ).delegate("#regpage", "pageinit", function() {        
-        globalObj.db.transaction(showPersonalReg);      
+$(document ).delegate("#regpage", "pageinit", function() { 
+        //reset the worker object, ready for fresh data
+        resetWorker();
+        
+        //show personal info form
+        showPersonalReg()
+        //globalObj.db.transaction(showPersonalReg);      
 })
 
 function handleSubmit(){
@@ -72,30 +77,30 @@ function handleSubmit(){
  * The first user gets to be the an admin.
  * If the admin leaves/changes, then he has to select the new admin from admin area
  */
-var supervisorExists = false;
-function showPersonalReg(tx){
+//var supervisorExists = false;
+function showPersonalReg(){
     
-    var query = 'SELECT * FROM cthx_health_worker WHERE supervisor=1';
-    tx.executeSql(query,[],
-                    function(tx,result){
-                        var len = result.rows.length;
-                        var html ='';
-                        if(len>0)
-                            supervisorExists = true;
+    //var query = 'SELECT * FROM cthx_health_worker WHERE supervisor=1';
+    //tx.executeSql(query,[],
+      //              function(tx,result){
+      //                  var len = result.rows.length;
+                        
+//                        if(len>0)
+//                            supervisorExists = true;
                             
-                                                        
+                            var html ='';               
                             //names
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                                        '<p class="marginbottom10"><strong class="marginbottom10">Full Name:</strong></p>' +
-                                        '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="firstname" id="firstname" value="" placeholder="First Name"/></span></p>' +
-                                        '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="middlename" id="middlename" value="" placeholder="Middle Name" /></span></p>' +
-                                        '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="lastname" id="lastname" value="" placeholder="Last Name" /></span></p>' +                                       
+                                        '<p class="marginbottom10"><strong class="marginbottom10">Full Name*</strong></p>' +
+                                        '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="firstname" id="firstname" value="' + workerObj.firstname + '" placeholder="First Name"/></span></p>' +
+                                        '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="middlename" id="middlename" value="' + workerObj.middlename + '" placeholder="Middle Name" /></span> (<em>Optional</em>)</p>' +
+                                        '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="lastname" id="lastname" value="' + workerObj.lastname + '" placeholder="Last Name" /></span></p>' +                                       
                                     '</div>';  
                                 
                                 
                             //cadre
                             html +=  '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Cadre:</strong></p>' +
+                                        '<p class="marginbottom10"><strong>Cadre*</strong></p>' +
                                         '<p>' +
                                             '<span class="">' +
                                                 '<select name="cadre" id="cadre" data-role="none" class="styleinputtext">' + 
@@ -110,34 +115,34 @@ function showPersonalReg(tx){
                             
                              
                              //qualification
-                            html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Qualification:</strong></p>' +
-                                        '<p>' +
-                                            '<span class=""><input class="styleinputtext" data-role="none" size="30" type="text" name="qualification" id="qualification" value="" placeholder="Qualification" /></span>' +
-                                        '</p>' +
-                                    '</div>';
+//                            html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
+//                                        '<p class="marginbottom10"><strong>Qualification:</strong></p>' +
+//                                        '<p>' +
+//                                            '<span class=""><input class="styleinputtext" data-role="none" size="30" type="text" name="qualification" id="qualification" value="' + workerObj.qualification + '" placeholder="Qualification" /></span>' +
+//                                        '</p>' +
+//                                    '</div>';
                             
                             //phone
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Phone:</strong></p>' +
+                                        '<p class="marginbottom10"><strong>Phone*</strong></p>' +
                                         '<p>' +
-                                            '<span class=""><input class="styleinputtext" data-role="none" size="20" type="tel" name="phonenumber" id="phonenumber" value="" placeholder="Phone Number" /></span>' +
+                                            '<span class=""><input class="styleinputtext" data-role="none" size="20" type="tel" name="phonenumber" id="phonenumber" value="' + workerObj.phone + '" placeholder="Phone Number" /></span>' +
                                         '</p>' +
                                     '</div>';
                                 
                                 
                             //email
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Email:</strong></p>' +
+                                        '<p class="marginbottom10"><strong>Email*</strong></p>' +
                                         '<p>' +
-                                            '<span class=""><input class="styleinputtext" data-role="none" size="20" type="email" name="email" id="email" value="" placeholder="Email Address" /></span>' +
+                                            '<span class=""><input class="styleinputtext" data-role="none" size="20" type="email" name="email" id="email" value="' + workerObj.email + '" placeholder="Email Address" /></span>' +
                                         '</p>' +
                                     '</div>';
                             
                             
                             //gender
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Gender:</strong></p>' +
+                                        '<p class="marginbottom10"><strong>Gender*</strong></p>' +
                                         '<p>' +
                                             '<span class="">' +
                                                 '<select name="gender" id="gender" data-role="none" class="styleinputtext">' + 
@@ -154,7 +159,7 @@ function showPersonalReg(tx){
                                 
                             //secret question
                             html += '<div class="textfontarial12 width95 padcontainer marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Secret Question:</strong></p>' +
+                                        '<p class="marginbottom10"><strong>Secret Question*</strong></p>' +
                                         '<p>' +
                                             '<span class="">' +
                                                 '<select name="squestion" id="squestion" data-role="none" class="styleinputtext">' + 
@@ -167,16 +172,25 @@ function showPersonalReg(tx){
                                         '</p>' +
                                     '</div>';
                                 
-                              //secret answer
+                            //secret answer
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Secret Answer</strong></p>' +
+                                        '<p class="marginbottom10"><strong>Secret Answer*</strong></p>' +
                                         '<p>' +
-                                            '<span class=""><input class="styleinputtext" data-role="none" size="20" type="text" name="answer" id="answer" value="" placeholder="Secret Answer" /></span>' +
+                                            '<span class=""><input class="styleinputtext" data-role="none" size="20" type="text" name="answer" id="answer" value="' + workerObj.secret_answer + '" placeholder="Secret Answer" /></span>' +
                                         '</p>' +
                                     '</div>';
                                 
                             
-                            $('.focus-area').html(html);                            
+                            $('.focus-area').html(html);     
+                            
+                            //set the selected cadre, question and gender
+                            document.getElementById("cadre").selectedIndex = workerObj.cadreID;
+                            document.getElementById("squestion").selectedIndex = workerObj.secret_question;
+                            var genderID; 
+                            if(workerObj.gender=="Male") genderID =1;
+                            else if(workerObj.gender=="Female") genderID =2;
+                            else genderID =0;
+                            document.getElementById("gender").selectedIndex = genderID;
                             
                             $('.c-title').html(
                                     'New User'+
@@ -189,12 +203,10 @@ function showPersonalReg(tx){
                                              '<span class="floatright textfontarial13">' + 
                                                 '<a href="" id="nextButton" onclick="setUpWorker()" class="notextdecoration actionbutton textwhite" >Next</a>' +
                                              '</span>'
-                                        )      
-                                
-                            //$('#regpage').trigger('create');
+                                        );  
+                             if($('.required-area').length==0)
+                                $('#c-bar').after('<div class="required-area"><strong><em>* indicates required field</em></strong></div>');
                         
-                    }
-            );
 }
 
 
@@ -210,7 +222,7 @@ function showRegLogin(){
                 //username
                 html += '<li  data-icon="false" class="bottomborder marginleft15">' +
                             '<div  class="margintop10">' +
-                                '<p ><strong>Username:</strong></p>' +
+                                '<p ><strong>Username*</strong></p>' +
                                 '<p class="">' +
                                     '<input class="styleinputtext" data-role="none" size="20" type="text" name="username" id="username" value="' + workerObj.username + '" placeholder="User Name" />' +
                                  '</p>' +
@@ -220,7 +232,7 @@ function showRegLogin(){
                 //password
                 html += '<li  data-icon="false" class="bottomborder marginleft15">' +
                             '<div  class="margintop10">' +
-                                '<p><strong>Password:</strong></p>' +
+                                '<p><strong>Password*</strong></p>' +
                                 '<p class=""><input class="styleinputtext" data-role="none" size="20" type="password" name="password" id="password" /></p>' +
                             '</div>' +
                         '</li>';
@@ -228,7 +240,7 @@ function showRegLogin(){
                 //confirm
                 html += '<li  data-icon="false" class="bottomborder marginleft15">' +
                             '<div  class="margintop10">' +
-                                '<p><strong>Confirm Password:</strong></p>' +
+                                '<p><strong>Confirm Password*</strong></p>' +
                                 '<p class=""><input class="styleinputtext" data-role="none" size="20" type="password" name="confirm" id="confirm" /></p>' +
                             '</div>' +
                         '</li>';
@@ -239,23 +251,15 @@ function showRegLogin(){
                            
                             
                 $('.focus-area').html(html);
-
-
-
-                    //$('.c-title').html('New User');
-                    
-                    //$('#regForm').attr('name','loginRegForm');
-                    //$('#regForm').attr('id','loginRegForm');
                     
                     $('#c-bar').html(
                          '<span id="column-width width30">Login Information</span>' +
                          '<span class="floatright textfontarial13">' +
-                              //'<a href="" onclick="showPersonalReg()" class="notextdecoration textwhite" >Back</a>' +
+                              '<a href="" onclick="showPersonalReg()" class="notextdecoration actionbutton textwhite marginright10" >Back</a>' +
                               '<a href="" onclick="savePersonalInfo()" class="notextdecoration actionbutton textwhite" >Save</a>' +
                          '</span>'
-                    )      
+                    );      
                                                 
-              
 }
 
 //set up personal information for the user. Info from the personal info tab
@@ -267,7 +271,7 @@ function setUpWorker(){
     if(form.valid()){
       //if(true){
         var gender = $('#gender').val()==1 ? 'Male' : 'Female';
-        var supervisor = supervisorExists==true ? 0 : 1;
+        //var supervisor = supervisorExists==true ? 0 : 1;
 
         workerObj.firstname =  $('#firstname').val();
         workerObj.middlename = $('#middlename').val();
@@ -275,8 +279,8 @@ function setUpWorker(){
         workerObj.gender = gender;
         workerObj.email = $('#email').val();
         workerObj.phone = $('#phonenumber').val();
-        workerObj.qualification = $('#qualification').val();
-        workerObj.supervisor = supervisor;
+        //workerObj.qualification = $('#qualification').val();
+        workerObj.supervisor = 0;
         workerObj.cadreID = $('#cadre').val();     
         workerObj.secret_question = $('#squestion').val();
         workerObj.secret_answer = $('#answer').val();
@@ -315,14 +319,14 @@ function setUpWorkerLoginDetails(){
             workerObj.password = $('#password').val();
 
             
-            var fields = 'firstname,middlename,lastname,gender,email,phone,qualification,supervisor,cadre_id,username,password,secret_question,secret_answer';
+            var fields = 'firstname,middlename,lastname,gender,email,phone,supervisor,cadre_id,username,password,secret_question,secret_answer';
             var values = '"' + workerObj.firstname + '","' +
                            workerObj.middlename + '","' +
                            workerObj.lastname + '","' +
                            workerObj.gender + '","' +
                            workerObj.email + '","' +
                            workerObj.phone + '","' +
-                           workerObj.qualification + '","' +
+                           //workerObj.qualification + '","' +
                            workerObj.supervisor + '","' +
                            workerObj.cadreID + '","' +
                            workerObj.username + '","' +
@@ -332,7 +336,12 @@ function setUpWorkerLoginDetails(){
 
             globalObj.db.transaction(function(tx){
                         DAO.save(tx, 'cthx_health_worker', fields, values);  
-
+                        
+                        //reset the usersCount variable by calling set method
+                        setUsersCount();
+                        console.log('UserCount: ' + globalObj.usersCount);
+                        
+                        
                         //queue last inserted row for SMS sending 
                         //set time out 500 to wait for the update to complete
                         setTimeout(function(){
@@ -349,8 +358,10 @@ function setUpWorkerLoginDetails(){
 
 
                         $('.statusmsg').html('<p>User Registration Successful. <br/> ' + 
-                            'You will be taken to new user <strong>Sandbox Mode</strong> on next screen.</p>');
-                        $('#okbutton').attr('onclick','switchToSandboxMode(0)')
+                            'You will be taken to new user\'s <strong>Profile</strong> area on next screen.</p>');
+                        
+                        //switchToSandboxMode is found in profile.js...set to 01 to tell system this is a new user
+                        $('#statusPopup #okbutton').attr('onclick','switchToSandboxMode(0)'); 
                         $('#statusPopup').popup('open');
                 },
                 function(error){

@@ -13,17 +13,35 @@ $(document).delegate("#testpage", "pageshow", function()    {
         });
 });
 
-$(document ).delegate("#testpage", "pageinit", function() {        
+$(document).delegate("#testpage", "pageinit", function() {        
         //alert('testpage')
         //sample initial string to split on - /phonegap/hcwdeploy/www/test.html?pagemode=1
         //1 - summary mode, 2 - certificate mode
         var pageMode = $('#testpage').attr('data-url').split('?')[1].split('=')[1];
         console.log('pagemode: ' + pageMode);
         
-        if(pageMode == 1){
-            showSummary();
+        if(pageMode == 1){ //summary, pending or result
+            if($("body").data('testTab')!=null){
+                var currentTab = $("body").data('testTab');
+                if(currentTab == 'pending'){
+                    showPending();
+                    $('#sidebar_ul li a').removeClass('active');
+                    $('#pending').addClass('active');
+                }
+                else if(currentTab == 'results'){
+                    showResults();
+                    $('#sidebar_ul li a').removeClass('active');
+                    $('#results').addClass('active');
+                }
+                else{
+                    showSummary();
+                }
+            }
+            else{
+                showSummary();
+            }
         }
-        else if(pageMode==2){
+        else if(pageMode==2){ //certificate
             showCert();
         }
         
@@ -32,14 +50,20 @@ $(document ).delegate("#testpage", "pageinit", function() {
 
 
 function showSummary()  {
+    $("body").data( "testTab" , 'summary');
+    console.log('body test data: ' + JSON.stringify($("body").data()));
     globalObj.db.transaction(querySummary,errorCB);   
 }
 
 function showPending()  {
+    $("body").data( "testTab" , 'pending');
+    console.log('body test data: ' + JSON.stringify($("body").data()));
     globalObj.db.transaction(queryPendingTests,errorCB);   
 }
 
 function showResults()  {
+    $("body").data( "testTab" , 'results');
+    console.log('body test data: ' + JSON.stringify($("body").data()));
     globalObj.db.transaction(queryResults,errorCB);   
 }
 
@@ -96,19 +120,24 @@ function querySummary(tx){
                         
                         
                          $('.focus-area').html(html); 
-                         $('.c-title').html('Summary');
-                         $('.context-bar').html('Details');
-                         $("#testpage").trigger('create');
+//                         $('.c-title').html('Summary');
+//                         $('#context-bar').html('Details');
+//                         $("#testpage").trigger('create');
                     }
                     else{
                         $('.focus-area').html(
                                     '<ul id="summaryList" data-role="listview">' +
-                                        '<li class="" data-icon="false">' +
-                                            '<p>No tests found.</p>' +
+                                        '<li class="margintop10" data-icon="false">' +
+                                            '<p>No test details found.</p>' +
                                         '</li>' +
                                     '</ul>'
                                  ); 
                     }
+                    
+                    //set the heading...has to run whether or not there were rows to display
+                    $('.c-title').html('Summary');
+                    $('#context-bar').html('Details');
+                    $("#testpage").trigger('create');
                         
                     
                 },
@@ -155,14 +184,14 @@ function querySummary(tx){
                     else{
                         $('.focus-area').html(
                                     '<ul id="summaryList" data-role="listview">' +
-                                        '<li class="" data-icon="false">' +
+                                        '<li class="margintop10" data-icon="false">' +
                                             '<p>No tests found.</p>' +
                                         '</li>' +
                                     '</ul>'
                                  ); 
                     }
                     
-                    //set the heading 
+                    //set the heading...has to run whether or not there were rows to display
                     $('#context-bar').html(
                          '<span id="column-width" class="width60 textleft">Module</span>' +
                          '<span id="column-width" class="width10">&nbsp;</span>' +
@@ -219,7 +248,7 @@ function queryResults(tx){
                     else{
                         $('.focus-area').html(
                                     '<ul id="summaryList" data-role="listview">' +
-                                        '<li class="" data-icon="false">' +
+                                        '<li class="margintop10" data-icon="false">' +
                                             '<p>No test results found.</p>' +
                                         '</li>' +
                                     '</ul>'
@@ -289,8 +318,9 @@ function checkStatusForTest(tx){
                                 changeToTest();
                           }
                           else{
-                              console.log('check result: go to training')
-                                $('#testcheckPopup').popup('open');
+                              //console.log('check result: go to training')
+                              $('#testcheckPopup #sessionok').attr('onclick','retakeTraining('+globalObj.testID + ',' + globalObj.moduleID + ')');
+                              $('#testcheckPopup').popup('open');
                             }
                     }
              );
@@ -386,7 +416,7 @@ function showCert(){
     
     var html ="";
     
-    html += '<ul class="content-listing textfontarial12" data-role="listview">' +
+    html += '<ul class="content-listing textfontarial12 margintop10" data-role="listview">' +
                 '<li class="" data-icon="false">' +
                     '<p>Score' + 
                         '<span id="certscore" class=ui-li-count>' + 
@@ -404,7 +434,7 @@ function showCert(){
                 '</li>';
                 
     html +=     '<li class="" data-icon="false">' +
-                    '<p class="bold textcenter" style="padding-top:1em !important;">' +
+                    '<p class="bold textcenter" style="padding-top:1em !important; font-size:15px;">' +
                         gradeCalc(globalObj.testScore, globalObj.testTotal) +
                     '</p>'
                 '</li>';
@@ -427,29 +457,29 @@ function gradeCalc(score,total){
 function getGradeLongText(ptage){
     var str = '';
     if(ptage < 40){
-        str = 'Wow! ' + ptage + '% is below par. You may want to retake this test<br/><br/>';
+        console.log('fail area');
+        str = 'Score of ' + ptage + '% is below par. You may want to retake this test<br/><br/>';
         str +=     '<div data-role="fieldcontain" class="fieldrow nomargin">';
-        str +=         '<a href="question.html" class="pagebutton textcenter"  data-role="button"  data-inline="true">Retake Test</a>'
-        //str +=         '<a href="question.html" class="pagebutton textcenter"  data-role="button"  data-inline="true">Retake Training</a>'
+        str +=         '<a href="question.html" class="pagebutton textcenter"  data-role="button"  data-inline="true">Retake Test</a>';
+        str +=         '<a  class="pagebutton textcenter" style="margin-left: 15px !important;" onclick="retakeTraining(' + globalObj.testID + ',' + globalObj.moduleID + ');" data-theme="d" data-role="button"  data-inline="true" >Retake Training</a>';
         str +=     '</div>';
-        //str += '<a style="padding:4%;" href="question.html" class="pagebutton width60 padtwo textcenter" data-theme="b" data-role="button" >Retake Test</a>';
     }
     else if(ptage >= 40 && ptage < 60){
-        str = 'Hmmm! ' + ptage + '% not so good. You may want to retake this test for higher scores<br/><br/>';
+        str = 'Score of ' + ptage + '% not so good. You may want to retake this test for higher scores<br/><br/>';
         str +=     '<div data-role="fieldcontain" class="fieldrow nomargin">';
         str +=         '<a id="login" href="question.html" class="pagebutton textcenter"  data-role="button"  data-inline="true">Retake Test</a>';
         str +=     '</div>';
         //str += '<a style="padding:4%;" href="question.html" class="pagebutton width60 padtwo textcenter" data-theme="b" data-role="button" >Retake Test</a>';
     }
     else if(ptage >= 60 && ptage < 80){
-        str = 'Good! ' + ptage + '% is okay but you may want to retake this test for even higher scores<br/><br/>';
+        str = 'Score of ' + ptage + '% is okay but you may want to retake this test for even higher scores<br/><br/>';
         str +=     '<div data-role="fieldcontain" class="fieldrow nomargin">';
         str +=         '<a href="question.html" class="pagebutton textcenter"  data-role="button"  data-inline="true">Retake Test</a>'
         str +=     '</div>';
         //str += '<a style="padding:4%;" href="question.html" class="pagebutton width60 padtwo textcenter" data-theme="b" data-role="button" >Retake Test</a>';
     }
     else {
-        str = 'Bravo! ' + ptage + '% is great. Good job!';
+        str = 'Bravo! You scored ' + ptage + '%. Good job!';
     }
     
     return str;

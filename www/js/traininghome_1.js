@@ -150,9 +150,9 @@ function loadModule(cat_id){
 
 function populateModule(tx){
 
-    $('#' + globalObj.currentPage + ' #collapsible_content').empty();
-    $('#' + globalObj.currentPage + ' #collapsible_content').html('');
-    $('#' + globalObj.currentPage + ' #context-bar').parent().removeClass('hidden');
+    $('#traininghomepage #collapsible_content').empty();
+    $('#traininghomepage #collapsible_content').html('');
+    $('#traininghomepage #context-bar').parent().removeClass('hidden');
     //return;
     
     var query = 'SELECT * FROM cthx_training_module m JOIN cthx_category c ON m.category_id=c.category_id AND m.category_id='+ globalObj.categoryID;
@@ -176,12 +176,7 @@ function populateModule(tx){
                                     setTimeout(function(){
                                         globalObj.moduleID = row['module_id'];
                                         globalObj.moduleTitle = row['module_title'];
-                                        
-                                        //select the populate method based on current page
-                                        if(globalObj.currentPage == 'jobaidspage')
-                                            globalObj.db.transaction(populateAids); //found on jobaids.js
-                                        else //default: training home page
-                                            globalObj.db.transaction(populateTopic);
+                                        globalObj.db.transaction(populateTopic);
                                         
 //                                        if((i==(len-1)) && globalObj.retakeMode==true){
 //                                            setTimeout(function(){

@@ -1,6 +1,3 @@
-
-
-
 function showFacilitySetup(){
     var query = 'SELECT * FROM cthx_settings WHERE id=1';
     globalObj.db.transaction(function(tx){
@@ -28,14 +25,16 @@ function showFacilitySetup(){
                                                         '<span id="column-width width30">Facility &amp; System Settings</span>' +
                                                         '<span class="floatright textfontarial13 marginleft20px"><a href="" onclick="setUpFacility()" class="notextdecoration actionbutton textwhite" >Next</a></span>' +
                                                         '<span class="floatright textfontarial13"><a href="" onclick="wizardWelcome()" class="notextdecoration actionbutton textwhite" >Back</a></span>' +
-                                                    '</li>' +
+                                                    '</li>' +                    
                                                 '</ul>';
-                                 
-                                html +=         '<div class="focus-area">' ;
+                                
+                                html +=         '<div class="required-area"><strong><em>* indicates required field</em></strong></div>';
+                                
+                                html +=         '<div class="focus-area scrollbar">' ;
                                  
                                 //facility id
                                 html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10 margintop10">' +
-                                            '<p class="marginbottom10"><strong>Facility ID:</strong></p>' +
+                                            '<p class="marginbottom10"><strong>Facility ID*</strong></p>' +
                                             '<p>' +
                                                 '<span class="marginleft10">' +
                                                     //'<span class="bold textleft width25 inlineblock">Facility ID</span>' + 
@@ -47,7 +46,7 @@ function showFacilitySetup(){
                                     
                                   //facility name
                                 html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10 margintop10">' +
-                                            '<p class="marginbottom10"><strong>Facility Name:</strong></p>' +
+                                            '<p class="marginbottom10"><strong>Facility Name*</strong></p>' +
                                             '<p>' +
                                                 '<span class="marginleft10 block">' +
                                                     '<input class="styleinputtext" data-role="none" size="40" type="text" name="facname" id="facname" value="' + settingsObj.facilityName + '" placeholder="Facility Name" />' +
@@ -58,20 +57,20 @@ function showFacilitySetup(){
 
                                 //facility address
                                 html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                                            '<p class="marginbottom10"><strong>Facility Address:</strong></p>' +
+                                            '<p class="marginbottom10"><strong>Facility Address*</strong></p>' +
                                             '<p>' +
                                                 '<span class="marginleft10 margintop10 block" >' +
                                                     '<input class="styleinputtext" data-role="none" size="40" type="text" name="line1" id="line1"  placeholder="Address Line 1" value="' + settingsObj.facilityAddrLine1 + '" />' +
                                                 '</span>' +
                                                 '<span class="marginleft10 margintop10 block" >' +
                                                     '<input class="styleinputtext" data-role="none" size="40" type="text" name="line2" id="line2" placeholder="Address Line 2" value="' + settingsObj.facilityAddrLine2 + '" />' +
-                                                '</span>'+
+                                                ' (<em>Optional</em>)</span>'+ 
                                             '</p>' +
                                         '</div>';
                                     
                                //sms shortcode
                                 html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                                            '<p class="marginbottom10"><strong>SMS Short Code</strong></p>' +
+                                            '<p class="marginbottom10"><strong>SMS Short Code*</strong></p>' +
                                             '<p>' +
                                                 '<span class="marginleft10">' +
                                                     //'<span class="bold textleft width25 inlineblock">SMS Short Code</span>' + 
@@ -82,10 +81,9 @@ function showFacilitySetup(){
 
                                  //sms count
                                 html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                                            '<p class="marginbottom10"><strong>Max. SMS Sent Per Week</strong></p>' +
+                                            '<p class="marginbottom10"><strong>Maximum SMS Sent Per Week*</strong></p>' +
                                             '<p>' +
                                                 '<span class="marginleft10">' +
-                                                    //'<span class="bold textleft width25 inlineblock">Max. SMS Sent Per Week</span>' + 
                                                     '<input class="styleinputtext textright" data-role="none" size="20" type="tel" name="smscount" id="smscount" value="' + settingsObj.smscount + '"  />' +
                                                 '</span>' +
                                             '</p>' +
@@ -96,7 +94,7 @@ function showFacilitySetup(){
                        //html +=      '</form>';
                        html += '</div>'; //content-question
 
-                       console.log('b4 attach: '+JSON.stringify(settingsObj));
+                       //console.log('b4 attach: '+JSON.stringify(settingsObj));
                                 $('#wizardForm').html(html);
                                 //$('#context-bar').html()      
                             }
@@ -127,13 +125,15 @@ function showAdminInfoSetup(){
                             '<span class="floatright textfontarial13"><a href="" onclick="showFacilitySetup()" class="notextdecoration actionbutton textwhite" >Back</a></span>' +
                         '</li>' +
                     '</ul>';
+                
+    html +=         '<div class="required-area"><strong><em>* indicates required field</em></strong></div>';
     
     html +=         '<div class="focus-area">' ;
     //names
     html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                '<p class="marginbottom10"><strong class="marginbottom10">Full Name:</strong></p>' +
+                '<p class="marginbottom10"><strong class="marginbottom10">Full Name*</strong></p>' +
                 '<p><span class=""><input class="styleinputtext marginbottom10" size="30" type="text" name="firstname" id="firstname" placeholder="First Name" value="' + workerObj.firstname + '"/></span></p>' +
-                '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="middlename" id="middlename" value="' + workerObj.middlename + '" placeholder="Middle Name" /></span></p>' +
+                '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="middlename" id="middlename" value="' + workerObj.middlename + '" placeholder="Middle Name" /></span> (<em>Optional</em>)</p>' +
                 '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="lastname" id="lastname" value="' + workerObj.lastname + '" placeholder="Last Name" /></span></p>' +                                       
                 //'<input class="styleinputtext textright" data-role="none" size="20" type="text" name="facid" id="facid" value="' + (settingsObj.facilityID==0?"":settingsObj.facilityID) + '"   />' +
             '</div>';  
@@ -142,7 +142,7 @@ function showAdminInfoSetup(){
                                 
             //cadre
             html +=  '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                        '<p class="marginbottom10"><strong>Cadre:</strong></p>' +
+                        '<p class="marginbottom10"><strong>Cadre*</strong></p>' +
                         '<p>' +
                             '<span class="">' +
                                 '<select name="cadre" id="cadre" data-role="none" class="styleinputtext">' + 
@@ -157,16 +157,16 @@ function showAdminInfoSetup(){
                             
                              
             //qualification
-            html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                        '<p class="marginbottom10"><strong>Qualification:</strong></p>' +
-                        '<p>' +
-                            '<span class=""><input class="styleinputtext" data-role="none" size="30" type="text" name="qualification" id="qualification" value="' + workerObj.qualification + '" placeholder="Qualification" /></span>' +
-                        '</p>' +
-                    '</div>';
+//            html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
+//                        '<p class="marginbottom10"><strong>Qualification:</strong></p>' +
+//                        '<p>' +
+//                            '<span class=""><input class="styleinputtext" data-role="none" size="30" type="text" name="qualification" id="qualification" value="' + workerObj.qualification + '" placeholder="Qualification" /></span>' +
+//                        '</p>' +
+//                    '</div>';
                             
             //phone
             html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                        '<p class="marginbottom10"><strong>Phone:</strong></p>' +
+                        '<p class="marginbottom10"><strong>Phone*</strong></p>' +
                         '<p>' +
                             '<span class=""><input class="styleinputtext" data-role="none" size="20" type="tel" name="phonenumber" id="phonenumber" value="' + workerObj.phone + '" placeholder="Phone Number" /></span>' +
                         '</p>' +
@@ -175,7 +175,7 @@ function showAdminInfoSetup(){
 
             //email
             html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                        '<p class="marginbottom10"><strong>Email:</strong></p>' +
+                        '<p class="marginbottom10"><strong>Email*</strong></p>' +
                         '<p>' +
                             '<span class=""><input class="styleinputtext" data-role="none" size="20" type="email" name="email" id="email" value="' + workerObj.email + '" placeholder="Email Address" /></span>' +
                         '</p>' +
@@ -184,7 +184,7 @@ function showAdminInfoSetup(){
                             
             //gender
             html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                        '<p class="marginbottom10"><strong>Gender:</strong></p>' +
+                        '<p class="marginbottom10"><strong>Gender*</strong></p>' +
                         '<p>' +
                             '<span class="">' +
                                 '<select name="gender" id="gender" data-role="none" class="styleinputtext">' + 
@@ -197,9 +197,19 @@ function showAdminInfoSetup(){
                     '</div>';
                 
                 
+                html +=   '<div class="textfontarial12 width95 bottomborder padcontainer margintop20 marginbottom10">' +
+                                            //'<p class="marginbottom10"><strong>Secret Question</strong></p>' +
+                                            '<p>' +
+                                                '<span class="cadre">' +
+                                                    'The secret question and its answer will be used to recover your password if you forget it.<br> ' +
+                                                    'Please use an answer you can remember easily.' +
+                                                '</span>' +
+                                            '</p>' +
+                                        '</div>';
+                                    
                 //secret question
                 html += '<div class="textfontarial12 width95 padcontainer marginbottom10">' +
-                            '<p class="marginbottom10"><strong>Secret Question:</strong></p>' +
+                            '<p class="marginbottom10"><strong>Secret Question*</strong></p>' +
                             '<p>' +
                                 '<span class="">' +
                                     '<select name="squestion" id="squestion" data-role="none" class="styleinputtext">' + 
@@ -214,7 +224,7 @@ function showAdminInfoSetup(){
 
                 //secret answer
                 html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                            '<p class="marginbottom10"><strong>Secret Answer</strong></p>' +
+                            '<p class="marginbottom10"><strong>Secret Answer*</strong></p>' +
                             '<p>' +
                                 '<span class=""><input class="styleinputtext" data-role="none" size="20" type="text" name="answer" id="answer" value="' + workerObj.secret_answer + '" placeholder="Secret Answer" /></span>' +
                             '</p>' +
@@ -236,7 +246,6 @@ function showAdminInfoSetup(){
     else if(workerObj.gender=="Female") genderID =2;
     else genderID =0;
     document.getElementById("gender").selectedIndex = genderID;
-                     
 }
 
 function showAdminLoginSetup(){
@@ -256,7 +265,9 @@ function showAdminLoginSetup(){
                             '<span class="floatright textfontarial13"><a href="" onclick="showAdminInfoSetup()" class="notextdecoration actionbutton textwhite" >Back</a></span>' +
                         '</li>' +
                     '</ul>';
-//    
+
+    html +=         '<div class="required-area"><strong><em>* indicates required field</em></strong></div>';
+    
     html +=         '<div class="focus-area">' ;
     
     html += '<ul class="content-listing textfontarial12" data-role="listview">';
@@ -264,7 +275,7 @@ function showAdminLoginSetup(){
                 //username
                 html += '<li  data-icon="false" class="bottomborder marginleft15">' +
                             '<div  class="margintop10">' +
-                                '<p ><strong>Username:</strong></p>' +
+                                '<p ><strong>Username*</strong></p>' +
                                 '<p class="">' +
                                     '<input class="styleinputtext" data-role="none" size="20" type="text" name="username" id="username" placeholder="User Name" />' +
                                  '</p>' +
@@ -274,7 +285,7 @@ function showAdminLoginSetup(){
                 //password
                 html += '<li  data-icon="false" class="bottomborder marginleft15">' +
                             '<div  class="margintop10">' +
-                                '<p><strong>Password:</strong></p>' +
+                                '<p><strong>Password*</strong></p>' +
                                 '<p class=""><input class="styleinputtext" data-role="none" size="20" type="password" name="password" id="password" /></p>' +
                             '</div>' +
                         '</li>';
@@ -282,7 +293,7 @@ function showAdminLoginSetup(){
                 //confirm
                 html += '<li  data-icon="false" class="bottomborder marginleft15">' +
                             '<div  class="margintop10">' +
-                                '<p><strong>Confirm Password:</strong></p>' +
+                                '<p><strong>Confirm Password*</strong></p>' +
                                 '<p class=""><input class="styleinputtext" data-role="none" size="20" type="password" name="confirm" id="confirm" /></p>' +
                             '</div>' +
                         '</li>';
@@ -337,7 +348,7 @@ function setUpAdminWorker(){
         workerObj.gender = gender;
         workerObj.email = $('#email').val();
         workerObj.phone = $('#phonenumber').val();
-        workerObj.qualification = $('#qualification').val();
+        //workerObj.qualification = $('#qualification').val();
         workerObj.supervisor = 1;
         workerObj.cadreID = $('#cadre').val();     
         workerObj.secret_question = $('#squestion').val();
@@ -371,6 +382,10 @@ function saveAdminSettings(){
         
         //then save the personal info
         saveAdminPersonalInfo(tx);
+        
+        //set localstorage value here to ensure it is set after the wizard process 
+        //is complete.
+        window.localStorage.setItem("firstuse", "1"); 
     });
     
 }
@@ -395,14 +410,14 @@ function wizardSettingsUpdate(tx){
             
 
             
-            var fields = 'firstname,middlename,lastname,gender,email,phone,qualification,supervisor,cadre_id,username,password,secret_question,secret_answer';
+            var fields = 'firstname,middlename,lastname,gender,email,phone,supervisor,cadre_id,username,password,secret_question,secret_answer';
             var values = '"' + workerObj.firstname + '","' +
                            workerObj.middlename + '","' +
                            workerObj.lastname + '","' +
                            workerObj.gender + '","' +
                            workerObj.email + '","' +
                            workerObj.phone + '","' +
-                           workerObj.qualification + '","' +
+                           //workerObj.qualification + '","' +
                            workerObj.supervisor + '","' +
                            workerObj.cadreID + '","' +
                            workerObj.username + '","' +
@@ -412,7 +427,10 @@ function wizardSettingsUpdate(tx){
 
             //globalObj.db.transaction(function(tx){
                         DAO.save(tx, 'cthx_health_worker', fields, values);  
-
+                        
+                        //log that new admin user in
+                        //logUserIn(1);
+                        
                         //queue last inserted row for SMS sending 
                         //set time out 500 to wait for the update to complete
                         setTimeout(function(){

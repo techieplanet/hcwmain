@@ -1,32 +1,38 @@
 //for the homepage the createHeader & setNotificationCounts methods need to be put in
 //checkForFirstTimeUse method to be sure header elements are not displayed in wizard mode
 $(document).delegate("#mainpage", "pagebeforecreate", function() {   
-    //console.log('pagebeforecreate 1');
+    //alert('pagebeforecreate 1');
     createHeader('mainpage','');
     createFooter('mainpage');
     setNotificationCounts();
         
     if(globalObj.firstTimeUse == false){
         console.log('pagebeforecreate');
+        //alert('pagebeforecreate');
         showHomeIcons();
         setUpAdminObject();
+        createHeader('mainpage','');
         createFooter('mainpage');
         setUpSettingsObject();
+    }
+    else{
+        //alert('pageb4create else');
     }
 });
 
 $(document ).delegate("#mainpage", "pageshow", function() {
    setHeaderNotificationCount('mainpage'); 
    console.log('pageshow');
-   //createFooter('mainpage','');
+   
+   //createHeader('mainpage','');
+   //createFooter('mainpage');
    
    //wizard form validation
    $('#wizardForm').validate({
            rules:{
-               facname:{required:true, minlength:10}, 
+               facname:{required:true, minlength:2}, 
                facid:{required:true, min:0, digits:true}, 
-               line1:{required:true, minlength:15}, 
-               line2:{required:true, minlength:5}, 
+               line1:{required:true, minlength:5}, 
                shortcode:{required:true, min:0, digits:true}, 
                smscount:{required:true, min:0, digits:true}, 
                
@@ -35,7 +41,7 @@ $(document ).delegate("#mainpage", "pageshow", function() {
                email:{required:true, email:true},
                phonenumber:{required:true,digits:true, minlength:8},
                cadre:{required:true,min:1},
-               qualification:{required:true,minlength:3},
+               //qualification:{required:true,minlength:3},
                gender:{required:true,min:1},
                squestion:{required:true,min:1},
                answer: {required:true},
@@ -47,8 +53,7 @@ $(document ).delegate("#mainpage", "pageshow", function() {
            messages:{
                facname:{required:'Cannot be empty', minlength:'10 characters minimum'}, 
                facid:{required:'Cannot be empty', digits: 'Numbers only', min:'Must be greater than 0' }, 
-               line1:{required:'Cannot be empty', minlength:'15 characters minimum'}, 
-               line2:{required:'Cannot be empty', minlength:'5 characters minimum'}, 
+               line1:{required:'Cannot be empty', minlength:'5 characters minimum'}, 
                shortcode:{required:'Cannot be empty', digits: 'Numbers only', min:'Must be greater than 0'}, 
                smscount:{required:'Cannot be empty', digits: 'Numbers only', min:'Must be greater than 0'}, 
                
@@ -57,7 +62,7 @@ $(document ).delegate("#mainpage", "pageshow", function() {
                email:{required:'Cannot be empty', email:'Enter valid email'},
                phonenumber:{required:'Cannot be empty', digits:'Enter numbers only', minlength:'8 characters minimum'},
                cadre:{required:'Cannot be empty', min:'Make a selection'},
-               qualification:{required:'Cannot be empty', minlength:'3 characters minimum'}, 
+               //qualification:{required:'Cannot be empty', minlength:'3 characters minimum'}, 
                gender:{required:'Cannot be empty', min:'Make a selection'},
                squestion:{required:'Cannot be empty', min:'Make a selection'},
                answer: {required:'Cannot be empty'},
@@ -85,48 +90,83 @@ $(document ).delegate("#mainpage", "pageinit", function() {
             //document.addEventListener("offline", function(){alert("OFFline");}, false);
             //document.addEventListener("online", function(){alert("ONline");}, false);
             document.addEventListener("orientationChanged", function(){navigator.screenOrientation.set('landscape');});
-            
+                       
             //log a user in 
             //logUserIn(1);
-        }
+ }
         
         
-       
-       
-       
-       
+        
             
-   //put the following into deviceready event listener to disable back button totally
-   //navigator.app.overrideBackbutton(true);        
-//     document.addEventListener("backbutton", function(e){
-//         //alert('this is the back button')
-//            if($.mobile.activePage.is('#mainpage')){
-//                //e.preventDefault();
-//                //quits the app
-//                //quitApp();
-//            }
-//            else if($.mobile.activePage.is('#trainingpage')){
-//                //alert("Disabled while on video.");
-//                //e.preventDefault();
-//            }
-//            else if($.mobile.activePage.is('#profilepage')){
-//                if(globalObj.sandboxMode==true){
-//                    //we are expectd to be on profile page. So, we can use the status pop up on profile page
-//                    $('#profilepage .statusmsg').html('<p>Back button not available in <strong>Sandbox Mode</strong></p>');
-//                    $('#okbutton').attr('onclick','$(\'#statusPopup\').popup(\'close\');')
-//                    $('#statusPopup').popup('open');
-//                }
-//            }
-//            
-//        }, false);
+ //put the following into deviceready event listener to disable back button totally
+ //navigator.app.overrideBackbutton(true);        
+ document.addEventListener("backbutton", function(e){
+         //alert('this is the back button')
+            if($.mobile.activePage.is('#mainpage')){
+                if(globalObj.firstTimeUse==true){ //i.e. first time use
+                    $('.twobuttons .statusmsg').html('<p>Setup process incomplete. <br/> Are you sure you want to quit?</p>');
+                    $('.twobuttons #okbutton').attr('onclick','quitAppNoQuestion();');
+                    $('.twobuttons #cancelbutton').attr('onclick','$("#twobuttonspopup").popup("close")');
+                    $('#twobuttonspopup').popup('open');
+                }else{
+                    $('.twobuttons .statusmsg').html('<p>Are you sure you want to quit?</p>');
+                    $('.twobuttons #okbutton').attr('onclick','quitAppNoQuestion();');
+                    $('.twobuttons #cancelbutton').attr('onclick','$("#twobuttonspopup").popup("close")');
+                    $('#twobuttonspopup').popup('open');
+                }
+                //quits the app
+            }
+            else if($.mobile.activePage.is('#profilepage')){
+                if(globalObj.sandboxMode==true){
+                    //we are expectd to be on profile page. So, we can use the status pop up on profile page
+                    $('#profilepage .statusmsg').html('<p>Back button not available in <strong>Sandbox Mode</strong></p>');
+                    $('#statusPopup #okbutton').attr('onclick','$(\'#statusPopup\').popup(\'close\');');
+                    $('#statusPopup').popup('open');
+                }
+                else{
+                    navigator.app.backHistory();
+                }
+            }
+            else if($.mobile.activePage.is('#trainingpage')){
+                $('#trainingpage .twobuttons .statusmsg').html('<p>Are you sure you want to leave?</p>');
+                $('#trainingpage .twobuttons #cancelbutton').attr('onclick','$("#trainingpage #twobuttonspopup").popup("close")');
+                $('#trainingpage .twobuttons #okbutton').attr('onclick','stopVideo(); history.go(-2)');
+                $('#trainingpage #twobuttonspopup').popup('open');
+            }
+            else if($.mobile.activePage.is('#questionpage')){
+                $('#questionpage .twobuttons .statusmsg').html('<p>Are you sure you want to leave?</p>');
+                $('#questionpage .twobuttons #cancelbutton').attr('onclick','$("#questionpage #twobuttonspopup").popup("close")');
+                $('#questionpage .twobuttons #okbutton').attr('onclick','history.go(-2)');
+                $('#questionpage #twobuttonspopup').popup('open');
+            }
+            else{
+                navigator.app.backHistory();
+            }
+            
+        }, false);
+        
+        
+//        $('#trycombo').select(function(){
+//            alert('combo clicked');
+//        }) 
         
         
         
 });
 
+//$( window ).on( "navigate", function( event, data ) {
+  //alert( 'inside navigate: ' + );
+//  var pageUrl = data['state']['pageUrl'];
+//  if( (pageUrl.indexOf("login.html") > 0) ) {
+//      history.go(-1);
+//  }
+//  else
+//      console.log('false');
+//});
+
 function showHomeIcons(){
                 
-                //row 1
+    //row 1
     var html = '<div class="home-menu height60">' +
                     '<a class="iconblock1" href="training_home.html" >' +
                             '<img src="img/training-video-icon.png" />' +
@@ -143,7 +183,7 @@ function showHomeIcons(){
                             '<p>Job Aids </p>' +
                       '</a>' +
 
-                      '<a class="iconblock1" href="#" onclick="accessStandingOrder("standing_order.pdf")" >' +
+                      '<a class="iconblock1" href="#" onclick="accessStandingOrder(\'standing_order.pdf\')" >' +
                             '<img src="img/standing-order-icon.png" />' +
                             '<p>Standing Order</p>' +
                        '</a>' +
@@ -157,7 +197,7 @@ function showHomeIcons(){
                     '<p>My Profile</p>' +
                 '</a>' +
 
-                '<a class="iconblock2" href="" onclick="accessAdminArea();">' +
+                '<a href="trycombo.html" class="iconblock2" href="" onclick="accessAdminArea();">' +
                     '<img src="img/reg-icon.png" />' +
                     '<p>Registration</p>' +
                 '</a>' +
@@ -177,28 +217,46 @@ function showHomeIcons(){
 }
 
 
+//function checkForFirstTimeUse(){
+//    console.log('inside checkForFirstTimeUse');
+//    var error = function(e){console.log('Check Error: ' + JSON.stringify(e));}
+//    var query = "SELECT * FROM cthx_health_worker";
+//    globalObj.db.transaction(function(tx){
+//        tx.executeSql(query,[],function(tx,result){
+//            var len = result.rows.length;
+//            if(len>0){ //not first time
+//                console.log('not first time');
+//                globalObj.firstTimeUse = false;
+//                setUpAdminObject();
+//                setUpSettingsObject();
+//                showHomeIcons();
+//                setTimeout(function(){createFooter('mainpage')},500);
+//            }
+//            else{//first time use, let the show begin
+//                console.log('first time');
+//                $('.header-right').addClass('hidden');
+//                wizardWelcome();
+//            }
+//        });
+//    },error)
+//}
+
+
 function checkForFirstTimeUse(){
-    console.log('inside checkForFirstTimeUse');
-    var error = function(e){console.log('Check Error: ' + JSON.stringify(e));}
-    var query = "SELECT * FROM cthx_health_worker";
-    globalObj.db.transaction(function(tx){
-        tx.executeSql(query,[],function(tx,result){
-            var len = result.rows.length;
-            if(len>0){ //not first time
-                console.log('not first time');
-                globalObj.firstTimeUse = false;
-                setUpAdminObject();
-                setUpSettingsObject();
-                showHomeIcons();
-                setTimeout(function(){createFooter('mainpage')},500);
-            }
-            else{//first time use, let the show begin
-                console.log('first time');
-                $('.header-right').addClass('hidden');
-                wizardWelcome();
-            }
-        });
-    },error)
+    //alert('inside checkForFirstTimeUse');
+    if(globalObj.firstTimeUse == false){ //not first time
+        console.log('not first time');
+        setUpAdminObject();
+        setUpSettingsObject();
+        setUsersCount();
+        showHomeIcons();
+        setTimeout(function(){ createFooter('mainpage')},500);
+    }
+    else{//first time use, let the wizard begin
+        console.log('first time');
+        $('.header-right').addClass('hidden');
+        wizardWelcome();
+    }
 }
 
 
@@ -206,7 +264,7 @@ function wizardWelcome(){
     console.log('this is wizardWelcome');
     var html  = '<p class="wizardbigtext textcenter">' +
                     '<img src="img/logo128.png"><br/>' +
-                    'Welcome to mTrapp Setup Wizard' +
+                    'Welcome to mTrain Setup Wizard' +
                 '</p>' +
                     '<p class="textcenter">Click <strong>Next</strong> to continue' +
                         '<br/><br/>' +
