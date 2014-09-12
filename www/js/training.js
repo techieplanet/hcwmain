@@ -41,7 +41,9 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
      
      
      globalObj.db.transaction(handleTopicFiles,
-                    function(error){alert('Error loading training video')}, //errorCB
+                    function(error){
+                        //alert('Error loading training video')
+                     }, //errorCB
                     function(){  //succesCB
                             //set next and previous id for video nav buttons
                             setNextPrevious(globalObj.topicID,globalObj.moduleID);
@@ -98,7 +100,8 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
                         //set the training title and popup info
                         $('#c-bar').html(row['training_title']);
                         $('.c-title #module_title, .popup_header:first-child').html(globalObj.moduleTitle);
-                        $('.info').html(capitalizeFirstLetter(row['remarks']));
+                        console.log('remarks: ' + row['remarks']);
+                        $('#moduleinfo').html(row['remarks']);
                         
                         //set the video link to set up and reload this topic when clicked
                         $('#videolink').attr('onclick','setUpVideo(' + row['training_id'] + ')')
@@ -150,7 +153,8 @@ function attachVideoFile(){
                             //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
                             //alert("No Video Found: (" + filePath + ") \n Switching to Default Video.");
                             //alert("No Video Found: \n Switching to Default Video.");
-                            $('.focus-area').empty().html('<p>No video found.</p>');
+                            $('.focus-area').empty();
+                            $('.focus-area').html('<p>No trainings found.</p>');
                         }
                  );
                 
@@ -424,13 +428,13 @@ function loadTraining(topicID){
     console.log('loadTraining- topicID: ' + globalObj.topicID + ', update mode: ' + globalObj.videoEnded);
     globalObj.topicID = topicID;
     globalObj.db.transaction(handleTopicFiles,
-                    function(error){alert('Training Nav: Error loading training video')}, //errorCB
+                    function(error){
+                        //alert('Training Nav: Error loading training video')
+                    }, //errorCB
                     function(){  //succesCB
-                            
                             setNextPrevious(globalObj.topicID,globalObj.moduleID);
                             $('#vsPopup').popup('close');
-
-                        }  
+                        }
             );
 }
 
@@ -454,13 +458,15 @@ function checkTestable(tx){
                         var len = result.rows.length;
                         console.log('check length: ' + len);
                         if(len==0){
-                                console.log('check result: go to test')
+                                ///console.log('check result: go to test')
                                 $('#testPopup').popup('open');
                           }
                           else{
-                              console.log('check result: stay on page')
-                              //changeToTest();
-                            }
+                              //console.log('check result: stay on page')
+                              $('#statusPopup .statusmsg').html('Finished Playing Video');
+                              $('#statusPopup #okbutton').attr('onclick','$("#statusPopup").popup("close")');
+                              $('#statusPopup').popup('open');
+                          }
                     }
              );
 }
@@ -617,7 +623,7 @@ function launchGuide(){
                                                         saveGuideSession(tx,globalObj.sessionUsersList[i]);
                                             },
                                             function(error){
-                                                alert('Error saving guide session');
+                                               //alert('Error saving guide session');
                                             }
                                         );
                             }
@@ -633,7 +639,9 @@ function launchGuide(){
                         },
                         function(error){
                             //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
-                            alert("No Guide Found.");
+                            //alert("No trainings found.");
+                            $('.focus-area').empty();
+                            $('.focus-area').html('<p>No trainings found.</p>');
                         }
                  );
                 

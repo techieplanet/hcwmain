@@ -10,7 +10,7 @@
 <script src="js/jquery-1.10.2.js"></script>
 <script src="js/jquery.mobile-1.3.2.js"></script>
 
-        <title>HCW LMS</title>
+        <title>mTrain</title>
     </head>
     <body >                        
         
@@ -26,13 +26,13 @@
                  <ul id="sidebar_ul">
                   
                          <li id="link">
-                             <a href="#" onclick="showSummary()" id="active">Summary</a>
+                             <a id="summary" href="#" onclick="showSummary()" class="active">Summary</a>
                          </li>
                          <li>
-                             <a href="#" onclick="showPending()"  >Pending</a>
+                             <a id="pending" href="#" onclick="showPending()"  >Pending</a>
                          </li>
                          <li>
-                             <a href="#" onclick="showResults()" >Results</a>
+                             <a id="results" href="#" onclick="showResults()" >Results</a>
                          </li>
                  </ul>
                  
@@ -56,13 +56,6 @@
             
 
                 <div  class="focus-area">
-                    
-                   <ul class="content-listing textfontarial12" data-role="listview"  >
-                       <li  data-icon="false"><p>Total Tests<span id="totaltest" class=ui-li-count>57</span></p></li>
-                       <li  data-icon="false"><p>Total Passed<span id="totalpassed" class=ui-li-count>44</span></p></li>
-                       <li data-icon="false"><p>Total Failed<span id="totalfailed" class=ui-li-count>13</span></p></li>
-                       <li data-icon="false"><p>Average Score (%)<span id="averagescore" class=ui-li-count>123</span></p></li>
-                   </ul>
                    
                 </div> 
 
@@ -72,11 +65,11 @@
                             <!--    the test call popup-->
                             <div class="noborder" data-role="popup" id="testcheckPopup" data-overlay-theme="f" data-dismissible="false">
                                <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
-                               <div class="popup_header">HCW LMS</div>
+                               <div class="popup_header">mTrain</div>
 
                                <div class="popup_body" >
                                    <p class="">
-                                       Hmmm! You are yet to complete all the trainings in this module.
+                                       You are yet to complete all the trainings in this module.
                                         <br/>
                                         Would you like to take the module training now?
                                    </p>
@@ -105,16 +98,6 @@
             
          <div class="footer"> 
 
-                    <div id="footer_text1">   
-                                        <strong>XYZ Health Center,</strong>
-                                        <div>Plot 2-5, Trans Amadi, Port Hacourt,</div>
-                                        <div>Nigeria. </div> 
-                    </div> 
-                     <div id="footer_text2">   
-                                       <strong>Facility Supervisor</strong>
-                                        <div>Adebayo A. Salako</div>
-                                        <div>08012345678 </div> 
-                    </div> 
          </div>  
             
             

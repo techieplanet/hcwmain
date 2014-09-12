@@ -9,6 +9,7 @@ $(document ).delegate("#adminpage", "pagebeforecreate", function() {
     setNotificationCounts();
 });
 
+
 $(document ).delegate("#adminpage", "pageshow", function() {        
     setHeaderNotificationCount('adminpage');
     //$('#total_noti').html(globalObj.totalNotificationCount);
@@ -23,9 +24,8 @@ $(document ).delegate("#adminpage", "pageshow", function() {
     $('#adminForm').validate({
                     
            rules:{
-               facname:{required:true, minlength:10}, 
-               line1:{required:true, minlength:15}, 
-               line2:{required:true, minlength:5}, 
+               facname:{required:true, minlength:2}, 
+               line1:{required:true, minlength:5}, 
                shortcode:{required:true, digits:true, min:0}, 
                smscount:{required:true, digits:true, min:0 }, 
                supervisor:{required:true,min:1}
@@ -33,7 +33,6 @@ $(document ).delegate("#adminpage", "pageshow", function() {
            messages:{
                facname:{required:'Cannot be empty', minlength:'10 characters minimum'}, 
                line1:{required:'Cannot be empty', minlength:'15 characters minimum'}, 
-               line2:{required:'Cannot be empty', minlength:'5 characters minimum'}, 
                shortcode:{required:'Cannot be empty', digits: 'Numbers only', min:'Must be greater than 0'}, 
                smscount:{required:'Cannot be empty', digits: 'Numbers only', min:'Must be greater than 0'}, 
                supervisor:{required:'Cannot be empty', min:'Make a selection'}
@@ -46,6 +45,9 @@ $(document ).delegate("#adminpage", "pageshow", function() {
 $(document ).delegate("#adminpage", "pageinit", function() {        
         
         console.log('entering admin mode: ' + globalObj.loggedInUserID + " " + globalObj.sandboxMode);
+        
+        //make the collapsible permanently expanded.
+        $(".ui-collapsible-heading").unbind("click");
         
         showTrainingStats();
 //        var pageModeArray = $('#adminpage').attr('data-url').split('?');
@@ -65,14 +67,20 @@ $(document ).delegate("#adminpage", "pageinit", function() {
 
 
 function showTrainingStats()  {
+    //remove the required text if displayed
+    if($('.required-area').length>0) $('.required-area').remove();
     globalObj.db.transaction(queryTrainingStats,errorCB);   
 }
 
 function showTestStats(){
+    //remove the required text if displayed
+    if($('.required-area').length>0) $('.required-area').remove();
     globalObj.db.transaction(queryTestStats,errorCB);   
 }
 
 function showOtherStats(){
+    //remove the required text if displayed
+    if($('.required-area').length>0) $('.required-area').remove();
     globalObj.db.transaction(queryOtherStats,errorCB);   
 }
 
@@ -230,7 +238,11 @@ function queryOtherStats(tx){
 }
 
 function showChangeAdmin(){
-    var query = 'SELECT * FROM cthx_health_worker ORDER BY firstname';
+    //remove the required text if displayed
+    if($('.required-area').length>0) $('.required-area').remove();
+    
+    
+    var query = 'SELECT * FROM cthx_health_worker WHERE supervisor=0 ORDER BY firstname';
     globalObj.db.transaction(function(tx){
     tx.executeSql(query,[],
                     function(tx,result){
@@ -248,7 +260,10 @@ function showChangeAdmin(){
                                                     '<option value="0">--Select New Admin--</option>';
                                                     for(var i=0; i<len; i++){
                                                         row = result.rows.item(i);
-                                                        if(row['supervisor']==1) adminObj.adminID = row['worker_id'];
+                                                        if(row['supervisor']==1) {
+                                                            adminObj.adminID = row['worker_id'];
+                                                            continue;
+                                                        }
                                                         var fullName = capitalizeFirstLetter(row['firstname'] + ' ' + capitalizeFirstLetter(row['middlename']) + ' ' + capitalizeFirstLetter(row['lastname']));
                                                         html +=  '<option value="' + row['worker_id'] + '">' + fullName + '</option>';
                                                     }
@@ -263,6 +278,19 @@ function showChangeAdmin(){
                                              '<span id="column-width width30">Admin Change</span>' +
                                              '<span class="floatright textfontarial13"><a href="" onclick="changeAdminUser()" class="notextdecoration actionbutton textwhite">Save</a></span>'
                                         );     
+                        }
+                        else{
+                            //$('#adminpage #statusPopup .statusmsg').html('<p>No user to change to.</p>');
+                            //$('#adminpage #statusPopup #okbutton').attr('onclick','$("#statusPopup").popup("close")');
+                            //$('#adminpage #statusPopup').popup('open');
+                            
+                            $('.focus-area').html(  
+                                    '<ul class="content-listing textfontarial12" data-role="listview">' +
+                                        '<li class="" data-icon="false">' +
+                                            '<p>No user to change to. You are the only user registered for now.</p>' +
+                                        '</li>' +
+                                    '</ul>'
+                                 );
                         }
                     }); //transaction
             });//transactions
@@ -279,39 +307,21 @@ function querySettings(tx){
                             var row = result.rows.item(0);
                             if(row['jsontext'] != '')
                                 settingsObj = JSON.parse(row['jsontext']);
-                            
+                      
                                 
-//                            //change supervisor
-//                            html +=  '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-//                                        '<p class="marginbottom10"><strong>Change Facility Admin:</strong></p>' +
-//                                        '<p>' +
-//                                            '<span class="marginleft10">' +
-//                                                '<select name="supervisor" id="supervisor" data-role="none" class="styleinputtext">' +
-//                                                    '<option value="0">--Select New Admin--</option>';
-//                                                    for(var i=0; i<len; i++){
-//                                                        row = result.rows.item(i);
-//                                                        if(row['supervisor']==1) adminObj.adminID = row['worker_id'];
-//                                                        var fullName = capitalizeFirstLetter(row['firstname'] + ' ' + capitalizeFirstLetter(row['middlename']) + ' ' + capitalizeFirstLetter(row['lastname']));
-//                                                        html +=  '<option value="' + row['worker_id'] + '">' + fullName + '</option>';
-//                                                    }
-//                             html +=            '</select>' +
-//                                            '</span>' +
-//                                        '</p>' +
-//                                    '</div>';
-                                
-                             //sms shortcode
-                                html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                                            '<p class="marginbottom10"><strong>SMS Short Code</strong></p>' +
-                                            '<p>' +
-                                                '<span class="marginleft10">' +
-                                                    '<input class="styleinputtext textright" data-role="none" size="20" type="tel" name="shortcode" id="shortcode" value="' + (settingsObj.shortcode==0?"":settingsObj.shortcode) + '" />' +
-                                                '</span>' +
-                                            '</p>' +
-                                        '</div>';
+                            //sms shortcode
+                            html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
+                                        '<p class="marginbottom10"><strong>SMS Short Code*</strong></p>' +
+                                        '<p>' +
+                                            '<span class="marginleft10">' +
+                                                '<input class="styleinputtext textright" data-role="none" size="20" type="tel" name="shortcode" id="shortcode" value="' + (settingsObj.shortcode==0?"":settingsObj.shortcode) + '" />' +
+                                            '</span>' +
+                                        '</p>' +
+                                    '</div>';
                              
                             //sms count
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Max. SMS Sent Per Week</strong></p>' +
+                                        '<p class="marginbottom10"><strong>Maximum SMS Sent Per Week*</strong></p>' +
                                         '<p>' +
                                             '<span class="marginleft10">' +
                                                 '<input class="styleinputtext textright" data-role="none" size="20" type="text" name="smscount" id="smscount" value="' + settingsObj.smscount + '" />' +
@@ -319,32 +329,28 @@ function querySettings(tx){
                                         '</p>' +
                                     '</div>';
                                 
-                              
-//                            //facility id
-//                            html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-//                                        '<p class="marginbottom10"><strong>Facility ID</strong></p>' +
-//                                        '<p>' +
-//                                            '<span class="marginleft10">' +
-//                                                '<input class="styleinputtext textright" data-role="none" size="20" type="text" name="facid" id="facid" value="' + settingsObj.facilityID + '" placeholder="Facility ID" />' +
-//                                                '&nbsp;&nbsp;' +
-//                                                '<a href="#" onclick="unlockFacilityID()" class="pagebutton pagebuttonpadding textwhite" ><img src="img/lock.png"></a>' +
-//                                            '</span>' +
-//                                        '</p>' +
-//                                    '</div>';
-                                
-                            //facility address
+                            
+                            //facility name
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Facility Address</strong></p>' +
+                                        '<p class="marginbottom10"><strong>Facility Name*</strong></p>' +
                                         '<p>' +
                                             '<span class="marginleft10 block">' +
                                                 '<input class="styleinputtext" data-role="none" size="40" type="text" name="facname" id="facname" value="' + settingsObj.facilityName + '" placeholder="Facility Name" />' +
                                             '</span>' +
+                                         '</p>' +
+                                     '</div>';
+                                
+                                
+                            //facility address
+                            html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
+                                        '<p class="marginbottom10"><strong>Facility Address*</strong></p>' +
+                                        '<p>' +
                                             '<span class="marginleft10 margintop10 block">' +
                                                 '<input class="styleinputtext" data-role="none" size="40" type="text" name="line1" id="line1" value="' + settingsObj.facilityAddrLine1 + '" placeholder="Address Line 1" />' +
                                             '</span>' +
                                             '<span class="marginleft10 margintop10 block">' +
                                                 '<input class="styleinputtext" data-role="none" size="40" type="text" name="line2" id="line2" value="' + settingsObj.facilityAddrLine2 + '" placeholder="Address Line 2" />' +
-                                            '</span>' +
+                                            ' (<em>Optional</em>)</span>' +
                                         '</p>' +
                                     '</div>';
                             
@@ -355,7 +361,9 @@ function querySettings(tx){
                             $('#context-bar').html(
                                              '<span id="column-width width30">Settings</span>' +
                                              '<span class="floatright textfontarial13"><a href="" onclick="updateAdminSettings()" class="notextdecoration actionbutton textwhite" >Save</a></span>'
-                                        )      
+                                        );   
+                            if($('.required-area').length==0)
+                                $('#context-bar').after('<div class="required-area"><strong><em>* indicates required field</em></strong></div>'); 
                         }
                     }
             );
@@ -379,7 +387,10 @@ function queryReset(tx){
                                                     '<option value="0">--Select User --</option>';
                                                     for(var i=0; i<len; i++){
                                                         row = result.rows.item(i);
-                                                        if(row['supervisor']==1) adminObj.adminID = row['worker_id'];
+                                                        if(row['supervisor']==1) {
+                                                            adminObj.adminID = row['worker_id'];
+                                                            //continue;
+                                                        }
                                                         var fullName = capitalizeFirstLetter(row['firstname'] + ' ' + capitalizeFirstLetter(row['middlename']) + ' ' + capitalizeFirstLetter(row['lastname']));
                                                         html +=  '<option value="' + row['worker_id'] + '">' + fullName + '</option>';
                                                     }
@@ -402,12 +413,15 @@ function queryReset(tx){
 
 
 function showUsersList(){
+    //remove the required text if displayed
+    if($('.required-area').length>0) $('.required-area').remove();
+    
      $('#context-bar').html(
                      '<span id="column-width width30">Registered Users</span>' +
                      '<span class="floatright textfontarial13">' +
                              '<a href="registration.html" class="notextdecoration actionbutton textwhite" >New User</a>' +
                              '&nbsp;&nbsp;&nbsp;&nbsp;' +
-                             '<a onclick="startSandBox()" class="notextdecoration actionbutton textwhite" >View In Sandbox</a>' +
+                             '<a onclick="startSandBox()" class="notextdecoration actionbutton textwhite" >View as User</a>' +
                      '</span>'
                 )  
     
@@ -420,7 +434,7 @@ function showUsersList(){
 function getUsersSingleSelectionList(pageid){
        var html = '';
         globalObj.db.transaction(function(tx){
-                            tx.executeSql('SELECT * FROM cthx_health_worker ORDER BY firstname',[],
+                            tx.executeSql('SELECT * FROM cthx_health_worker WHERE supervisor <> 1 ORDER BY firstname',[],
                                 function(tx,resultSet){
                                     //console.log('len: ' + resultSet.rows.length);
                                     if(resultSet.rows.length>0){
@@ -428,7 +442,7 @@ function getUsersSingleSelectionList(pageid){
                                         html += '<ul id="choicelist2" data-role="listview"  data-theme="none">';
                                         for(var i=0; i<resultSet.rows.length; i++){
                                             var member = resultSet.rows.item(i);
-                                            if(member['supervisor']==1) continue;  //no supervisor in list
+                                            //if(member['supervisor']==1) continue;  //no supervisor in list
                                             html +=     '<li class="" data-icon="false">' +
                                                                 '<label class="" data-role="button" for="' + member['worker_id']+ '">' + 
                                                                     capitalizeFirstLetter(member['firstname']) + ' ' + capitalizeFirstLetter(member['middlename']) + ' ' + capitalizeFirstLetter(member['lastname']) +
@@ -445,6 +459,16 @@ function getUsersSingleSelectionList(pageid){
                                         $('.focus-area').html(html); 
                                         $("#"+pageid).trigger('create');
                                     }
+                                    else{
+                                        $('.focus-area').html(  
+                                            '<ul class="content-listing textfontarial12" data-role="listview">' +
+                                                '<li class="" data-icon="false">' +
+                                                    '<p>You are the only user registered for now.</p>' +
+                                                '</li>' +
+                                            '</ul>'
+                                         );
+                                    }
+                                        
                                 });                       
                     },
                     function (error){}                    
@@ -465,7 +489,6 @@ function getUsersSingleSelectionList(pageid){
 //    $('#okbutton').attr("onclick","$('#statusPopup').popup('close')")
 //    $('#statusPopup').popup('open');
 //}
-
 function changeAdminUser(){
      var form = $('#adminForm');
      form.validate();
@@ -473,23 +496,26 @@ function changeAdminUser(){
      if(form.valid()){
             globalObj.db.transaction(function(tx){
                 //supervisor
-                var supervisor_id = $('#supervisor').val()>0 ? $('#supervisor').val() : adminObj.adminID;
+                var supervisor_id = $('#supervisor').val();
+                console.log('selected: ' + supervisor_id);
+                console.log('admin: ' + adminObj.adminID);
+                
                 if(supervisor_id != adminObj.adminID){
                     var fields = 'supervisor';
                     var values =   "1";
 
                     //assign new supervisor
                     DAO.update(tx, 'cthx_health_worker', fields, values, 'worker_id', supervisor_id );
-                    
-                    //keep the system in the know of new change
-                    adminObj.adminID = supervisor_id;
 
                     //demote old supervisor
                     values = "0";
                     DAO.update(tx, 'cthx_health_worker', fields, values, 'worker_id', adminObj.adminID );
 
+                    //keep the system in the know of new change
+                    adminObj.adminID = supervisor_id;
+                    
                     $('.statusmsg').html('<p>Successful. <br/> You will now be logged out.</p>');
-                    $('#okbutton').attr("onclick","logoutAdminUser()");
+                    $('#statusPopup #okbutton').attr("onclick","logoutAdminUser()");
                     $('#statusPopup').popup('open');
                 }
             });
@@ -505,6 +531,8 @@ function logoutAdminUser(){
     
     $.mobile.changePage( "index.html" );
 }
+
+
 ////updates a user profile 
  function updateAdminSettings(){
      var form = $('#adminForm');
@@ -527,8 +555,8 @@ function logoutAdminUser(){
                     var updateQuery = 'UPDATE cthx_settings SET jsontext=\'' + values + '\' WHERE id=1';
                     tx.executeSql(updateQuery);
                     
-                    $('.statusmsg').html('<p>Settings Updated</p>')
-                    $('#okbutton').attr("onclick","$('#statusPopup').popup('close')")
+                    $('#statusPopup .statusmsg').html('<p>Settings Updated</p>')
+                    $('#statusPopup #okbutton').attr("onclick","$('#statusPopup').popup('close')")
                     $('#statusPopup').popup('open');        
                 },
                 function(error){

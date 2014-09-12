@@ -57,6 +57,17 @@ function resetGlobals(){
     globalObj.questionID = 0;
 }
 
+function resetWorker(){
+      workerObj.workerID = 0;
+      workerObj.firstname = workerObj.middlename = workerObj.lastname = '';
+      workerObj.gender = workerObj.phone = workerObj.email = '';
+      workerObj.supervisor = workerObj.cadreID = 0;
+      workerObj.username = workerObj.password = '';
+      workerObj.secret_question = 0;
+      workerObj.secret_answer ='';
+}
+
+
 function logout(){
     //console.log('inside logout');
     //$('#quickMenu').popup('close');
@@ -65,10 +76,25 @@ function logout(){
     globalObj.sessionType = 0;
     globalObj.sessionUsersList = [];
     globalObj.loginMode = '';
-    globalObj.db.transaction(dropView);
+    //globalObj.db.transaction(dropView);
+    
+    removeBodyDataValues();
+    console.log('body data: ' + JSON.stringify($("body").data()));
     
     $.mobile.changePage( "index.html" );
     
+}
+
+
+function removeBodyDataValues(){
+        for(key in $("body").data()){
+            $("body").data(key,null);
+        }
+}
+
+
+function goBackHistory(){
+    navigator.app.backHistory();
 }
 
 function quitApp(){
@@ -83,6 +109,10 @@ function quitApp(){
     );
 }
 
+function quitAppNoQuestion(){
+    navigator.app.exitApp(); // callback to invoke with index of button pressed
+}
+
 function clearInputs(){
     $('input[type="text"],input[type="password"]').val("");
 }
@@ -90,7 +120,7 @@ function clearInputs(){
 function capitalizeFirstLetter(s)
 {
     var str = s.toString();
-    return str.substring(0,1).toUpperCase() + str.substring(1,str.length);
+    return str.substring(0,1).toUpperCase() + str.substring(1,str.length).toLowerCase();
 }
 
 function getFirstLetter(s)
@@ -103,6 +133,8 @@ function getNameInitial(s){
     var str = s.toString();
     if(s.length>0)
         return str.substring(0,1).toUpperCase() + '.';
+    else 
+        return '';
 }
 
 function getNowDate(){
@@ -155,7 +187,7 @@ function setUpAdminObject(){
             adminObj.lastname = row['lastname'];
             adminObj.phone = row['phone'];
             adminObj.email = row['email'];
-            adminObj.qualification = row['qualification'];
+            //adminObj.qualification = row['qualification'];
             adminObj.username = row['username'];
             adminObj.password = row['password'];
             adminObj.gender = row['cadre'];
@@ -167,6 +199,16 @@ function setUpAdminObject(){
     });
 }
 
+function setUsersCount(){
+    var query = 'SELECT COUNT(*) as userscount FROM cthx_health_worker';
+        globalObj.db.transaction(function(tx){
+            tx.executeSql(query,[],function(tx,result){
+                var row = result.rows.item(0);
+                globalObj.usersCount = row['userscount'];
+                //console.log('setUsersCount usersCount: ' + JSON.stringify(row));
+            });
+        });
+}
 
 function createTwoButtonPopup(pageid){
     //remove the popup from dom if it exists
@@ -200,8 +242,8 @@ function createTwoButtonPopup(pageid){
 
 
 function launchPDF(dirname,filename,counter_key){
-    //console.log('launching PDF: ' + filename);                             
-    //console.log('dirname: ' + dirname,'filename: ' + filename,'counter_key: ' + counter_key);
+    console.log('launching PDF: ' + filename);                             
+    console.log('dirname: ' + dirname,'filename: ' + filename,'counter_key: ' + counter_key);
     
     window.requestFileSystem(
             LocalFileSystem.PERSISTENT, 0, 
@@ -258,8 +300,13 @@ function setHeaderNotificationCount(pageid){
 
 
 function createHeader(pageid,pageheading){    
+    //if(pageid=='mainpage')
+       //alert('loggedin: ' + globalObj.loggedInUserID + ' admin: ' + adminObj.adminID);
     //logo
-    var html =      '<div id="logo_icon_h"><img src="img/logo_icon.png" ></div>' ;
+    var html =      '<div id="logo_icon_h">' +
+                        '<img src="img/logo_icon.png" >' +
+                        '<a href="index.html"><img class="floatright" src="img/home-icon.png" ></a>' +
+                    '</div>' ;
 
     //page title/heading
     html +=       '<div id="pageheading">' + pageheading + '</div>' ;
@@ -280,7 +327,7 @@ function createHeader(pageid,pageheading){
                         '</div>' +
                      
                         //notification
-                        '<div id="notification_txt_h">' +
+                        '<div id="notification_txt_h" class="hidden">' +
                             '<a href="profile.html?pageMode=1" class="notextdecoration textwhite textfontarialblack13">Notifications</a>' +
                             '<span id="total_noti" class="noticecount ui-li-count"></span>' +
                         '</div>' +
@@ -290,10 +337,10 @@ function createHeader(pageid,pageheading){
                             '<a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>' +
                         '</div>' +
                         
-                        '<div id="home_icon">' +
-                            '<a href="index.html"><img src="img/home-icon.png" ></a>' +
-                        '</div>' +
-                      '</div>';    //header right
+                        //'<div id="home_icon">' +
+                          //  '<a href="index.html"><img src="img/home-icon.png" ></a>' +
+                        //'</div>' +
+                   '</div>';    //header right
             
                         
             
@@ -305,10 +352,10 @@ function createHeader(pageid,pageheading){
                                 '<li data-icon="false"><a href="training_home.html">Training</a></li>' +
                                 '<li data-icon="false"><a href="" onclick="accessTests()">Take Test</a></li>' +
                                 '<li data-icon="false"><a href="job_aids.html">Job Aids</a></li>' +
-                                '<li data-icon="false"><a href="#" onclick="accessStandingOrder(standing_order.pdf)">Standing Order</a></li>';
+                                '<li data-icon="false"><a href="#" onclick="accessStandingOrder(\'standing_order.pdf\')">Standing Order</a></li>';
 
             html +=             (globalObj.loggedInUserID == adminObj.adminID) ? 
-                                            '<li data-icon="false"><a href="admin.html" >Admin Area</a></li>' : '' ;                        
+                                            '<li data-icon="false"><a href="admin.html" >Admin Area</a></li>' : '' ;
 
             html +=             (globalObj.loggedInUserID <= 0) ? //no logged in user
                                     '<li data-icon="false"><a href="" onclick="accessProfile()">Log In</a></li>':
@@ -337,22 +384,49 @@ function createHeader(pageid,pageheading){
 function createFooter(pageid){
     console.log('footer: ' + pageid);
     if(adminObj.firstname.length>0 && adminObj.lastname.length>0){
-        var html = '<div id="footer_text1">' +   
-                        '<strong>' + settingsObj.facilityName + '</strong>' +
-                        '<div>' + settingsObj.facilityAddrLine1 + '</div>' +
-                        '<div>' + settingsObj.facilityAddrLine2 + '</div>' +
-                    '</div> ' +
-
-                    '<div id="footer_text2">' +   
+        var html = '<div id="footer_text2">' +   
                         '<strong>Facility Supervisor</strong>' +
                          '<div>' + capitalizeFirstLetter(adminObj.firstname) + ' ' + getNameInitial(adminObj.middlename) + ' ' + capitalizeFirstLetter(adminObj.lastname) + '</div>' +
                          '<div>' + adminObj.phone + '</div>' +
+                    '</div>' +
+                    
+                    '<div id="footer_text1">' +   
+                        '<strong>' + settingsObj.facilityName + '</strong>' +
+                        '<div>' + settingsObj.facilityAddrLine1 + '</div>' +
+                        '<div>' + settingsObj.facilityAddrLine2 + '</div>' +
+                    '</div>' +
+                    
+                    '<div id="footer_text3" class="hidden">' +
+                        '<strong>Logged in as:</strong>' +
+                        '<div id="loggedinusername">Demola Olaade Demola</div>' +
                     '</div>';
 
-            $('#' + pageid + ' .footer').html(html)
+            $('#' + pageid + ' .footer').html(html);
     }
     else{
-        $('#' + pageid + ' .footer').html("")
+        $('#' + pageid + ' .footer').html("");
+    }   
+
+    if(globalObj.loggedInUserID>0){
+        showFooterUser();
     }
-        
+}
+
+
+function showFooterUser(){
+    
+    //footer logged in as area
+    var query = 'SELECT * FROM cthx_health_worker WHERE worker_id='+ globalObj.loggedInUserID;
+    console.log('showFooterUser query: ' + query);
+    globalObj.db.transaction(function(tx){
+       tx.executeSql(query,[],function(tx,result){
+           if(result.rows.length>0){
+                var row = result.rows.item(0);
+                var loggedInUserName = capitalizeFirstLetter(row['firstname']) + ' ' + getNameInitial(row['middlename']) + ' ' + capitalizeFirstLetter(row['lastname']);
+                //console.log('showFooterUser loggedInUserName: ' + loggedInUserName);
+                $('.footer #loggedinusername').html(loggedInUserName);
+                $('.footer #footer_text3').removeClass('hidden');
+           }
+       });
+    });
 }

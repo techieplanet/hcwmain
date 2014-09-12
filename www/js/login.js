@@ -22,9 +22,9 @@ $(document ).delegate("#loginpage", "pageinit", function() {
                 $('#grouptab').parent().addClass('hidden');
             }
             else if(globalObj.loginMode == 'training'){
-                createLoginForm();
-                $('#context-bar').html('Accessing Trainings');
-                //$('#login').attr('onclick','login(\'training\')');
+                 createLoginForm();
+                 if(globalObj.usersCount <= 1)
+                    $('#grouptab').parent().addClass('hidden');
             }
             else if(globalObj.loginMode == 'admin'){
                 createLoginForm();
@@ -50,18 +50,18 @@ $(document ).delegate("#loginpage", "pageinit", function() {
         
 });
 
-function switchToGroupSession(){
-     $('#context-bar').html(
-                     '<span id="column-width width30">Select Group Memberss</span>' +
-                     '<span class="floatright textfontarial13">' +
-                             '<a href="" onclick="groupLogin()" class="notextdecoration actionbutton textwhite" >Done</a>' +
-                     '</span>'
-                )  
+function switchToGroupSession(){ 
     $('#grouptab').addClass('active');
     $('#indtab').removeClass('active');
     getUsersList('loginpage');
     $('.c-title').html('Group Session');
     $('#indtab').attr('onclick','switchToIndividualSession()');
+    $('.cbar').html(
+                     '<span id="column-width width30">Select Group Memberss</span>' +
+                     '<span class="floatright textfontarial13">' +
+                             '<a href="" onclick="groupLogin()" class="notextdecoration actionbutton textwhite" >Done</a>' +
+                     '</span>'
+                ); 
 }
 
 
@@ -109,6 +109,7 @@ function createLoginForm(){
 
        html +=  '</ul>';
        
+       //if(globalObj.loginMode == 'training') $('#context-bar').html('Accessing Trainings');
        $('.focus-area').html(html);
        $('.c-title').html('Single User Session');
        $('#loginpage').trigger('create');
@@ -132,6 +133,7 @@ function login(){
                                      console.log('login length: ' + resultSet.rows.length);
                                      var row = resultSet.rows.item(0);
                                      globalObj.loggedInUserID = row['worker_id'];  //register user as logged in
+                                     
                                      
                                      
                                     /*
@@ -167,7 +169,7 @@ function login(){
                                      
                                  }
                                  else{
-                                     $('.popup_body p').html('Wrong username or password. Try again')
+                                     $('#loginPopup .popup_body p').html('Wrong username or password. Try again')
                                      $('#loginPopup').popup('open');
                                  }
                              }
@@ -215,7 +217,7 @@ function adminLogin(){
                                          $.mobile.changePage( "admin.html" );
                                      }
                                      else{
-                                         $('.popup_body p').html('Wrong admin details. Try again')
+                                         $('#loginPopup .popup_body p').html('Wrong admin details. Try again')
                                          $('#loginPopup').popup('open');
                                      }
                                      
@@ -290,7 +292,7 @@ function getUsersList(pageid){
         $.mobile.changePage( "training.html" );   
     }
     else{
-        $('.popup_body p').html('Select at least 2 group members')
+        $('#loginPopup .popup_body p').html('Select at least 2 group members')
         $('#loginPopup').popup('open');
     }
         
@@ -302,7 +304,7 @@ function getUsersList(pageid){
 function processForgot(){
     var username = $('#username').val();
     if(username =='' || username==null){ //no username
-        $('#loginmsg').html('Please enter username first');
+        $('#loginmsg').html('Please enter your user name');
         $('#loginPopup').popup('open');
     }
     else{ //user entered username
@@ -320,7 +322,7 @@ function processForgot(){
                      workerObj.gender = row['gender'];
                      workerObj.email = row['email'];
                      workerObj.phone = row['phone'];
-                     workerObj.qualification = row['qualification'];
+                     //workerObj.qualification = row['qualification'];
                      workerObj.supervisor = row['supervisor'];
                      workerObj.cadreID = row['cadre_id'];
                      workerObj.username = row['username'];
@@ -330,7 +332,7 @@ function processForgot(){
                      $.mobile.changePage('forgot.html');
                 }
                 else{ //username not found
-                    $('#loginmsg').html('Match Not Found');
+                    $('#loginmsg').html('Matching user name NOT found');
                     $('#loginmsg').addClass('textcenter');
                     $('#loginPopup').popup('open');
                 }

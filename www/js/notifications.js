@@ -9,7 +9,7 @@ function setNotificationCounts(){
         getFailedTests(true);
     }
     
-    //console.log('Uncompleted Trainings: ' + globalObj.uncompletedTrainings + ' Waiting Tests: ' + globalObj.waitingTests + ' Faiiled Tests: ' + globalObj.failedTests);
+    console.log('Uncompleted Trainings: ' + globalObj.uncompletedTrainings + ' Waiting Tests: ' + globalObj.waitingTests + ' Faiiled Tests: ' + globalObj.failedTests);
 }
 
 
@@ -20,6 +20,9 @@ function setNotificationCounts(){
   * Tables: training_tom_module, training_module, training_session, traininig session
   */
  function getUncompletedTrainings(countMode){
+     //remove the required text if displayed
+     if($('.required-area').length>0) $('.required-area').remove();
+      
     console.log('Uncompleted Trainings: ' + globalObj.uncompletedTrainings + ' Waiting Tests: ' + globalObj.waitingTests + ' Faiiled Tests: ' + globalObj.failedTests);
     var query = 'SELECT ttm.module_id,ttm.training_id,module_title,training_title FROM cthx_training_to_module ttm JOIN cthx_training_module trm JOIN cthx_training t ON ' +
                 'ttm.module_id=trm.module_id AND ttm.training_id=t.training_id WHERE trm.module_id IN ' +       //helps get full details of modules and trainings in set
@@ -85,7 +88,10 @@ function setNotificationCounts(){
   * This gets all modules which the user has taken and completed trainings for 
   * but the user has not taken the module assessment/test 
   */
- function getWaitingTests(countMode){
+function getWaitingTests(countMode){
+    //remove the required text if displayed
+    if($('.required-area').length>0) $('.required-area').remove();
+      
      console.log('inside getWaitingTests: ');
        //Part 1(before first AND) - gets list of modules touched at all by user
        //Part 2(before second AND) - selects/picks out each module_id found in list of modules completed either by videos or guide
@@ -170,6 +176,9 @@ function setNotificationCounts(){
   * I.E. The lastest test session for each module is what matters.
   */
  function getFailedTests(countMode){
+     //remove the required text if displayed
+      if($('.required-area').length>0) $('.required-area').remove();
+      
 //     var query = 'SELECT * FROM cthx_test_session tes JOIN cthx_test t ON ' +
 //                 'tes.test_id=t.test_id WHERE ' +
 //                 'session_id = (SELECT MAX(tes1.session_id) FROM cthx_test_session tes1 WHERE tes1.test_id=t.test_id AND ((tes1.score/tes1.total)*100)<40 ) AND ' +
@@ -225,9 +234,8 @@ function setNotificationCounts(){
                                                                 '<span class="row-content-col width20 textcenter">' + ptage + '/' + gradeText + '</span>' +
                                                                 '<span class="row-content-col-btn width30">' +
                                                                     '<a  class="pagebutton" onclick="changeToQuestion(' + row['test_id']+ ',' + row['module_id'] + ');" style="padding:4%;" data-theme="d" data-role="button"  data-inline="true" >Retake Test</a>' +
-                                                                    '<a  href="" class="pagebutton" onclick="retakeTraining(' + row['test_id']+ ',' + row['module_id'] + '); return false;" style="padding:4%;" data-theme="d" data-role="button"  data-inline="true" >Retake Training</a>' +
+                                                                    '<a  class="pagebutton" onclick="retakeTraining(' + row['test_id']+ ',' + row['module_id'] + ');" style="padding:4% !important;" data-theme="d" data-role="button"  data-inline="true" >Retake Training</a>' +
                                                                 '</span>' +
-
                                                             '</p>' +
                                                          '</div>' ;
                                                 }

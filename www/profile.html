@@ -3,7 +3,7 @@
 <html>
     <head>
 
-        <title>HCW LMS</title>
+        <title>mTrain</title>
     </head>
     <body >                        
         
@@ -16,10 +16,10 @@
             <div id="content" data-role="content" class="fullheight"  > 
 
              <div class="sidebar fullheight">
-                 <ul id="sidebar_ul"  class="sidebar-notification-counter" data-role="listview" data-icon="false">
+                 <ul id="sidebar_ul"  class="nomargin" data-role="listview" data-icon="false">
                   
-                         <li  data-icon="false">
-                             <a id="usagelink" href="" class="textfontarial15" onclick="showUsage();return false;">Usage</a>
+                        <li id="link"  data-icon="false" class="">
+                             <a id="usagelink" href="" class="textfontarial15 active" onclick="showUsage();return false;">Usage</a>
                          </li>
                          
                          <li data-icon="false">
@@ -33,7 +33,7 @@
                          
                          <li id="notification_li"  >
                             
-
+                             
                           <div data-role="collapsible" data-icon="false" data-inset="false"  class="nomargin nobackground nopadding">
                             <h1 id="sidebar-collapsible-link">
                                 Notifications<span id="side_notif"  class="ui-li-count setcountermargin">0</span>
@@ -53,7 +53,8 @@
                                  
                               </ul>
                             
-                          </div>                     
+                          </div> 
+                            
                           
                         </li>
                  </ul>
@@ -97,7 +98,7 @@
                         <!--this is the status popup-->
                         <div class="noborder" data-role="popup" id="statusPopup" data-overlay-theme="f" data-dismissible="false">
                            <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
-                           <div class="popup_header">HCW LMS</div>
+                           <div class="popup_header">mTrain</div>
 
                            <div class="popup_body" >
                                <p class="statusmsg textcenter"></p>
@@ -132,7 +133,7 @@
                         <!--    the test call popup-->
                             <div class="noborder" data-role="popup" id="testcheckPopup" data-overlay-theme="f" data-dismissible="false">
                                <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
-                               <div class="popup_header">HCW LMS</div>
+                               <div class="popup_header">mTrain</div>
 
                                <div class="popup_body" >
                                    <p class="">

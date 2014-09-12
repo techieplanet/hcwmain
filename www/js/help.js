@@ -23,7 +23,7 @@ $(document ).delegate("#helppage", "pageinit", function() {
             
 function getHelpFiles(){
        var html = '';
-       var query = 'SELECT * FROM cthx_user_guide';
+       var query = 'SELECT * FROM cthx_user_guide ORDER BY guide_title';
        $('#c-bar').html('User Guides');
        
        console.log('user guides aids: ' + query);
@@ -61,7 +61,7 @@ function getHelpFiles(){
    }
    
    
-   function getInfo(){
+function getInfo(){
        $('#c-bar').html('Information');
        var html = '<ul class="content-listing textfontarial12" data-role="listview">';
        
@@ -90,12 +90,12 @@ function getHelpFiles(){
    
    
    function getAbout(){
-       $('#c-bar').html('HCW Learning Management System');
+       $('#c-bar').html('mTrain - Mobile Training Solutioin');
        
        var html = '<ul class="content-listing textfontarial12" data-role="listview">';
                   
            html +=  '<li  data-icon="false" class="bottomborder margintop20">' +
-                            '<p class="bold">Provider</p>' +
+                            '<p class="bold">Powered By:</p>' +
                             '<p class="text999 textfontarial13">Federal Ministry of Health</p>' +
                      '</li>'; 
                      
@@ -107,10 +107,10 @@ function getHelpFiles(){
                      '</li>'; 
                  
                  
-           html +=  '<li  data-icon="false" class="bottomborder margintop20">' +
-                            '<p class="bold">Powered By</p>' +
-                            '<p class="text999 textfontarial13">Techie Planet</p>' +
-                     '</li>'; 
+//           html +=  '<li  data-icon="false" class="bottomborder margintop20">' +
+//                            '<p class="bold">Powered By</p>' +
+//                            '<p class="text999 textfontarial13">Techie Planet</p>' +
+//                     '</li>'; 
          
            html += '</ul>';
            

@@ -31,11 +31,17 @@ $( document ).delegate("#traininghomepage", "pageshow", function() {
                 //console.log('body data pageshow cat: ' + $("body").data('trainingHomeData')[0]);
                 //console.log('body data pageshow mod: ' + $("body").data('trainingHomeData')[1]);
 
+                //set the right category as active
                 $('#cat_'+$("body").data('trainingHomeData')[0]).addClass('active');
+                
+                //load the modules for the caategory selected
                 loadModule($("body").data('trainingHomeData')[0]);
-                    setTimeout(function(){
-                        $('div#coll_mod_'+ $("body").data('trainingHomeData')[1]).trigger("expand");
-                     },500);
+                
+                //expand the right module
+                
+                setTimeout(function(){
+                    $('div#coll_mod_'+ $("body").data('trainingHomeData')[1]).trigger("expand");
+                 },500);
             }
             //////////  COLLAPSIBLE ...........
         
@@ -56,6 +62,8 @@ $( document ).delegate("#traininghomepage", "pagebeforeshow", function() {
 *   Displays first category modules in content area
 **********************/
 $(document ).delegate("#traininghomepage", "pageinit", function() {           
+        //set the current page id
+        globalObj.currentPage = 'traininghomepage';
         
         /*
          *  PageMode 2: retake training mode
@@ -142,9 +150,9 @@ function loadModule(cat_id){
 
 function populateModule(tx){
 
-    $('#traininghomepage #collapsible_content').empty();
-    $('#traininghomepage #collapsible_content').html('');
-    $('#traininghomepage #context-bar').parent().removeClass('hidden');
+    $('#' + globalObj.currentPage + ' #collapsible_content').empty();
+    $('#' + globalObj.currentPage + ' #collapsible_content').html('');
+    $('#' + globalObj.currentPage + ' #context-bar').parent().removeClass('hidden');
     //return;
     
     var query = 'SELECT * FROM cthx_training_module m JOIN cthx_category c ON m.category_id=c.category_id AND m.category_id='+ globalObj.categoryID;
@@ -168,7 +176,12 @@ function populateModule(tx){
                                     setTimeout(function(){
                                         globalObj.moduleID = row['module_id'];
                                         globalObj.moduleTitle = row['module_title'];
-                                        globalObj.db.transaction(populateTopic);
+                                        
+                                        //select the populate method based on current page
+                                        if(globalObj.currentPage == 'jobaidspage')
+                                            globalObj.db.transaction(populateAids); //found on jobaids.js
+                                        else //default: training home page
+                                            globalObj.db.transaction(populateTopic);
                                         
 //                                        if((i==(len-1)) && globalObj.retakeMode==true){
 //                                            setTimeout(function(){
@@ -185,7 +198,7 @@ function populateModule(tx){
                             }//end for
                         }//end ifd
                         else{
-                            $('.focus-area').html('<p>No modules found.</p>');
+                            $('.focus-area').html('<p>No modules found for this category.</p>');
                         }
                         
                         
@@ -215,7 +228,7 @@ function populateTopic(tx){
                         html += '<h1 class="moduletitle" >' + globalObj.moduleTitle + '</h1>';
                             
                         if(len==0)
-                            html += '<p><a href="#"> No training topics found. </a></p>';
+                            html += '<p><a href="#"> No training topics found for this module. </a></p>';
                         
                         for(var i=0; i<len; i++){
                             var row = result.rows.item(i);
@@ -242,14 +255,24 @@ function topicStarter(topic_id,module_id){
     //set body traininghome data
     var trainingHomeData = [globalObj.categoryID,globalObj.moduleID]
     $("body").data( "trainingHomeData" , trainingHomeData);
-    console.log('body data: ' + JSON.stringify($("body").data()));
+    //console.log('body data: ' + JSON.stringify($("body").data()));
     
     if(globalObj.loggedInUserID > 0){  //user is logged in, group is 0
         $.mobile.changePage( "training.html" );
     }
-    else{
-        $('#sessionPopup').popup('open');
-    }
+    else{  //not logged in
+        console.log('topicStarter usersCount: ' + globalObj.usersCount);
+        //first off, find out if number of registered users is greater than 1. 
+        //If not >1, no need to ask session type
+        if(globalObj.usersCount > 1){  //more than one user
+            $('#sessionPopup').popup('open');
+        }
+        else {//only one user
+            globalObj.sessionType = 1;
+            globalObj.loginMode = 'training';
+            $.mobile.changePage( "login.html?pagemode=1" );
+        }    
+    }//end else not logged in
 }
 
 

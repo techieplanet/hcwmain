@@ -10,7 +10,7 @@
 <script src="js/jquery-1.10.2.js"></script>
 <script src="js/jquery.mobile-1.3.2.js"></script>
 
-        <title>HCW LMS</title>
+        <title>mTrain</title>
     </head>
     <body >                        
         
@@ -31,13 +31,13 @@
                              <a href="#" onclick="launchGuide();return false;" >Training Guide</a>
                          </li>
                          <li>
-                             <a href="#" onclick="getJobAids(1);return false;" >Job Aids</a>
+                             <a href="#" onclick="getJobAidsFromTraining();return false;" >Job Aids</a>
                          </li>
                          <!--<li>
                              <a href="#" onclick="getFAQ(1);return false;" >FAQ</a>
                          </li>-->
                          <li>
-                             <a href="training_home.html" >Exit</a> 
+                             <a href="training_home.html" >Back to Topics</a> 
                          </li>
                  </ul>
                  
@@ -52,15 +52,18 @@
                      <div class="c-title">
                          <span id="module_title"></span>
                      
-                     <div class="c-popup floatright" >
+                         <p id="moduleinfo" class="textfontarial12 moduleinfo">
+                             <!--module info goes here-->
+                         </p>
+                        
+<!--                     <div class="c-popup floatright" >
                          <a href="#infoPopup" data-rel="popup" data-position-to=".content-area">
                          <img src="img/info-icon.png"/>
                         </a>
                      
-                     <!--module info popup  -->
+                     module info popup  
                         <div class="noborder" data-role="popup" id="infoPopup" data-overlay-theme="f" data-dismissible="false">
-                           <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
-                           <div class="popup_header">mTrapp</div>
+                           <div class="popup_header">mTrain</div>
 
                            <div class="margintop10 marginbottom10 popup_body" >
                                <p class="info"></p>
@@ -71,8 +74,8 @@
                                 data-role="button"  data-inline="true" data-mini="true">OK</a>
                            </div>
 
-                       </div><!--module info popup  -->
-                     </div>
+                       </div>module info popup  
+                     </div>-->
                          
                  </div>
                  </div>
@@ -109,17 +112,15 @@
                 </div> 
 
                  </div> 
-                 
-                 
+  
                  
                  <!--test popup-->
-                 
                  <div class="noborder" data-role="popup" id="testPopup" data-overlay-theme="f" data-dismissible="false">
-                    <div class="popup_header">HCW LMS</div>
+                    <div class="popup_header">mTrain</div>
 
                     <div class="popup_body" >
                         <p class="">
-                            Hurray! You have completed necessary training for this module.
+                            You have completed necessary training for this module.
                              <br/>
                              Would you like to take the module test now?
                         </p>
@@ -136,8 +137,40 @@
                 <!--test popup-->
 
 
+                  <!--this is the status popup-->
+                    <div class="noborder" data-role="popup" id="statusPopup" data-overlay-theme="f" data-dismissible="false">
+                       <!--<a href="#" data-rel="back" data-role="button" data-theme="d" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
+                       <div class="popup_header">mTrain</div>
+
+                       <div class="popup_body" >
+                           <p class="statusmsg textcenter"></p>
+                       </div>
+
+                       <div class="popup_footer">
+                           <a href="" id="okbutton" class="pagebutton footerbutton width90" onclick="" 
+                            data-role="button"  data-inline="true" data-mini="true">OK</a>
+                       </div>
+                   </div>
+                 <!--this is the status popup-->
                 
                 
+                    <!--the confirm reset popup--> 
+                    <div class="twobuttons noborder" data-role="popup" id="twobuttonspopup" data-overlay-theme="f" data-dismissible="false">
+
+                        <div class="popup_header"></div>
+
+                        <div class="popup_body">
+                            <p class="statusmsg"></p>
+                        </div>
+
+                        <div class="popup_footer">
+                            <a id="cancelbutton" class="pagebutton footerbutton width40" onclick="" data-role="button"  data-inline="true" data-mini="true">No</a>
+                            <a id="okbutton" class="pagebutton footerbutton width40" onclick="" data-role="button" data-inline="true" data-mini="true">Yes</a>
+                        </div>
+
+                    </div>
+                    <!--the confirm reset popup-->
+                        
              </div>
              <!-- content area -->
         

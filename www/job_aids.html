@@ -10,7 +10,7 @@
 <script src="js/jquery-1.10.2.js"></script>
 <script src="js/jquery.mobile-1.3.2.js"></script>
 
-        <title>HCW LMS</title>
+        <title>mTrain</title>
     </head>
     <body >                        
         
@@ -22,65 +22,41 @@
             
             <div id="content" data-role="content" class="fullheight"  > 
 
-             <div class="sidebar fullheight">
+            <!--<div class="sidebar fullheight">
                  <ul id="sidebar_ul">
-                  
-                         <li>
-                             <a href="job_aids.html" id="active">Job Aids</a>
-                         </li>
-                         <li>
-                             <a href="index.html" >Exit</a>
-                         </li>
+                     <li>
+                         <a href="job_aids.html" id="active">Job Aids</a>
+                     </li>
+                     <li>
+                         <a href="index.html" >Exit Job Aids</a>
+                     </li>
                  </ul>
                  
-             </div>
+             </div>-->
+                
+                <div id="sidebar" class="sidebar fullheight">
+                    <ul id="sidebar_ul"></ul>
+                </div>
 
              <div class="content-area fullheight">
                  
                  
                  <div class="c-header">
-                     <div class="c-title">Emergency Obstetric Care</div>
+                     <div class="c-title">Select Training Category to view associated Job Aids</div>
                  </div>
   
 
                  <div class="c-list">
                      
-                     <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                         <li data-role="list-divider">Job Aids</li>   
+                     <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop hidden"> 
+                         <li id="context-bar" data-role="list-divider">Modules</li>   
                      </ul>  
                      
                      <div  class="focus-area">
-                     <ul class="content-listing textfontarial12">
-                         <li>
-                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
- nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi 
-enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis
- nisl ut aliquip ex ea commodo consequat.
- Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
- nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi 
-enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis
- nisl ut aliquip ex ea commodo consequat.
-                             </p>
-                         </li>
-                         
-                         <li id="coloredbgcontent"><img src="img/640x48011.png" /></li>
-                         
-                         <li>
-                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
- nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi 
-enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis
- nisl ut aliquip ex ea commodo consequat.
- Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
- nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi 
-enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis
- nisl ut aliquip ex ea commodo consequat.
-                             </p>
-                         </li>
-                     </ul>
-
-
-
-                 </div> 
+                          <div id="collapsible_content" data-role="collapsible-set" class="">
+                                Select a category on the left to show its modules here.
+                            </div>
+                     </div> 
                  
 
                  </div>
@@ -95,17 +71,7 @@ enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis
             
             
          <div class="footer"> 
-
-                    <div id="footer_text1">   
-                                        <strong>XYZ Health Center,</strong>
-                                        <div>Plot 2-5, Trans Amadi, Port Hacourt,</div>
-                                        <div>Nigeria. </div> 
-                    </div> 
-                     <div id="footer_text2">   
-                                       <strong>Facility Supervisor</strong>
-                                        <div>Adebayo A. Salako</div>
-                                        <div>08012345678 </div> 
-                    </div> 
+                <!--insert footer markup-->
          </div>  
             
             
