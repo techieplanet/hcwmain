@@ -37,7 +37,8 @@
                              <a href="#" onclick="getFAQ(1);return false;" >FAQ</a>
                          </li>-->
                          <li>
-                             <a href="training_home.html" >Back to Topics</a> 
+                             <!--<a href="" onclick="handleLeaveTraining(); return false;" >Back to Topics</a>--> 
+                             <a href="training_home.html">Back to Topics</a>
                          </li>
                  </ul>
                  
@@ -91,21 +92,42 @@
                 <div  class="focus-area">
                     
                     <div class="training-container padcontainer">
-                            <div class="training-video ui-block" >
-                                <video width="600" height="450" controls="controls" id="videoscreen">
-                                      <source src="refer.mp4" type="video/mp4" />
-                                      <!--<source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>-->
-                                </video>
-                            </div>
+                        <div class="training-video-nav ui-block padcontainer floatleft" style="width:10%" >
+                            <a id="prevvideo" href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >
+                                <img src="img/t-v-icon-l.png" /><br/> 
+                                Previous
+                             </a>
+                        </div>
                         
-                             <div class="training-video-nav ui-block padcontainer" >
+                        
+                        
+                        <div id="video-box" class="training-video ui-block floatleft" >
+                            <video width="420" height="315" controls="controls" id="videoscreen">
+                                  <!--<source src="refer.mp4" type="video/mp4" />-->
+                                  <!--<source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>-->
+                            </video>
+                        </div>
+                        
+                        <div id="msg-box" class="training-video ui-block floatleft hidden" >
+                            <p>No training video found for this topic.</p>
+                        </div>
+                        
+                        
+                        <div class="training-video-nav ui-block padcontainer floatleft" style="width:10%">
+                            <a id="nextvideo" href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">
+                                <img src="img/t-v-icon-r.png" /><br/>
+                                Next
+                            </a>
+                        </div>
+                        
+<!--                             <div class="training-video-nav ui-block padcontainer" >
                                  <a id="prevvideo" href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >
                                  Previous
                                  </a>
                                  <a id="nextvideo" href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">
                                  Next
                                  </a>
-                            </div>   
+                            </div>   -->
                         
                     </div>
                     
@@ -119,23 +141,43 @@
                     <div class="popup_header">mTrain</div>
 
                     <div class="popup_body" >
-                        <p class="">
-                            You have completed necessary training for this module.
-                             <br/>
+                        <p class="statusmsg">
+                            You have completed necessary training for this module.<br/>
                              Would you like to take the module test now?
                         </p>
                     </div>
                     
-                    <div class="popup_header">
-                        <a class="pagebutton footerbutton width40" onclick="$('#testPopup').popup('close'); return false;" 
-                         data-role="button"  data-inline="true" data-mini="true">No, thanks</a>
-                        <a id="sessionok" class="pagebutton footerbutton width40" onclick="changeToTest()" 
-                         data-role="button" data-inline="true" data-mini="true">Take me to test</a>
+                    <div class="popup_footer">
+                        <a id="cancelbutton" class="pagebutton footerbutton width40" onclick="" 
+                         data-role="button"  data-inline="true" data-mini="true">No, not yet</a>
+                        <a id="okbutton" class="pagebutton footerbutton width40" onclick="" 
+                         data-role="button" data-inline="true" data-mini="true">Yes, take me to test</a>
                     </div>
                     
                 </div>
                 <!--test popup-->
 
+                <!--test popup-->
+                 <div class="noborder" data-role="popup" id="guidePopup" data-overlay-theme="f" data-dismissible="false">
+                    <div class="popup_header">mTrain</div>
+
+                    <div class="popup_body" >
+                        <p class="statusmsg">
+                            If you have thoroughly read the training guide then you can <br/>
+                            take the test for this module.<br/><br/>
+                            Would you like to take the test now?
+                        </p>
+                    </div>
+                    
+                    <div class="popup_footer">
+                        <a id="cancelbutton" class="pagebutton footerbutton width40" onclick="" 
+                         data-role="button"  data-inline="true" data-mini="true">No, not yet</a>
+                        <a id="okbutton" class="pagebutton footerbutton width40" onclick="" 
+                         data-role="button" data-inline="true" data-mini="true">Yes, take me to test</a>
+                    </div>
+                    
+                </div>
+                <!--test popup-->
 
                   <!--this is the status popup-->
                     <div class="noborder" data-role="popup" id="statusPopup" data-overlay-theme="f" data-dismissible="false">
@@ -181,17 +223,7 @@
             
             
          <div class="footer"> 
-
-                    <div id="footer_text1">   
-                                        <strong>XYZ Health Center,</strong>
-                                        <div>Plot 2-5, Trans Amadi, Port Hacourt,</div>
-                                        <div>Nigeria. </div> 
-                    </div> 
-                     <div id="footer_text2">   
-                                       <strong>Facility Supervisor</strong>
-                                        <div>Adebayo A. Salako</div>
-                                        <div>08012345678 </div> 
-                    </div> 
+             <!--insert footer markup-->
          </div>  
             
             

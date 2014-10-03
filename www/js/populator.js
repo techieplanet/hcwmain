@@ -12,6 +12,9 @@ function openDb(){
     //globalObj.db.transaction(populateDB, errorCB, successCB);
     
     //window.localStorage.clear();
+    //globalObj.db.transaction(deleteSessions);  //deleter
+    
+    //get first use localstorage item here. it is being set in firstuse.js saveAdminSettings method.
     var firstrun = window.localStorage.getItem("firstuse");
     //alert('firstrun: ' + firstrun);
     
@@ -24,11 +27,11 @@ function openDb(){
     }
 
     //use to force app into subsequent use mode
-    //globalObj.firstTimeUse = false;
+    //globalObj.firstTimeUse = true;
 }
             
 function populateDB(tx){
-    //alert("inside populatedb")
+       //alert("inside populatedb")
        setUpCategoryTable(tx);
        setUpTrainingModules(tx);
        setUpTopics(tx);
@@ -48,7 +51,6 @@ function populateDB(tx){
        setUpBasicSettings(tx);
        setSMSQueue(tx);
        deleteUsageView(tx);
-       
 }
             
 function successCB(){
@@ -92,26 +94,26 @@ function setUpTopics(tx){
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Equipment and Materials","refer_sick_baby.mp4")');
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Follow-up Counselling","cold_baby.mp4")');
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Removing Contraceptive Implant Capsules","breathing_problems.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Barrier methods of contraception - The Female condom","refer_sick_baby.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Emergency Contraception","cold_baby.mp4")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Barrier methods of contraception - The Female condom","")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Emergency Contraception","")');
     
     //module 2
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Bleeding after childbirth(postpartum haemorrhage)","breathing_problems.mp4")');
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Pre-eclampsia and Eclampsia","refer_sick_baby.mp4")');
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Bleeding in early pregnancy (Unsafe Abortion)","cold_baby.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Bleeding in Late Pregnancy","breathing_problems.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Admitting a woman in Labour and Partograph","refer_sick_baby.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Social support in Labour","cold_baby.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Prolonged obstructed labour","breathing_problems.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Other indirect causes of maternal and newborn mortality","refer_sick_baby.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Management of Premature/Prolong rupture of membrane","refer_sick_baby.mp4")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Bleeding in Late Pregnancy","")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Admitting a woman in Labour and Partograph","")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Social support in Labour","")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Prolonged obstructed labour","")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Other indirect causes of maternal and newborn mortality","")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Management of Premature/Prolong rupture of membrane","")');
     
     //module 3
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Examination of the newborn baby","refer_sick_baby.mp4")');
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Care of the newborn baby until discharge","breathing_problems.mp4")');
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Neonatal sepsis","cold_baby.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Communicate and counsel","refer_sick_baby.mp4")');
-    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Special situations","cold_baby.mp4")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Communicate and counsel","")');
+    tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Special situations","")');
     
     //module 4
     tx.executeSql('INSERT INTO cthx_training (training_title,video_file) VALUES ("Assess and classify; Identify treatment; Treat the sick child or young infant","breathing_problems.mp4")');
@@ -179,8 +181,8 @@ function setUpTrainingSession(tx){
     tx.executeSql('DROP TABLE IF EXISTS cthx_training_session');
     tx.executeSql('CREATE TABLE "cthx_training_session" ("session_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "start_time" DATETIME, "end_time" DATETIME, "status" INTEGER, "session_type" INTEGER, "material_type" INTEGER,"worker_id" INTEGER, "module_id" INTEGER, "training_id" INTEGER);');
     
-    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("1",NULL,NULL,"2","1","2","1","1","1")');
-    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("2","01-01-2014",NULL,"1","1","1","2","2","3")');
+    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("1",NULL,NULL,"2","1","1","1","1","1")');
+    //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("2","01-01-2014",NULL,"1","1","1","2","2","6")');
     //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("3","01-01-2014",NULL,"1","1","1","1","1","2")');
     
     //tx.executeSql('INSERT INTO "cthx_training_session" ("session_id","start_time","end_time","status","session_type","material_type","worker_id","module_id","training_id") VALUES ("4","01-01-2014",NULL,"2","1","2","1","2","3")');
@@ -191,9 +193,10 @@ function setUpTests(tx){
     tx.executeSql('DROP TABLE IF EXISTS cthx_test');
     tx.executeSql('CREATE TABLE "cthx_test" ("test_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" TEXT, "module_id" INTEGER)');
     
-    tx.executeSql('INSERT INTO "cthx_test" ("test_id","title","module_id") VALUES ("1","Reproductive Health Test","1")');
-    tx.executeSql('INSERT INTO "cthx_test" ("test_id","title","module_id") VALUES ("2","Maternal Health Test","2")');
-    tx.executeSql('INSERT INTO "cthx_test" ("test_id","title","module_id") VALUES ("3","Management of Common Childhood Illnesses Test","3")');
+    tx.executeSql('INSERT INTO "cthx_test" ("test_id","title","module_id") VALUES ("1","Family Panning","1")');
+    tx.executeSql('INSERT INTO "cthx_test" ("test_id","title","module_id") VALUES ("2","Management of Complications in Pregnancy & Delivery","2")');
+    tx.executeSql('INSERT INTO "cthx_test" ("test_id","title","module_id") VALUES ("3","Management of Newborn Complications","3")');
+    tx.executeSql('INSERT INTO "cthx_test" ("test_id","title","module_id") VALUES ("4","Management of Common Childhood Illnesses","4")');
 }
 
 function setUpTestSession(tx){
@@ -223,6 +226,18 @@ function setUpTestQuestions(tx){
     tx.executeSql(query,["Which of these describes someone whose blood does not clot?",'{"A":"Haemophiliac","B":"Erythrocytic","C":"Lymphatic","D":"Haemoglobin"}',"Haemophiliac","2",'Haemophiliac '+tiptext]);
     tx.executeSql(query,["Which of these is associated with female reproduction?",'{"A":"Testosterone","B":"Progesterone","C":"Pituitary Hormones","D":"Endocrine"}',"Progesterone","2",'Progesterone '+tiptext]);
     tx.executeSql(query,["Which of these is not an organ?",'{"A":"Kidney","B":"Liver","C":"Lung","D":"Pancreas"}',"Pancreas","2",'Pancreas '+tiptext]);
+    
+    //test 3 questions
+    tx.executeSql(query,["What is the smallest unit of life?",'{"A":"Cell","B":"Blood","C":"Tissue","D":"Organ"}',"Cell","3",'Cell '+tiptext]);
+    tx.executeSql(query,["A group of what makes a tissue?",'{"A":"Cells","B":"Organs","C":"Bones","D":"Paper"}',"Cells","3",'Cells '+tiptext]);
+    tx.executeSql(query,["A group of what makes an organ?",'{"A":"Tissues","B":"Cells","C":"Enzymes","D":"Lymphocytes"}',"Tissues","3",'Tissues '+tiptext]);
+    tx.executeSql(query,["A group of what makes a system?",'{"A":"Tissues","B":"Cells","C":"Enzymes","D":"Organs"}',"Organs","3",'Organs '+tiptext]);
+    
+    //test 2 questions
+    tx.executeSql(query,["Which of these if responsible for transporting oxygen in the blood?",'{"A":"Haemophilia","B":"Haemoglobin","C":"Lymphs","D":"Erythrocytes"}',"Haemoglobin","4",'Haemoglobin '+tiptext]);
+    tx.executeSql(query,["Which of these describes someone whose blood does not clot?",'{"A":"Haemophiliac","B":"Erythrocytic","C":"Lymphatic","D":"Haemoglobin"}',"Haemophiliac","4",'Haemophiliac '+tiptext]);
+    tx.executeSql(query,["Which of these is associated with female reproduction?",'{"A":"Testosterone","B":"Progesterone","C":"Pituitary Hormones","D":"Endocrine"}',"Progesterone","4",'Progesterone '+tiptext]);
+    tx.executeSql(query,["Which of these is not an organ?",'{"A":"Kidney","B":"Liver","C":"Lung","D":"Pancreas"}',"Pancreas","4",'Pancreas '+tiptext]);
 }
 
 
@@ -299,6 +314,10 @@ function setSMSQueue(tx){
     
 }
 
+function deleteSessions(tx){
+    tx.executeSql('DELETE FROM cthx_training_session');
+    tx.executeSql('DELETE FROM cthx_test_session');
+}
 
 function dropTables(tx){
         tx.executeSql('DROP TABLE IF EXISTS cthx_');

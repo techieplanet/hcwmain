@@ -1,4 +1,5 @@
 $(document ).delegate("#jobaidspage", "pagebeforecreate", function() {
+    globalObj.currentPage = 'jobaidspage';
     createHeader('jobaidspage','Job Aids');
     createFooter('jobaidspage');
     setNotificationCounts();
@@ -57,8 +58,8 @@ $(document ).delegate("#jobaidspage", "pageinit", function() {
 
         //getJobAids(2);
 
-
-        //$('#sidebar_ul li:first-child a').addClass('active');
+        //show the footer logged in user
+        showFooterUser();
  });
  
  
@@ -86,7 +87,7 @@ function populateAids(tx){
                         html += '<h1 class="moduletitle" >' + globalObj.moduleTitle + '</h1>';
                             
                         if(len==0)
-                            html += '<p><a href="#"> No Job Aids found for this module.</a></p>';
+                            html += '<p><a href="#" style="color:#000 !important;"> No Job Aids found for this module.</a></p>';
                         
                         for(var i=0; i<len; i++){
                             var row = result.rows.item(i);

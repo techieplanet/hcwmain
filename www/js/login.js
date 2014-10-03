@@ -1,4 +1,5 @@
 $( document ).delegate("#loginpage", "pagebeforecreate", function() {    
+    globalObj.currentPage = 'loginpage';
     createHeader('loginpage','Login');
     createFooter('loginpage');
     setNotificationCounts();
@@ -6,9 +7,15 @@ $( document ).delegate("#loginpage", "pagebeforecreate", function() {
 
 $(document ).delegate("#loginpage", "pageshow", function() {        
     setHeaderNotificationCount('loginpage');
+    
+//    $('#username').on("focus", function(){
+//            alert('focus funciton');
+//        });
 });
 
 $(document ).delegate("#loginpage", "pageinit", function() {        
+        //show the footer logged in user
+        //showFooterUser();
         
         //sample initial string to split on - /phonegap/hcwdeploy/www/login.html?pagemode=1
         var pageMode = $('#loginpage').attr('data-url').split('?')[1].split('=')[1];
@@ -18,7 +25,7 @@ $(document ).delegate("#loginpage", "pageinit", function() {
             $('#indtab').addClass('active');
             if(globalObj.loginMode == 'test'){
                 createLoginForm();
-                $('#context-bar').html('Accessing Tests');
+                $('.cbar').html('Accessing Tests');
                 $('#grouptab').parent().addClass('hidden');
             }
             else if(globalObj.loginMode == 'training'){
@@ -31,15 +38,14 @@ $(document ).delegate("#loginpage", "pageinit", function() {
                 $('#grouptab').parent().addClass('hidden');
                 $('#indtab').html('Admin Session');
                 $('.c-title').html('Admin Session');
-                $('#context-bar').html('Admin Login');
+                $('.cbar').html('Admin Login');
                 $('#login').attr('onclick','adminLogin()');
             }
             else{//profile login
                 globalObj.loginMode = 'profile';
                 createLoginForm();
-                $('#context-bar').html('Profile Login');
+                $('.cbar').html('Profile Login');
                 $('#grouptab').parent().addClass('hidden');
-                //$('#regtab').removeClass('hidden');
             }
             
             $('#grouptab').attr('onclick','switchToGroupSession()');
@@ -77,7 +83,7 @@ function switchToIndividualSession(){
 
 
 function createLoginForm(){
-    var html = '<ul   data-role="listview">';
+    var html = '<ul data-role="listview">';
     
         html +=     '<li class="" data-icon="false">' +
                         '<div data-role="fieldcontain" class="fieldrow nomargin" >' +
@@ -162,6 +168,8 @@ function login(){
                                          $.mobile.changePage( "training.html" );
                                       }
                                       else if(globalObj.loginMode == 'test'){
+                                          //ensure that user is taken to the pending tab
+                                          $("body").data( "testTab" , 'pending');
                                           $.mobile.changePage( "test.html?pagemode=1" );
                                       }
                                      else  // go to profile page if logging in but not accessing training yest
@@ -171,6 +179,7 @@ function login(){
                                  else{
                                      $('#loginPopup .popup_body p').html('Wrong username or password. Try again')
                                      $('#loginPopup').popup('open');
+                                     $('#password').val('');
                                  }
                              }
                          );
@@ -219,6 +228,7 @@ function adminLogin(){
                                      else{
                                          $('#loginPopup .popup_body p').html('Wrong admin details. Try again')
                                          $('#loginPopup').popup('open');
+                                         $('#password').val('');
                                      }
                                      
                                  }

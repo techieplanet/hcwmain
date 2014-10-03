@@ -1,4 +1,5 @@
 $(document).delegate("#profilepage", "pagebeforecreate", function(){        
+    globalObj.currentPage = 'profilepage';
     if(globalObj.sandboxMode==true)
         createHeader('profilepage','Profile (View as User)');
     else
@@ -17,7 +18,7 @@ $(document ).delegate("#profilepage", "pageshow", function() {
     
     //Call the notifcation calculator again so we have the count displayed
     setNotificationCounts();
-                        
+    
     //$('#total_noti').html(globalObj.totalNotificationCount);
     //$('#total_noti').html('');
     //set active sidebar element on click
@@ -27,16 +28,22 @@ $(document ).delegate("#profilepage", "pageshow", function() {
     });
     
     
+    
+    
+    jQuery.validator.setDefaults({
+        ignore: []
+      });
+    
     $('#editForm').validate({
+           //ignore: [],  
            rules:{ 
                firstname:{required:true, minlength:2}, 
                lastname:{required:true, minlength:2}, 
                email:{required:true, email:true},
                phonenumber:{required:true,digits:true, minlength:8},
-               cadre:{required:true,min:1},
-               //qualification:{required:true,minlength:3},
-               gender:{required:true,min:1},
-               squestion:{required:true,min:1},
+               cadrewatch:{required:true,min:1},
+               genderwatch:{required:true,min:1},
+               questionwatch:{required:true,min:1},
                answer: {required:true},
                //supervisor:{required:true,min:1},
                
@@ -49,10 +56,9 @@ $(document ).delegate("#profilepage", "pageshow", function() {
                lastname:{required:'Cannot be empty', minlength:'2 characters minimum'}, 
                email:{required:'Cannot be empty', email:'Enter valid email'},
                phonenumber:{required:'Cannot be empty', digits:'Enter numbers only', minlength:'8 characters minimum'},
-               cadre:{required:'Cannot be empty', min:'Make a selection'},
-               //qualification:{required:'Cannot be empty', minlength:'3 characters minimum'}, 
-               gender:{required:'Cannot be empty', min:'Make a selection'},
-               squestion:{required:'Cannot be empty', min:'Make a selection'},
+               cadrewatch:{required:'Make a selection', min:'Make a selection'},
+               genderwatch:{required:'Make a selection', min:'Make a selection'},
+               questionwatch:{required:'Make a selection', min:'Make a selection'},
                answer: {required:'Cannot be empty'},
                
                username:{required:'Cannot be empty', minlength:'6 characters minimum'}, 
@@ -61,29 +67,47 @@ $(document ).delegate("#profilepage", "pageshow", function() {
            }
         });//close validate
     
+//        jQuery.validator.addMethod("unique_username", function(value, element) {
+//            console.log('inside addmethod: ' + value + ' ' + element);
+//            var usernames = $('div#content').data('usernames');
+//            for(var i=0; i<usernames.length; i++){
+//                if(usernames[i]==value) return false;
+//            }
+//            return true;
+//          }, "Not available");  //the message here will only be used if none set for unique_username in messages block
+
+
 });
 
 
 $(document ).delegate("#profilepage", "pageinit", function() {                
-        
+        //show the footer logged in user
+        showFooterUser();
+    
         var pageModeArray = $('#profilepage').attr('data-url').split('?');
         //this is the notifications mode, when the user clicks on notification on header
         if(pageModeArray.length>1){
             pageMode = pageModeArray[1].split('=')[1];
             if(pageMode=='1')
               $('div[data-role="collapsible"]').trigger("expand");
-              showUsage();
+              showNotificationsList();
+              $('#sidebar_ul li a').removeClass('active');
+              $('#notificationslink').addClass('active');
+              $('#notificationslink').addClass('nobgimage');
         }
         else{
             //set active sidebar element on click
+            $('#sidebar_ul li a').removeClass('active');
             $('#usagelink').addClass('active');
             showUsage();
         }
         
         //$('#total_notif').html('pi5' + globalObj.totalNotificationCount);
+        //make the collapsible permanently expanded.
+        $(".ui-collapsible-heading").unbind("click");
         
-})
 
+})
 
 
 function dropView(tx){
@@ -96,6 +120,7 @@ function dropView(tx){
 }
 
 function showUsage()  {
+    globalObj.profileStatDetailsView = false;
     globalObj.db.transaction(queryUsage,errorCB);   
 }
 
@@ -117,36 +142,24 @@ function showLoginDetails(){
  * Tables: worker, training_session, 
  */
 function queryUsage(tx){
-    
-//    var query = 'CREATE VIEW IF NOT EXISTS cthx_usageview AS ' +
-//                'SELECT ' +
-//                '(SELECT COUNT(DISTINCT training_id)  FROM cthx_training_session WHERE worker_id=' + globalObj.loggedInUserID + ') AS trainingtaken, ' +
-//                '(SELECT COUNT(DISTINCT training_id)  FROM cthx_training_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND material_type=2) AS trainingguidetaken, ' +
-//                '(SELECT COUNT(DISTINCT training_id) FROM cthx_training_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND status=1) AS trainingincomplete, ' +
-//                '(SELECT COUNT(training_id) FROM cthx_training t WHERE t.training_id NOT IN (SELECT DISTINCT training_id from cthx_training_session s WHERE s.worker_id=' + globalObj.loggedInUserID + ')) AS trainingdue, ' +
-//                '(SELECT COUNT(DISTINCT test_id) FROM cthx_test_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND ((score/total)*100)>40) AS testpassed, ' +
-//                '(SELECT COUNT(DISTINCT test_id) FROM cthx_test_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND ((score/total)*100)<=40) AS testfailed, ' +
-//                '(SELECT ROUND(SUM(score)/SUM(total)*100,2 ) FROM cthx_test_session WHERE worker_id=' + globalObj.loggedInUserID + ') AS performance';
 
       //remove the required text if displayed
       if($('.required-area').length>0) $('.required-area').remove();
       
       var query = 'SELECT cthx_health_worker.*, ' +
-                    '(SELECT COUNT(DISTINCT training_id)  FROM cthx_training_session WHERE worker_id=' + globalObj.loggedInUserID + ') AS trainingtaken, ' +
-                    '(SELECT COUNT(DISTINCT training_id)  FROM cthx_training_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND material_type=2) AS trainingguidetaken, ' +
+                    '(SELECT COUNT(DISTINCT training_id)  FROM cthx_training_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND status=2  AND material_type=1) AS trainingcompleted, ' +
+                    '(SELECT COUNT(DISTINCT module_id)  FROM cthx_training_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND material_type=2) AS trainingguidetaken, ' +
                     '(SELECT COUNT(DISTINCT training_id) FROM cthx_training_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND status=1) AS trainingincomplete, ' +
-                    '(SELECT COUNT(training_id) FROM cthx_training t WHERE t.training_id NOT IN (SELECT DISTINCT training_id from cthx_training_session s WHERE s.worker_id=' + globalObj.loggedInUserID + ')) AS trainingdue, ' +
-                    '(SELECT COUNT(DISTINCT test_id) FROM cthx_test_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND ((score/total)*100)>40) AS testpassed, ' +
-                    '(SELECT COUNT(DISTINCT test_id) FROM cthx_test_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND ((score/total)*100)<=40) AS testfailed, ' +
+                    '(SELECT COUNT(training_id) FROM cthx_training t WHERE t.video_file != "" AND t.training_id NOT IN (SELECT DISTINCT(training_id) from cthx_training_session s WHERE s.worker_id=' + globalObj.loggedInUserID + ')) AS trainingdue, ' +
+                    '(SELECT COUNT(DISTINCT test_id) FROM cthx_test_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND ROUND((score/total)*100) >= 40) AS testpassed, ' +
+                    '(SELECT COUNT(DISTINCT test_id) FROM cthx_test_session WHERE worker_id=' + globalObj.loggedInUserID + ' AND ROUND((score/total)*100) < 40) AS testfailed, ' +
                     '(SELECT ROUND(SUM(score)/SUM(total)*100,2 ) FROM cthx_test_session WHERE worker_id=' + globalObj.loggedInUserID + ') AS performance ' +
                     'FROM cthx_health_worker WHERE worker_id='+ globalObj.loggedInUserID;
 
 
-    //console.log('View Query: ' + query);
-
 
     //CREATE THE VIEW
-    tx.executeSql(query)
+    tx.executeSql(query);
     
    //now another transaction to retrieve values from fresh view created
    //query = 'SELECT * FROM cthx_usageview JOIN cthx_health_worker w WHERE worker_id='+ globalObj.loggedInUserID;
@@ -160,14 +173,48 @@ function queryUsage(tx){
                                 var performance = row['performance']==null ? 0 : row['performance'];
                                 
                                 html = '<ul class="content-listing textfontarial12" data-role="listview"  >' +
-                                        '<li  data-icon="false"><p>Number of training taken<span id="trainingtaken" class=ui-li-count>' + row['trainingtaken'] + '</span></p></li>' +
-                                        '<li  data-icon="false"><p>Number of training guides viewed<span id="trainingguide" class=ui-li-count>' + row['trainingguidetaken'] + '</span></p></li>' +
-                                        '<li  data-icon="false"><p>Number of uncompleted trainings taken<span id="trainingincomplete" class=ui-li-count>' + row['trainingincomplete'] + '</span></p></li>' +
-                                        '<li  data-icon="false"><p>Number of trainings yet to be taken<span id="trainingdue" class=ui-li-count>' + row['trainingdue'] + '</span></p></li>' +
-                                        '<li data-icon="false"><p>Number of tests passed<span id="totalpassed" class=ui-li-count>' + row['testpassed'] + '</span></p></li>' +
-                                        '<li data-icon="false"><p>Number of tests failed<span id="totalfailed" class=ui-li-count>' + row['testfailed'] + '</span></p></li>' +
-                                        '<li data-icon="false"><p>Average Performance Percentage<span id="performance" class=ui-li-count>' + performance + '</span></p></li>'+
-                                        '</ul>';
+                                        '<li  data-icon="false">' +
+                                                '<p>Number of completed video trainings taken<span id="trainingtaken" class=ui-li-count>' + 
+                                                    '<a href="#" class="notextdecoration counterlink" onclick="brkTrainingsCompleted(); return false;">' + row['trainingcompleted'] + '</a>' +
+                                                '</span></p>' +
+                                        '</li>' +
+                                            
+                                        '<li  data-icon="false">' +
+                                            '<p>Number of uncompleted video trainings taken<span id="trainingincomplete" class=ui-li-count>' + 
+                                                '<a href="#" class="notextdecoration counterlink" onclick="brkTrainingsUnCompleted(); return false;">' + row['trainingincomplete'] + '</a>' +
+                                            '</span></p>' +
+                                        '</li>' +
+                                            
+                                        '<li  data-icon="false">' + 
+                                            '<p>Number of video trainings yet to be accessed<span id="trainingdue" class=ui-li-count>' + 
+                                                '<a href="#" class="notextdecoration counterlink" onclick="brkTrainingDue(); return false;">' + row['trainingdue'] + '</a>' +
+                                            '</span></p></li>' +
+                                            
+                                        '<li  data-icon="false">' +
+                                            '<p>Number of training guides completed<span id="trainingguide" class=ui-li-count>' + 
+                                                '<a href="#" class="notextdecoration counterlink" onclick="brkTrainingGuideTaken(); return false;">' + row['trainingguidetaken'] + '</a>' +
+                                             '</span></p>' +
+                                        '</li>' +
+                                        
+                                        '<li data-icon="false">' + 
+                                            '<p>Number of tests passed<span id="totalpassed" class=ui-li-count>' + 
+                                                '<a href="#" class="notextdecoration counterlink" onclick="brkTestsPassed(); return false;">' + row['testpassed'] + '</a>' +
+                                              '</span></p>' +
+                                        '</li>' +
+                                        
+                                        '<li data-icon="false">' +
+                                            '<p>Number of tests failed<span id="totalfailed" class=ui-li-count>' + 
+                                                    '<a href="#" class="notextdecoration counterlink" onclick="brkTestsFailed(); return false;">' + row['testfailed'] + '</a>' +
+                                            '</span></p>' +
+                                        '</li>' +
+                                        
+                                        '<li data-icon="false">' +
+                                            '<p>Average Performance Percentage<span id="performance" class=ui-li-count>' + 
+                                                    '<a href="#" class="notextdecoration counterlink cccbg textblack bold">' + performance + '</a>' + 
+                                            '</span></p>' +
+                                        '</li>'+
+                                        
+                                   '</ul>';
                                         
                                  $('.focus-area').html(html);
                                  $('.c-title').html(capitalizeFirstLetter(row['firstname']) + ' ' + capitalizeFirstLetter(row['middlename']) + ' ' + capitalizeFirstLetter(row['lastname']));
@@ -176,7 +223,7 @@ function queryUsage(tx){
                                             '<span class="floatright textfontarial13 width50 textright" style="margin-top:4px">' +
                                                 //'<a href="#" onclick="confirmPasswordReset()" class="pagebutton pagebuttonpadding textwhite" >Reset Password</a>' +
                                                 //'&nbsp;&nbsp;' +
-                                                '<a href="admin.html" class="pagebutton pagebuttonpadding textwhite" >Exit User View</a>' +
+                                                '<a href="admin.html?pageMode=1" class="pagebutton pagebuttonpadding textwhite" >Exit User View</a>' +
                                             '</span>'
                                          );
                                  }
@@ -187,7 +234,7 @@ function queryUsage(tx){
                        
                             }
                     });
-
+                      
 }
 
 function queryInfo(tx){
@@ -270,7 +317,7 @@ function queryInfo(tx){
                             if(globalObj.sandboxMode==true){
                                      $('.c-title').append(
                                             '<span class="floatright textfontarial13 width30 textright" style="margin-top:4px">' +
-                                                '<a href="admin.html" class="pagebutton pagebuttonpadding textwhite" >Exit User View</a>' +
+                                                '<a href="admin.html?pageMode=1" class="pagebutton pagebuttonpadding textwhite" >Exit User View</a>' +
                                             '</span>'
                                          );
                             }
@@ -300,7 +347,7 @@ function queryEdit(tx){
                             //names
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
                                         '<p class="marginbottom10"><strong class="marginbottom10">Full Name*</strong></p>' +
-                                        '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="firstname" id="firstname" value="' + capitalizeFirstLetter(row['firstname']) + '" placeholder="First Name"/></span></p>' +
+                                        '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="firstname" id="firstname" value="' + capitalizeFirstLetter(row['firstname']) + '" placeholder="First Name" /></span></p>' +
                                         '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="middlename" id="middlename" value="' + capitalizeFirstLetter(row['middlename']) + '" placeholder="Middle Name" /></span> (<em>Optional</em>)</p>' +
                                         '<p><span class=""><input class="styleinputtext marginbottom10" data-role="none" size="30" type="text" name="lastname" id="lastname" value="' + capitalizeFirstLetter(row['lastname']) + '" placeholder="Last Name" /></span></p>' +
                                         '</p>' +
@@ -311,25 +358,16 @@ function queryEdit(tx){
                                         '<p class="marginbottom10"><strong>Cadre*</strong></p>' +
                                         '<p>' +
                                             '<span class="">' +
-                                                '<select name="cadre" id="cadre" data-role="none" class="styleinputtext">' + 
+                                                '<select onchange="changeMade(this);" name="cadre" id="cadre" data-role="none" class="styleinputtext">' + 
                                                     '<option value="0">--Select Cadre--</option>' +
                                                     '<option value="1">CHEW</option>' +
                                                     '<option value="2">Nurse</option>' +
                                                     '<option value="3">Midwife</option>' +
                                                 '</select>' +
+                                                '<input type="hidden" id="cadrewatch" name="cadrewatch" class="watcher">' +
                                             '</span>' +
                                         '</p>' +
                                     '</div>';
-                            
-                            
-                            //qualification
-//                            html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-//                                        '<p class="marginbottom10"><strong>Qualification:</strong></p>' +
-//                                        '<p>' +
-//                                            '<span class=""><input class="styleinputtext" data-role="none" size="20" type="text" name="qualification" id="qualification" value="' + row['qualification'] + '" placeholder="Qualification" /></span>' +
-//                                        '</p>' +
-//                                    '</div>';
-                                
                                 
                             //phone
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
@@ -347,22 +385,25 @@ function queryEdit(tx){
                                             '<span class=""><input class="styleinputtext" data-role="none" size="20" type="email" name="email" id="email" value="' + row['email'] + '" placeholder="Email Address" /></span>' +
                                         '</p>' +
                                     '</div>';
-                            
-                            //gender
+                                
+                             //gender
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer marginbottom10">' +
-                                        '<p class="marginbottom10"><strong>Gender*</strong></p>' +
-                                        '<p>' +
-                                            '<span class="">' +
-                                                '<select name="gender" id="gender" data-role="none" class="styleinputtext">' + 
-                                                    '<option value="0">--Select Gender--</option>' +
-                                                    '<option value="1">Male</option>' +
-                                                    '<option value="2">Female</option>' +
-                                                '</select>' +
-                                            '</span>' +
-                                        '</p>' +
-                                    '</div>';
+                                    '<p class="marginbottom10"><strong>Gender*</strong></p>' +
+                                    '<p>' +
+                                        '<span class="">' +
+                                            '<select onchange="changeMade(this);" name="gender" id="gender" data-role="none" class="styleinputtext">' + 
+                                                '<option value="0">--Select Gender--</option>' +
+                                                '<option value="1">Male</option>' +
+                                                '<option value="2">Female</option>' +
+                                            '</select>' +
+                                            '<input type="hidden" id="genderwatch" name="genderwatch" class="watcher">' +
+                                        '</span>' +
+                                    '</p>' +
+                                '</div>';
                                 
+                            
                                 
+                                //question explain  
                                 html +=   '<div class="textfontarial12 width95 bottomborder padcontainer margintop20 marginbottom10">' +
                                             //'<p class="marginbottom10"><strong>Secret Question</strong></p>' +
                                             '<p>' +
@@ -378,12 +419,13 @@ function queryEdit(tx){
                                         '<p class="marginbottom10"><strong>Secret Question*</strong></p>' +
                                         '<p>' +
                                             '<span class="">' +
-                                                '<select name="squestion" id="squestion" data-role="none" class="styleinputtext">' + 
+                                                '<select onchange="changeMade(this);" name="squestion" id="squestion" data-role="none" class="styleinputtext">' + 
                                                     '<option value="0">--Select Question--</option>' +
                                                     '<option value="1">What is your favorite colour?</option>' +
                                                     '<option value="2">What city were you born?</option>' +
                                                     '<option value="2">What is your favorite food?</option>' +
                                                 '</select>' +
+                                                '<input type="hidden" id="questionwatch" name="questionwatch" class="watcher">' +
                                             '</span>' +
                                         '</p>' +
                                     '</div>';
@@ -398,18 +440,24 @@ function queryEdit(tx){
                             
                             $('.focus-area').html(html);
                             
+                            $('input').attr('onclick','focusListener(this)');
+                            
                             //set combos
                             document.getElementById("cadre").selectedIndex = row['cadre_id'];
-                            var genderID = row['gender']=='male' ? 1 : 2;
-                            document.getElementById("gender").selectedIndex = genderID;
-                            document.getElementById("squestion").selectedIndex = row['secret_question'];
+                            document.getElementById("cadrewatch").value = row['cadre_id'];
                             
+                            var genderID = row['gender']=='Male' ? 1 : 2;
+                            document.getElementById("gender").selectedIndex = genderID;
+                            document.getElementById("genderwatch").value = genderID;
+                            
+                            document.getElementById("squestion").selectedIndex = row['secret_question'];
+                            document.getElementById("questionwatch").value = row['secret_question'];
                             
                             $('.c-title').html(capitalizeFirstLetter(row['firstname']) + ' ' + capitalizeFirstLetter(row['middlename']) + ' ' + capitalizeFirstLetter(row['lastname']));
                             if(globalObj.sandboxMode==true){
                                      $('.c-title').append(
                                             '<span class="floatright textfontarial13 width30 textright" style="margin-top:4px">' +
-                                                '<a href="admin.html" class="pagebutton pagebuttonpadding textwhite" >Exit User View</a>' +
+                                                '<a href="admin.html?pageMode=1" class="pagebutton pagebuttonpadding textwhite" >Exit User View</a>' +
                                             '</span>'
                                          );
                                  }
@@ -422,12 +470,79 @@ function queryEdit(tx){
                                         );
                             if($('.required-area').length==0)
                                 $('#context-bar').after('<div class="required-area"><strong><em>* indicates required field</em></strong></div>'); 
+                            
+                            $('#profilepage').trigger('create');
                              
                         }//len>0
                     }
             );
+                
+        
+        
+        
 }
 
+
+function showNotificationsList(){
+     console.log('inside showNotificationsList');
+     if($('.required-area').length>0) $('.required-area').remove();
+     
+     var html = '';
+     
+     html +=    '<div class="row-content textfontarial12 ">';
+     
+     html +=        '<div class="marginbottom20">' +
+                       '<p id="grp-btn">' +
+                           '<span class="row-content-col width40 textleft">Uncompleted Trainings</span>' +
+                           '<span class="row-content-col width10">' + globalObj.uncompletedTrainings + '</span>' +
+                           '<span class="row-content-col-btn width30" style="margin-top:-5px;">' +
+                               '<a  class="pagebutton" onclick="getUncompletedTrainings(false);return false;" data-theme="d" data-role="button"  data-inline="true" >View Details</a>' +
+                           '</span>' +
+                       '</p>' +
+                    '</div>';
+                
+     html +=        '<div class="marginbottom20">' +
+                       '<p id="grp-btn">' +
+                           '<span class="row-content-col width40 textleft">Waiting Assessments</span>' +
+                           '<span class="row-content-col width10">' + globalObj.waitingTests + '</span>' +
+                           '<span class="row-content-col-btn width30" style="margin-top:-5px;">' +
+                               '<a  class="pagebutton" onclick="getWaitingTests(false);return false;" data-theme="d" data-role="button"  data-inline="true" >View Details</a>' +
+                           '</span>' +
+                       '</p>' +
+                    '</div>';        
+                
+     html +=        '<div class="marginbottom20">' +
+                       '<p id="grp-btn">' +
+                           '<span class="row-content-col width40 textleft">Failed Assessments</span>' +
+                           '<span class="row-content-col width10">' + globalObj.failedTests + '</span>' +
+                           '<span class="row-content-col-btn width30" style="margin-top:-5px;">' +
+                               '<a  class="pagebutton" onclick="getFailedTests(false);return false;" data-theme="d" data-role="button"  data-inline="true" >View Details</a>' +
+                           '</span>' +
+                       '</p>' +
+                    '</div>'; 
+    
+     html += '</div>';
+    
+    
+    $('.focus-area').html(html); 
+    
+    $('#context-bar').html(
+                         '<span id="column-width" class="width40 textleft">Title</span>' +
+                         '<span id="column-width" class="width20 textleft">Count</span>' +
+                         '<span id="column-width" class="width30">Action</span>'
+                     );
+                         
+    $('.c-title').html('Notifications');
+    if(globalObj.sandboxMode==true){
+             $('.c-title').append(
+                    '<span class="floatright textfontarial13 width30 textright" style="margin-top:4px">' +
+                        '<a href="admin.html?pageMode=1" class="pagebutton pagebuttonpadding textwhite" >Exit User View</a>' +
+                    '</span>'
+                 );
+    }
+    $("#profilepage").trigger('create');
+    
+}
 
 //updates a user profile 
  function updateUserPersonalInfo(){
@@ -459,9 +574,9 @@ function queryEdit(tx){
                         //queue SMS for sending 
                         queueRegSMS(tx, globalObj.loggedInUserID);
 
-                        $('.statusmsg').html('<p>Successful</p>');
-                        $('#statusPopup #okbutton').attr('onclick','profileClose()');
-                        $('#statusPopup').popup('open');
+                        $('#profilepage .statusmsg').html('<p>Successful</p>');
+                        $('#profilepage #statusPopup #okbutton').attr('onclick','profileClose()');
+                        $('#profilepage #statusPopup').popup('open');
 
                 },
                 function(error){
@@ -469,21 +584,42 @@ function queryEdit(tx){
                 }
             );
      }
+     
  }
  
  function profileClose(){
-     $('.required-area').remove();
-     $('#statusPopup').popup('close');
+     $('#profilepage .required-area').remove();
+     $('#profilepage #statusPopup').popup('close');
      showPersonalInfo();
  }
  
+ 
  function loginClose(){
-     $('.required-area').remove();
-     $('#statusPopup').popup('close');
+     
+    globalObj.loggedInUserID = -1;
+    globalObj.loginMode = 'profile';
+
+    removeBodyDataValues();
+    console.log('body data: ' + JSON.stringify($("body").data()));
+
+    accessProfile();
+    
+ }
+ 
+ function loginCloseAdmin(){
+     $('#profilepage .required-area').remove();
+     $('#profilepage #statusPopup').popup('close');
      showLoginDetails();
  }
  
+ 
+
+ 
+ 
+ 
  function queryLogin(tx){
+     getAllUsernames();  //found on reg.js
+     
     var query = 'SELECT * FROM cthx_health_worker WHERE worker_id='+ globalObj.loggedInUserID;
     tx.executeSql(query,[],
                     function(tx,result){
@@ -498,7 +634,7 @@ function queryEdit(tx){
                             html += '<li  data-icon="false" class="bottomborder marginleft15">' +
                                         '<div  class="margintop10">' +
                                             '<p ><strong>Username*</strong></p>' +
-                                            '<p class=""><input class="styleinputtext" data-role="none" size="20" type="text" name="username" id="username" value="' + row['username'] + '" placeholder="User Name"/></p>' +
+                                            '<p class=""><input class="styleinputtext" data-role="none" size="20" type="text" name="username" id="username" disabled="disabled" value="' + row['username'] + '" placeholder="User Name"/></p>' +
                                         '</div>' +
                                     '</li>';
                                 
@@ -522,14 +658,15 @@ function queryEdit(tx){
                         }    
                             
                         $('.focus-area').html(html);
-                            
+                        
+                        $('input').attr('onclick','focusListener(this)');
                            
                             
                             $('.c-title').html(capitalizeFirstLetter(row['firstname']) + ' ' + capitalizeFirstLetter(row['middlename']) + ' ' + capitalizeFirstLetter(row['lastname']));
                             if(globalObj.sandboxMode==true){
                                      $('.c-title').append(
                                             '<span class="floatright textfontarial13 width30 textright" style="margin-top:4px">' +
-                                                '<a href="admin.html" class="pagebutton pagebuttonpadding textwhite" >Exit User View</a>' +
+                                                '<a href="admin.html?pageMode=1" class="pagebutton pagebuttonpadding textwhite" >Exit User View</a>' +
                                             '</span>'
                                          );
                             }
@@ -543,6 +680,7 @@ function queryEdit(tx){
                     }
             );
 }
+
  
 //updates a user login info 
  function updateLoginDetails(){
@@ -556,49 +694,56 @@ function queryEdit(tx){
         
         globalObj.db.transaction(function(tx){
                     DAO.update(tx, 'cthx_health_worker', fields, values, 'worker_id', globalObj.loggedInUserID );
-                    $('.statusmsg').html('<p>Successful</p>');
-                    $('#okbutton').attr('onclick','loginClose()');
-                    $('#statusPopup').popup('open');
+                    if(globalObj.sandboxMode == true){
+                        $('#profilepage .statusmsg').html('<p>Successful</p>');
+                        $('#profilepage #statusPopup #okbutton').attr('onclick','loginCloseAdmin()');
+                    }
+                    else{
+                        $('#profilepage .statusmsg').html('<p>Password Change Successful. <br/> You have been logged out. <br/>Please log in again on next screen.</p>');
+                        $('#profilepage #statusPopup #okbutton').attr('onclick','loginClose()');
+                    }
+                    $('#profilepage #statusPopup').popup('open');
             },
             function(error){
                 console.log('Error updating personal info');
             }
         );
      }
+     
  }
 
 function confirmPasswordReset(){
-    $('.twobuttons .statusmsg').html(
+    $('#profilepage .twobuttons .statusmsg').html(
         '<p>User password  will be reset to default password</p>' +
         '<p>Do you want to proceed?</p>' 
     );
      
-    $('.twobuttons .popup_header').html("Password Reset");  
+    $('#profilepage .twobuttons .popup_header').html("Password Reset");  
     
-    $('.twobuttons #cancelbutton').removeClass("hidden");
-    $('.twobuttons #cancelbutton').html("No");
-    $('.twobuttons #cancelbutton').attr('onclick','$(\'#twobuttonspopup\').popup(\'close\')');
+    $('#profilepage .twobuttons #cancelbutton').removeClass("hidden");
+    $('#profilepage .twobuttons #cancelbutton').html("No");
+    $('#profilepage .twobuttons #cancelbutton').attr('onclick','$(\'#twobuttonspopup\').popup(\'close\')');
     
-    $('.twobuttons #okbutton').attr("onclick","resetPassword()");
-    $('.twobuttons #okbutton').html("Yes");
-    $('.twobuttons #okbutton').removeClass("width90");
-    $('.twobuttons #okbutton').addClass("width40");   
+    $('#profilepage .twobuttons #okbutton').attr("onclick","resetPassword()");
+    $('#profilepage .twobuttons #okbutton').html("Yes");
+    $('#profilepage .twobuttons #okbutton').removeClass("width90");
+    $('#profilepage .twobuttons #okbutton').addClass("width40");   
     
-    $('#twobuttonspopup').popup('open');
+    $('#profilepage #twobuttonspopup').popup('open');
     //$('#profilepage').trigger('create');
 }
 
 function resetPassword(){
     globalObj.db.transaction(function(tx){
         DAO.update(tx, 'cthx_health_worker', 'password', 'mypassword', 'worker_id', globalObj.loggedInUserID);
-        $('.twobuttons .statusmsg').html('<p>Password Reset Successful</p>');
+        $('#profilepage .twobuttons .statusmsg').html('<p>Password Reset Successful</p>');
         
         //multiple popusp not allowed in jqm so update the current popup for interaction
-        $('.twobuttons #cancelbutton').addClass("hidden");
-        $('.twobuttons #okbutton').removeClass("width40");
-        $('.twobuttons #okbutton').addClass("width90");
-        $('.twobuttons #okbutton').html("OK");
-        $('.twobuttons #okbutton').attr("onclick","$('#twobuttonspopup').popup('close');");
+        $('#profilepage .twobuttons #cancelbutton').addClass("hidden");
+        $('#profilepage .twobuttons #okbutton').removeClass("width40");
+        $('#profilepage .twobuttons #okbutton').addClass("width90");
+        $('#profilepage .twobuttons #okbutton').html("OK");
+        $('#profilepage .twobuttons #okbutton').attr("onclick","$('#profilepage  #twobuttonspopup').popup('close');");
         
         //$('#profilepage').trigger('create');
     });  
@@ -611,9 +756,9 @@ function startSandBox(){
     console.log('starting sandbox: ' + userid);
     
     if(userid == null){
-        $('#statusPopup .popup_body p').html('Select a User');
-        $('#statusPopup #okbutton').attr("onclick","$('#statusPopup').popup('close')"); 
-        $('#statusPopup').popup('open');
+        $('#profilepage #statusPopup .popup_body p').html('Select a User');
+        $('#profilepage #statusPopup #okbutton').attr("onclick","$('#profilepage  #statusPopup').popup('close')"); 
+        $('#profilepage #statusPopup').popup('open');
     }
     else if(userid > 0) {//
         switchToSandboxMode(userid);

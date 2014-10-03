@@ -12,11 +12,16 @@ function setNotificationCounts(){
     console.log('Uncompleted Trainings: ' + globalObj.uncompletedTrainings + ' Waiting Tests: ' + globalObj.waitingTests + ' Faiiled Tests: ' + globalObj.failedTests);
 }
 
-
+function updateNotifications(pageid){
+    console.log('pageid: ' + pageid);
+    setNotificationCounts();  //set the notification counts global variable. 
+    setTimeout(function(){setHeaderNotificationCount(pageid)},500);  //update the count on the header
+}
  
  /*
   * The method gets all trainings mapped to the modules the user has started
-  * and points out all trainings (topics) in those modules the user has not done or has not completeed
+  * and points out all trainings (topics) in those modules the user has not done or has not completeed the video
+  * If the user had completed the video before it is not regarded as an uncompleted training
   * Tables: training_tom_module, training_module, training_session, traininig session
   */
  function getUncompletedTrainings(countMode){
@@ -24,21 +29,42 @@ function setNotificationCounts(){
      if($('.required-area').length>0) $('.required-area').remove();
       
     console.log('Uncompleted Trainings: ' + globalObj.uncompletedTrainings + ' Waiting Tests: ' + globalObj.waitingTests + ' Faiiled Tests: ' + globalObj.failedTests);
-    var query = 'SELECT ttm.module_id,ttm.training_id,module_title,training_title FROM cthx_training_to_module ttm JOIN cthx_training_module trm JOIN cthx_training t ON ' +
+//    var query = 'SELECT ttm.module_id,ttm.training_id,module_title,training_title FROM cthx_training_to_module ttm JOIN cthx_training_module trm JOIN cthx_training t ON ' +
+//                'ttm.module_id=trm.module_id AND ttm.training_id=t.training_id WHERE trm.module_id IN ' +       //helps get full details of modules and trainings in set
+//                '(SELECT DISTINCT(trs.module_id) FROM cthx_training_session trs WHERE worker_id=' + globalObj.loggedInUserID + ') AND ' +   //all modules the user has taken training in goes into the set
+//                'trm.module_id NOT IN ' +
+//                '(SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE material_type=2 AND worker_id=' + globalObj.loggedInUserID + ') AND ' +  //exclude modules whicj the user has has viewed their guide from set
+//                'ttm.training_id NOT IN ' +
+//                '(SELECT trs2.training_id FROM cthx_training_session trs2 WHERE status=2 AND trs2.worker_id=' + globalObj.loggedInUserID + ') ';     //exclude video topics which the user has completed from set
+//                'ORDER BY start_time';
+
+     var query = 'SELECT ttm.module_id,ttm.training_id,module_title,training_title,video_file FROM cthx_training_to_module ttm JOIN cthx_training_module trm JOIN cthx_training t ON ' +
                 'ttm.module_id=trm.module_id AND ttm.training_id=t.training_id WHERE trm.module_id IN ' +       //helps get full details of modules and trainings in set
                 '(SELECT DISTINCT(trs.module_id) FROM cthx_training_session trs WHERE worker_id=' + globalObj.loggedInUserID + ') AND ' +   //all modules the user has taken training in goes into the set
                 'trm.module_id NOT IN ' +
                 '(SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE material_type=2 AND worker_id=' + globalObj.loggedInUserID + ') AND ' +  //exclude modules whicj the user has has viewed their guide from set
-                'ttm.training_id NOT IN ' +
+                't.training_id NOT IN ' +
                 '(SELECT trs2.training_id FROM cthx_training_session trs2 WHERE status=2 AND trs2.worker_id=' + globalObj.loggedInUserID + ') ';     //exclude video topics which the user has completed from set
                 'ORDER BY start_time';
 
-    //console.log('Notifications: ' + query);
+    console.log('Notifications: ' + query);
     
     globalObj.db.transaction(function(tx){
                 tx.executeSql(query,[],
                                 function(tx,result){
-                                    var len = result.rows.length;
+                                    //var len = result.rows.length;
+                                    
+                                     /*
+                                     * Sieve out topics that have no video.
+                                     * Only those that have videos matter
+                                     */
+                                    var len = 0;
+                                    for(var i=0; i<result.rows.length; i++){
+                                        var row = result.rows.item(i);
+                                        if(row['video_file'] != '')
+                                            len++;
+                                    }
+                                    
                                     
                                     //set counts
                                     globalObj.uncompletedTrainings = len;
@@ -47,18 +73,23 @@ function setNotificationCounts(){
                                     //console.log('unc: ' + globalObj.totalNotificationCount)
                                     if(countMode == true) return; //return count if count mode
                                     
+                                    //alert('unc length b4 start of loop: ' + len);
                                     var html = '<ul class="content-listing textfontarial12" data-role="listview">';
                                     //var html = '<div class="row-content textfontarial12 ">' ;
                                     if(len>0){
-                                        for(var i=0; i<len; i++){
+                                        for(var i=0; i<result.rows.length; i++){
                                             var row = result.rows.item(i);
+                                            //if no video file then do not include in list
+                                            //alert('row number: ' + (i+1) + ' video file: ' + row['video_file']);
+                                            if(row['video_file']=='') continue;
+                                            
                                                 html += '<li  data-icon="false" class="bottomborder floatleft">' +
                                                             '<div class="width60 floatleft">' +
                                                                 '<p class="bold"> Module: ' + row['module_title'] + '</p>' +
                                                                 '<p class="width70">Topic: ' + row['training_title'] + '</p>' +
                                                             '</div>' +
                                                             '<div class="width30 floatright margintop15">' +
-                                                                '<a  class="pagebutton " onclick="c2TrainingFromNoti(' + row['training_id'] + ',' + row['module_id'] + '); return false;" style="padding:6% 8%;" data-theme="d" data-role="button"  data-inline="true" >Go to Training</a>' +
+                                                                '<a  class="pagebutton disableinsandbox" onclick="c2TrainingFromNoti(' + row['training_id'] + ',' + row['module_id'] + '); return false;" style="padding:6% 8%;" data-theme="d" data-role="button"  data-inline="true" >Go to Training</a>' +
                                                             '</div>' +
                                                         '</li>';
                                         }
@@ -66,19 +97,20 @@ function setNotificationCounts(){
                                         html += '</ul>';
                                         
                                         $('.focus-area').html(html);
-                                        $('#context-bar').html('Notifications');
+                                        $('#context-bar').html('Pending Trainings From Accessed Modules');
+                                        if(globalObj.sandboxMode == true)
+                                            $('.disableinsandbox').addClass('hidden');
                                     }
                                     else{                                                    
                                         $('.focus-area').html(      
                                                 '<ul class="content-listing textfontarial12" data-role="listview">' +
                                                     '<li class="" data-icon="false">' +
-                                                        '<p>No uncompleted trainings found.</p>' +
+                                                        '<p>No pending trainings found.</p>' +
                                                     '</li>' +
                                                 '</ul>'
                                              );
-                                        $('#context-bar').html('Notifications');
+                                        $('#context-bar').html('Pending Trainings From Accessed Modules');
                                     }
-
                                 }
                             );
                     });
@@ -86,7 +118,9 @@ function setNotificationCounts(){
  
  /*
   * This gets all modules which the user has taken and completed trainings for 
-  * but the user has not taken the module assessment/test 
+  * but the user has not taken the module assessment/test.
+  * If the user does the training all over again the waiting test is not updated 
+  * i.e. it is just for the first time the user takes the rraining
   */
 function getWaitingTests(countMode){
     //remove the required text if displayed
@@ -94,7 +128,7 @@ function getWaitingTests(countMode){
       
      console.log('inside getWaitingTests: ');
        //Part 1(before first AND) - gets list of modules touched at all by user
-       //Part 2(before second AND) - selects/picks out each module_id found in list of modules completed either by videos or guide
+       //Part 2(before second AND) - selects/picks out each module_id found in list of modules user completed either by videos or guide
        //Part 3(after second AND) - selects/picks out each module_id NOT found in list of modules tests taken by user
        //AND operation on the 3 parts produces 'TRAININGS COMPLETED BUT TEST NOT DONE'.
        var query = 'SELECT DISTINCT(trm.module_id),module_title,test_id FROM ' +
@@ -105,9 +139,11 @@ function getWaitingTests(countMode){
                    '(trm.module_id IN ' +
                    '(SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE material_type=2 AND worker_id=' + globalObj.loggedInUserID + ') OR ' +
                    'trm.module_id NOT IN ' +
-                   '(SELECT ttm1.module_id FROM cthx_training tr JOIN cthx_training_to_module ttm1 ON tr.training_id=ttm1.training_id AND ttm1.module_id=trm.module_id ' +
-                   'LEFT JOIN cthx_training_session trs2 ON  tr.training_id=trs2.training_id AND trs2.worker_id=' + globalObj.loggedInUserID + ' WHERE (trs2.status=1 OR trs2.status IS NULL))) ' +
-                    
+                   '(SELECT ttm1.module_id FROM cthx_training tr JOIN cthx_training_to_module ttm1 ON ' + 
+                   'tr.training_id=ttm1.training_id AND ttm1.module_id=trm.module_id AND tr.video_file != "" ' +
+                   'LEFT JOIN cthx_training_session trs2 ON  tr.training_id=trs2.training_id AND trs2.worker_id=' + globalObj.loggedInUserID + 
+                   ' WHERE (trs2.status=1 OR trs2.status IS NULL))) ' +
+                   
                    'AND ' +
                    'trm.module_id NOT IN ' +
                    '(SELECT DISTINCT(t2.module_id) FROM cthx_test_session tes JOIN cthx_test t2 ON t2.test_id=tes.test_id WHERE tes.worker_id=' + globalObj.loggedInUserID + ')';
@@ -126,8 +162,25 @@ function getWaitingTests(countMode){
                                     globalObj.totalNotificationCount += parseInt(len); //cummulate total count
                                     //console.log('waiting: ' + globalObj.totalNotificationCount)
                                     //return count if count mode
-                                    if(countMode == true) return;
+                                    if(countMode == true) {
+                                        //test if user is taking a test and if the test user is taking in in waiting list
+                                        //if so, reduce notification count by 1
+                                        for (var i=0; i<len; i++){
+                                            var row = result.rows.item(i);
+                                            //deduct this test from count - the user is taking it, it is no longer waiting
+                                            if(globalObj.currentPage == 'questionpage' && globalObj.testID == row['test_id']){
+                                                globalObj.totalNotificationCount -= 1; 
+                                                break; //you have found what you are lookin for, get out of loop!
+                                            }
+                                            //else if(globalObj.justFinishedTraining && globalObj.currentPage == 'trainingpage' && globalObj.moduleID==row['module_id']){
+                                            //    globalObj.totalNotificationCount -= 1; 
+                                            //    break; //you have found what you are lookin for, get out of loop!
+                                            //}
+                                        }
+                                        return;
+                                    }
                                     //console.log('length waiting: ' + len);
+                                    
                                     if(len>0){
                                           var html = '<div class="row-content textfontarial12 ">' ;
                                             for (var i=0; i<len; i++){
@@ -138,7 +191,7 @@ function getWaitingTests(countMode){
                                                                 '<span class="row-content-col width60 textleft">' + row['module_title'] + '</span>' +
                                                                 '<span id="row-content-col" class="width10">&nbsp;</span>' +
                                                                 '<span class="row-content-col-btn width30">' +
-                                                                    '<a href="" class="pagebutton" onclick="changeToQuestion(' + row['test_id']+ ',' + row['module_id'] + '); return false;" style="padding:4%;" data-theme="d" data-role="button"  data-inline="true" >Take test now</a>' +
+                                                                    '<a href="" class="pagebutton disableinsandbox" onclick="changeToQuestion(' + row['test_id']+ ',' + row['module_id'] + '); return false;" style="padding:4%;" data-theme="d" data-role="button"  data-inline="true" >Take test now</a>' +
                                                                 '</span>' +
                                                             '</p>' +
                                                          '</div>';
@@ -148,7 +201,9 @@ function getWaitingTests(countMode){
                                         
                                         
                                         $('.focus-area').html(html);
-                                        $('#context-bar').html('Notifications');
+                                        $('#context-bar').html('Waiting Tests');
+                                        if(globalObj.sandboxMode == true)
+                                            $('.disableinsandbox').addClass('hidden');
                                     }
                                     else{
                                         //console.log('else for waiting: ');
@@ -159,7 +214,7 @@ function getWaitingTests(countMode){
                                                     '</li>' +
                                                 '</ul>'
                                              );
-                                        $('#context-bar').html('Notifications');
+                                        $('#context-bar').html('Waiting Tests');
                                     }
 
                                 }
@@ -214,7 +269,16 @@ function getWaitingTests(countMode){
                                     //console.log('failed: ' + globalObj.totalNotificationCount)
                                     //return count if count mode
                                     if(countMode == true) {
-                                        //console.log('count mode failed: ' + globalObj.totalNotificationCount)
+                                        //test if user is taking a test and if the test user is taking in in waiting list
+                                        //if so, reduce notification count by 1
+                                        for (var i=0; i<len; i++){
+                                            var row = result.rows.item(i);
+                                            if(globalObj.currentPage == 'questionpage' && globalObj.testID == row['test_id']){
+                                                //deduct this test from count - the user is taking it, it is no longer waiting
+                                                globalObj.totalNotificationCount -= 1; 
+                                                break; //you have found what you are lookin for, get out of loop!
+                                            }
+                                        }
                                         $('#side_notif').html(globalObj.totalNotificationCount);
                                         return;
                                     }
@@ -234,7 +298,7 @@ function getWaitingTests(countMode){
                                                                 '<span class="row-content-col width20 textcenter">' + ptage + '/' + gradeText + '</span>' +
                                                                 '<span class="row-content-col-btn width30">' +
                                                                     '<a  class="pagebutton" onclick="changeToQuestion(' + row['test_id']+ ',' + row['module_id'] + ');" style="padding:4%;" data-theme="d" data-role="button"  data-inline="true" >Retake Test</a>' +
-                                                                    '<a  class="pagebutton" onclick="retakeTraining(' + row['test_id']+ ',' + row['module_id'] + ');" style="padding:4% !important;" data-theme="d" data-role="button"  data-inline="true" >Retake Training</a>' +
+                                                                    '<a  class="pagebutton disableinsandbox" onclick="retakeTraining(' + row['test_id']+ ',' + row['module_id'] + ');" style="padding:4% !important; margin-top:5px !important;" data-theme="d" data-role="button"  data-inline="true" >Retake Training</a>' +
                                                                 '</span>' +
                                                             '</p>' +
                                                          '</div>' ;
@@ -243,7 +307,9 @@ function getWaitingTests(countMode){
                                         
                                         
                                         $('.focus-area').html(html);
-                                        $('#context-bar').html('Notifications');
+                                        $('#context-bar').html('Failed Tests');
+                                        if(globalObj.sandboxMode == true)
+                                            $('.disableinsandbox').addClass('hidden');
                                     }
                                     else{
                                         $('.focus-area').html(    
@@ -253,7 +319,7 @@ function getWaitingTests(countMode){
                                                     '</li>' +
                                                 '</ul>'
                                              );
-                                        $('#context-bar').html('Notifications');
+                                        $('#context-bar').html('Failed Tests');
                                     }
 
                                 }

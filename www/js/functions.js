@@ -1,3 +1,11 @@
+function showSpinner(){
+    $.mobile.loading("show");
+}
+
+function hideSpinner(){
+    $.mobile.loading("hide");
+}
+
 function logUserIn(id){
       globalObj.loggedInUserID = id;
       globalObj.sessionType=id;
@@ -6,7 +14,70 @@ function logUserIn(id){
 
 
 function accessStandingOrder(orderFileName){
+    if($('#quickMenu').parent().hasClass('ui-popup-active')) {
+        $('#quickMenu').popup("close");
+    }
     launchPDF(globalObj.jobaidsDir, orderFileName, 'standing_order');
+}
+
+
+function changeMade(combo){
+      var index = combo.selectedIndex;
+      var hiddenField = document.querySelector('#'+combo.id + ' ~ .watcher');
+      hiddenField.value = index;
+      //var validator = $( "#editForm" ).validate();
+      var formid = $("#"+combo.id).closest('form').attr('id');
+      //alert($("#"+combo.id).closest('form').attr('id'));
+      var validator = $( '#' + formid).validate();
+      validator.element( "#"+hiddenField.id );
+}
+
+
+function focusListener(element){
+        var inputID = element.id;
+        
+        //alert('win height: ' + $( window ).height());
+                
+        
+        
+         //alert('doc height: ' + $( document ).height());
+         //alert("focused: " + element.id + ' top: ' + $('#'+inputID).offset().top);
+         setTimeout(function(){
+                var topPos = 0;
+                var docHeight = $( document ).height();
+                var inputTop = $('#'+inputID).offset().top;
+                var keyPadBreakPoint = 300;
+        
+                if(inputTop > docHeight) {
+                    topPos = (inputTop - 80);
+                    $(".content-area, .content-form").animate({scrollTop: topPos }, 100);
+                }
+                else{
+                    if((docHeight - inputTop) < 80){
+                        topPos = $(".content-area, .content-form").scrollTop() + 80;
+                        $(".content-area, .content-form").animate({scrollTop: topPos }, 100);
+                    }
+                    
+                }
+                
+//                if(inputTop > docHeight) {
+//                    topPos = inputTop - 80;
+//                    $(".content-area").animate({scrollTop: topPos }, 200);
+//                }
+//                else{
+//                    if((docHeight - inputTop) < 50){
+//                       topPos = $(".content-area").scrollTop() + 50;
+//                       $(".content-area").animate({scrollTop: topPos }, 100);
+//                   }
+//                   else{
+//                       topPos = inputTop - 80;
+//                       $(".content-area").animate({scrollTop: topPos }, 100);
+//                   }
+//                }
+
+                //alert('toppos: ' + topPos + ' inputtop: ' + inputTop + ' keypad: ' + docHeight);
+         },1000);
+                     
 }
 
 /*
@@ -17,9 +88,11 @@ function accessTests(){
 //    globalObj.sessionType=1;
 //    globalObj.sessionUsersList = [globalObj.loggedInUserID];
     
-    if(globalObj.loggedInUserID>0)
-        //mode 1 opens summary, mode 2 opens certificate
+    if(globalObj.loggedInUserID>0){
+        //mode 1 opens pending, mode 2 opens certificate
+        $("body").data( "testTab" , 'pending');
         $.mobile.changePage('test.html?pagemode=1');  
+    }
     else{
         globalObj.loginMode = 'test';
         $.mobile.changePage( "login.html?pagemode=1" );
@@ -31,13 +104,53 @@ function accessProfile(){
 //    globalObj.sessionType=1;
 //    globalObj.sessionUsersList = [globalObj.loggedInUserID];
     
-    if(globalObj.loggedInUserID>0)
-        $.mobile.changePage('profile.html');  
-    else{
-        globalObj.loginMode = 'profile';
-        $.mobile.changePage( "login.html?pagemode=1" );
+    showSpinner();
+    if($('#quickMenu').parent().hasClass('ui-popup-active')) {
+        $('#quickMenu').popup("close");
     }
+        
+    if(globalObj.loggedInUserID>0){
+        if(globalObj.currentPage == 'profilepage'){
+            showUsage();
+        }
+        else
+            $.mobile.changePage('profile.html');
+    }
+    else{
+        if(globalObj.currentPage == 'loginpage'){   //clicking header profile link on login page
+            globalObj.loginMode = 'profile';
+            createLoginForm();
+            $('#loginpage #context-bar').html('Profile Login');
+            $('#loginpage #grouptab').parent().addClass('hidden');
+            $('#indtab').html('Individual Session');
+        }
+        else{
+            globalObj.loginMode = 'profile';
+            $.mobile.changePage( "login.html?pagemode=1" );
+        }
+    }
+    hideSpinner();
 }
+
+
+function accessNotifications(){
+    if(globalObj.currentPage == 'profilepage')
+            showNotificationsList();
+    else
+        $.mobile.changePage( "profile.html?pageMode=1" );
+}
+
+
+function accessHelp(){
+    if(globalObj.currentPage == 'helppage'){   //clicking header help link on login page
+        getHelpFiles();
+    }
+    else{
+        $.mobile.changePage( "help.html" );
+    }
+        
+}
+
 
 function accessAdminArea(){
     if(globalObj.loggedInUserID == adminObj.adminID){
@@ -72,18 +185,55 @@ function logout(){
     //console.log('inside logout');
     //$('#quickMenu').popup('close');
     //$('#logoutpopup').popup('open');
+    
+    if($('#quickMenu').parent().hasClass('ui-popup-active')) {
+        $('#quickMenu').popup("close");
+    }
+    
+    navigator.notification.confirm(
+        'Are you sure you want to log out?', // message
+         function(index){
+             if(index==2)
+                doLogOut();
+         },            
+         globalObj.appName,           // title
+        ['No','Yes']     // buttonLabels
+    );   
+}//end logout
+
+function doLogOut(){
+    //navigator.notification.vibrate(2000);
     globalObj.loggedInUserID = -1;
     globalObj.sessionType = 0;
     globalObj.sessionUsersList = [];
     globalObj.loginMode = '';
     //globalObj.db.transaction(dropView);
-    
+
     removeBodyDataValues();
     console.log('body data: ' + JSON.stringify($("body").data()));
-    
-    $.mobile.changePage( "index.html" );
-    
+
+    if(globalObj.currentPage=='mainpage'){
+        //alert('logout 1');
+        showFooterUser();
+        //redo notification counts for home. Be sure.
+        setNotificationCounts();
+
+       //redo the context menu to get correct list,
+       //set header notifications after little delay
+       setTimeout(function(){
+            getQuickMenuContentsForHome();
+            setHeaderNotificationCount('mainpage'); 
+            $('#mainpage #quickMenu').popup('close');
+       },200);
+       
+    }
+    else{
+        //alert('logout 2');
+        $.mobile.changePage( "index.html" );
+    }
 }
+
+
 
 
 function removeBodyDataValues(){
@@ -98,6 +248,10 @@ function goBackHistory(){
 }
 
 function quitApp(){
+    if($('#quickMenu').parent().hasClass('ui-popup-active')) {
+        $('#quickMenu').popup("close");
+    }
+    
     navigator.notification.confirm(
         'Are you sure you want to quit?', // message
          function(index){
@@ -304,9 +458,13 @@ function createHeader(pageid,pageheading){
        //alert('loggedin: ' + globalObj.loggedInUserID + ' admin: ' + adminObj.adminID);
     //logo
     var html =      '<div id="logo_icon_h">' +
-                        '<img src="img/logo_icon.png" >' +
-                        '<a href="index.html"><img class="floatright" src="img/home-icon.png" ></a>' +
-                    '</div>' ;
+                        '<img src="img/logo_icon.png" >'; 
+                    
+                    if(globalObj.currentPage != 'mainpage' && globalObj.sandboxMode==false){
+                        html += '<a href="index.html"><img class="floatright" src="img/home-icon.png" ></a>';
+                    }
+                        
+        html +=     '</div>' ;
 
     //page title/heading
     html +=       '<div id="pageheading">' + pageheading + '</div>' ;
@@ -328,13 +486,13 @@ function createHeader(pageid,pageheading){
                      
                         //notification
                         '<div id="notification_txt_h" class="hidden">' +
-                            '<a href="profile.html?pageMode=1" class="notextdecoration textwhite textfontarialblack13">Notifications</a>' +
+                            '<a href="" onclick="accessNotifications(); return false;" class="notextdecoration textwhite textfontarialblack13">Notifications</a>' +
                             '<span id="total_noti" class="noticecount ui-li-count"></span>' +
                         '</div>' +
                      
                         //help
                         '<div id="help_txt_h">' +
-                            '<a href="help.html" class="notextdecoration textwhite textfontarialblack13">Help</a>' +
+                            '<a href="" onclick="accessHelp();return false;" class="notextdecoration textwhite textfontarialblack13">Help</a>' +
                         '</div>' +
                         
                         //'<div id="home_icon">' +
@@ -350,20 +508,20 @@ function createHeader(pageid,pageheading){
                             '<ul id="choicelist" data-role="listview" >' +
                                 '<li data-icon="false"><a href="index.html" id="main">Main Menu </a></li>' +
                                 '<li data-icon="false"><a href="training_home.html">Training</a></li>' +
-                                '<li data-icon="false"><a href="" onclick="accessTests()">Take Test</a></li>' +
+                                '<li data-icon="false"><a href="" onclick="accessTests();">Take Test</a></li>' +
                                 '<li data-icon="false"><a href="job_aids.html">Job Aids</a></li>' +
-                                '<li data-icon="false"><a href="#" onclick="accessStandingOrder(\'standing_order.pdf\')">Standing Order</a></li>';
+                                '<li data-icon="false"><a href="#" onclick="menuClose(); accessStandingOrder(\'standing_order.pdf\');">Standing Order</a></li>';
 
             html +=             (globalObj.loggedInUserID == adminObj.adminID) ? 
                                             '<li data-icon="false"><a href="admin.html" >Admin Area</a></li>' : '' ;
 
             html +=             (globalObj.loggedInUserID <= 0) ? //no logged in user
-                                    '<li data-icon="false"><a href="" onclick="accessProfile()">Log In</a></li>':
-                                    '<li data-icon="false"><a href="#" onclick="logout()">Log Out</a></li>';
+                                    '<li data-icon="false"><a href="" onclick="accessProfile();">Log In</a></li>':
+                                    '<li data-icon="false"><a href="#" onclick="menuClose(); logout();">Log Out</a></li>';
 
                                 //<li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
 
-            html +=             '<li data-icon="false"><a href="" onclick="quitApp();" id="quit">Quit</a></li>' +
+            html +=             '<li data-icon="false"><a href="" onclick="menuClose(); quitApp();" id="quit">Quit</a></li>' +
                              '</ul>' +
                         '</div>' ;
            //<!--context menu-->
@@ -378,6 +536,43 @@ function createHeader(pageid,pageheading){
                $('#' + pageid + ' .header-right').addClass('hidden');
            }
              
+}
+
+function menuClose(){
+    $('#' + globalObj.currentPage + ' #quickMenu').popup("close");
+}
+
+/*
+ * On the home screen the context menu and some other processes meant to run every time we enter 
+ * the page do not execute. Due to JQM framework index page cycle (best guess).
+ * This method come to the rescue. It is called on pageshow of the home screen and we hope it will 
+ * creat a new set of links and overwrite the default. this will be done undergrouund. 
+ * 
+ */
+function getQuickMenuContentsForHome(){
+    
+    var html = '<ul id="choicelist" >' +
+                                '<li data-icon="false"><a href="index.html" id="main">Main Menu </a></li>' +
+                                '<li data-icon="false"><a href="training_home.html">Training</a></li>' +
+                                '<li data-icon="false"><a href="" onclick="accessTests();">Take Test</a></li>' +
+                                '<li data-icon="false"><a href="job_aids.html">Job Aids</a></li>' +
+                                '<li data-icon="false"><a href="#" onclick="menuClose(); accessStandingOrder(\'standing_order.pdf\');">Standing Order</a></li>';
+
+        html +=             (globalObj.loggedInUserID == adminObj.adminID) ? 
+                                        '<li data-icon="false"><a href="admin.html" >Admin Area</a></li>' : '' ;
+
+        html +=             (globalObj.loggedInUserID <= 0) ? //no logged in user
+                                '<li data-icon="false"><a href="" onclick="accessProfile();">Log In</a></li>':
+                                '<li data-icon="false"><a href="#" onclick="menuClose(); logout();">Log Out</a></li>';
+
+                            //<li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
+
+        html +=             '<li data-icon="false"><a href="" onclick="menuClose(); quitApp();" id="quit">Quit</a></li>' +
+                         '</ul>';
+
+       $('#mainpage #quickMenu').html(html);
+       
+       $("#mainpage #choicelist").listview();
 }
 
 
@@ -405,28 +600,30 @@ function createFooter(pageid){
     }
     else{
         $('#' + pageid + ' .footer').html("");
-    }   
-
-    if(globalObj.loggedInUserID>0){
-        showFooterUser();
-    }
+    }       
 }
 
 
 function showFooterUser(){
+    //show the footer logged in user
+    if(globalObj.loggedInUserID>0){
+        //footer logged-in-as info
+        var query = 'SELECT * FROM cthx_health_worker WHERE worker_id='+ globalObj.loggedInUserID;
+        console.log('showFooterUser query: ' + query);
+        globalObj.db.transaction(function(tx){
+           tx.executeSql(query,[],function(tx,result){
+               if(result.rows.length>0){
+                    var row = result.rows.item(0);
+                    var loggedInUserName = capitalizeFirstLetter(row['firstname']) + ' ' + getNameInitial(row['middlename']) + ' ' + capitalizeFirstLetter(row['lastname']);
+                    //console.log('showFooterUser loggedInUserName: ' + loggedInUserName);
+                    $('.footer #loggedinusername').html(loggedInUserName);
+                    $('.footer #footer_text3').removeClass('hidden');
+               }
+           });
+        });
+    }
+    else{
+        $('.footer #footer_text3').addClass('hidden');
+    }
     
-    //footer logged in as area
-    var query = 'SELECT * FROM cthx_health_worker WHERE worker_id='+ globalObj.loggedInUserID;
-    console.log('showFooterUser query: ' + query);
-    globalObj.db.transaction(function(tx){
-       tx.executeSql(query,[],function(tx,result){
-           if(result.rows.length>0){
-                var row = result.rows.item(0);
-                var loggedInUserName = capitalizeFirstLetter(row['firstname']) + ' ' + getNameInitial(row['middlename']) + ' ' + capitalizeFirstLetter(row['lastname']);
-                //console.log('showFooterUser loggedInUserName: ' + loggedInUserName);
-                $('.footer #loggedinusername').html(loggedInUserName);
-                $('.footer #footer_text3').removeClass('hidden');
-           }
-       });
-    });
 }

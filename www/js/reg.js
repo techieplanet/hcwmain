@@ -1,4 +1,5 @@
 $(document ).delegate("#regpage", "pagebeforecreate", function() {
+    globalObj.currentPage = 'regpage';
     createHeader('regpage','Registration');
     createFooter('regpage');
     //setNotificationCounts();
@@ -7,17 +8,19 @@ $(document ).delegate("#regpage", "pagebeforecreate", function() {
 $(document ).delegate("#regpage", "pageshow", function() {
     setHeaderNotificationCount('regpage');
     
-    $('#regForm').validate({
-                    
+    jQuery.validator.setDefaults({
+        ignore: []
+      });
+      
+    $('#regForm').validate({              
            rules:{ 
                firstname:{required:true, minlength:2}, 
                lastname:{required:true, minlength:2}, 
                email:{required:true, email:true},
                phonenumber:{required:true,digits:true, minlength:8},
-               cadre:{required:true,min:1},
-               //qualification:{required:true,minlength:3},
-               gender:{required:true,min:1},
-               squestion:{required:true,min:1},
+               cadrewatch:{required:true,min:1},
+               genderwatch:{required:true,min:1},
+               questionwatch:{required:true,min:1},
                answer: {required:true},
                
                username:{required:true, minlength:6, unique_username:true}, 
@@ -29,11 +32,10 @@ $(document ).delegate("#regpage", "pageshow", function() {
                lastname:{required:'Cannot be empty', minlength:'2 characters minimum'}, 
                email:{required:'Cannot be empty', email:'Enter valid email'},
                phonenumber:{required:'Cannot be empty', digits:'Enter numbers only', minlength:'8 characters minimum'},
-               cadre:{required:'Cannot be empty', min:'Make a selection'},
-               phone:{required:'Cannot be empty', min:'8 characters minimum'},
-               //qualification:{required:'Cannot be empty', minlength:'3 characters minimum'}, 
-               gender:{required:'Cannot be empty', min:'Make a selection'},
-               squestion:{required:'Cannot be empty', min:'Make a selection'},
+               //phone:{required:'Cannot be empty', min:'8 characters minimum'},
+               cadrewatch:{required:'Make a selection', min:'Make a selection'},
+               genderwatch:{required:'Make a selection', min:'Make a selection'},
+               questionwatch:{required:'Make a selection', min:'Make a selection'},
                answer: {required:'Cannot be empty'},
                
                username:{required:'Cannot be empty', minlength:'6 characters minimum',unique_username: 'Already taken'}, 
@@ -58,12 +60,17 @@ $(document ).delegate("#regpage", "pageshow", function() {
 
 
 $(document ).delegate("#regpage", "pageinit", function() { 
+        //show the footer logged in user
+        showFooterUser();
+    
         //reset the worker object, ready for fresh data
         resetWorker();
         
         //show personal info form
         showPersonalReg()
         //globalObj.db.transaction(showPersonalReg);      
+        
+        
 })
 
 function handleSubmit(){
@@ -103,24 +110,17 @@ function showPersonalReg(){
                                         '<p class="marginbottom10"><strong>Cadre*</strong></p>' +
                                         '<p>' +
                                             '<span class="">' +
-                                                '<select name="cadre" id="cadre" data-role="none" class="styleinputtext">' + 
+                                                '<select onchange="changeMade(this);" name="cadre" id="cadre" data-role="none" class="styleinputtext">' + 
                                                     '<option value="0">--Select Cadre--</option>' +
                                                     '<option value="1">CHEW</option>' +
                                                     '<option value="2">Nurse</option>' +
                                                     '<option value="3">Midwife</option>' +
                                                 '</select>' +
+                                                '<input type="hidden" id="cadrewatch" name="cadrewatch" class="watcher">' +
                                             '</span>' +
                                         '</p>' +
                                     '</div>';
-                            
-                             
-                             //qualification
-//                            html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-//                                        '<p class="marginbottom10"><strong>Qualification:</strong></p>' +
-//                                        '<p>' +
-//                                            '<span class=""><input class="styleinputtext" data-role="none" size="30" type="text" name="qualification" id="qualification" value="' + workerObj.qualification + '" placeholder="Qualification" /></span>' +
-//                                        '</p>' +
-//                                    '</div>';
+
                             
                             //phone
                             html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
@@ -145,11 +145,12 @@ function showPersonalReg(){
                                         '<p class="marginbottom10"><strong>Gender*</strong></p>' +
                                         '<p>' +
                                             '<span class="">' +
-                                                '<select name="gender" id="gender" data-role="none" class="styleinputtext">' + 
+                                                '<select onchange="changeMade(this);" name="gender" id="gender" data-role="none" class="styleinputtext">' + 
                                                     '<option value="0">--Select Gender--</option>' +
                                                     '<option value="1">Male</option>' +
                                                     '<option value="2">Female</option>' +
                                                 '</select>' +
+                                                '<input type="hidden" id="genderwatch" name="genderwatch" class="watcher">' +
                                             '</span>' +
                                         '</p>' +
                                     '</div>';
@@ -162,12 +163,13 @@ function showPersonalReg(){
                                         '<p class="marginbottom10"><strong>Secret Question*</strong></p>' +
                                         '<p>' +
                                             '<span class="">' +
-                                                '<select name="squestion" id="squestion" data-role="none" class="styleinputtext">' + 
+                                                '<select onchange="changeMade(this);" name="squestion" id="squestion" data-role="none" class="styleinputtext">' + 
                                                     '<option value="0">--Select Question--</option>' +
                                                     '<option value="1">What is your favorite colour?</option>' +
                                                     '<option value="2">What city were you born?</option>' +
                                                     '<option value="2">What is your favorite food?</option>' +
                                                 '</select>' +
+                                                '<input type="hidden" id="questionwatch" name="questionwatch" class="watcher">' +
                                             '</span>' +
                                         '</p>' +
                                     '</div>';
@@ -182,15 +184,22 @@ function showPersonalReg(){
                                 
                             
                             $('.focus-area').html(html);     
+                            $('input').attr('onclick','focusListener(this)');
+                            
+                            $('#personal').html('Personal Information');
+                            
+                            
                             
                             //set the selected cadre, question and gender
                             document.getElementById("cadre").selectedIndex = workerObj.cadreID;
+                            document.getElementById("cadrewatch").value = workerObj.cadreID;
+                            
                             document.getElementById("squestion").selectedIndex = workerObj.secret_question;
-                            var genderID; 
-                            if(workerObj.gender=="Male") genderID =1;
-                            else if(workerObj.gender=="Female") genderID =2;
-                            else genderID =0;
+                            document.getElementById("questionwatch").value = workerObj.secret_question;
+                            
+                            var genderID = workerObj.gender=='Male' ? 1 : 2;
                             document.getElementById("gender").selectedIndex = genderID;
+                            document.getElementById("genderwatch").value = genderID;
                             
                             $('.c-title').html(
                                     'New User'+
@@ -217,7 +226,7 @@ function showRegLogin(){
           //sets all usernames as data attribute for content div
           getAllUsernames();
                 
-                var html = '<ul class="content-listing textfontarial12" data-role="listview">';
+          var html = '<ul class="content-listing textfontarial12" data-role="listview">';
 
                 //username
                 html += '<li  data-icon="false" class="bottomborder marginleft15">' +
@@ -251,7 +260,10 @@ function showRegLogin(){
                            
                             
                 $('.focus-area').html(html);
-                    
+                $('input').attr('onclick','focusListener(this)');
+                
+                
+                
                     $('#c-bar').html(
                          '<span id="column-width width30">Login Information</span>' +
                          '<span class="floatright textfontarial13">' +
@@ -259,6 +271,10 @@ function showRegLogin(){
                               '<a href="" onclick="savePersonalInfo()" class="notextdecoration actionbutton textwhite" >Save</a>' +
                          '</span>'
                     );      
+                        
+                        
+                  $('#personal').html('Login Information');
+                  $('#personal').addClass('active');
                                                 
 }
 
@@ -288,10 +304,9 @@ function setUpWorker(){
 
         //change to the login details tab
         showRegLogin();
-        console.log('worker: ' + JSON.stringify(workerObj));
-        $('#login').addClass('active');
-        $('#personal').removeClass('active');
+        //console.log('worker: ' + JSON.stringify(workerObj));
     }
+    
 }
 
 function setUpWorkerLoginDetails(){
@@ -357,12 +372,12 @@ function setUpWorkerLoginDetails(){
                         },500);
 
 
-                        $('.statusmsg').html('<p>User Registration Successful. <br/> ' + 
+                        $('#regpage .statusmsg').html('<p>User Registration Successful. <br/> ' + 
                             'You will be taken to new user\'s <strong>Profile</strong> area on next screen.</p>');
                         
                         //switchToSandboxMode is found in profile.js...set to 01 to tell system this is a new user
-                        $('#statusPopup #okbutton').attr('onclick','switchToSandboxMode(0)'); 
-                        $('#statusPopup').popup('open');
+                        $('#regpage #statusPopup #okbutton').attr('onclick','switchToSandboxMode(0)'); 
+                        $('#regpage #statusPopup').popup('open');
                 },
                 function(error){
                     console.log('Error updating personal info');

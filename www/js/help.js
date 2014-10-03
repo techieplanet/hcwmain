@@ -1,4 +1,5 @@
 $(document ).delegate("#helppage", "pagebeforecreate", function() {
+    globalObj.currentPage = 'helppage';
     createHeader('helppage','Help');
     createFooter('helppage');
     setNotificationCounts();
@@ -6,6 +7,8 @@ $(document ).delegate("#helppage", "pagebeforecreate", function() {
 
 $(document ).delegate("#helppage", "pageshow", function() {
     setHeaderNotificationCount('helppage');
+    
+   
 });
 
 
@@ -13,12 +16,17 @@ $(document ).delegate("#helppage", "pageinit", function() {
                         //console.log('helppage');
                         getHelpFiles();
                         
+                        //show the footer logged in user
+                        showFooterUser();
+                        
                         $('#sidebar_ul li a').click(function(){
                             $('#sidebar_ul li a').removeClass('active');
                             $(this).addClass('active');
                         });
-            }
-    );
+                        
+                        $('#userguidelink').addClass('active');
+                        
+          });
             
             
 function getHelpFiles(){

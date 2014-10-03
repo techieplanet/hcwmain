@@ -1,4 +1,5 @@
 $(document).delegate("#forgotpage", "pagebeforecreate", function() {        
+    globalObj.currentPage = 'forgotpage';
     createHeader('forgotpage','Password Recovery');
     createFooter('forgotpage');
     setNotificationCounts();
@@ -7,15 +8,6 @@ $(document).delegate("#forgotpage", "pagebeforecreate", function() {
 $(document ).delegate("#forgotpage", "pageshow", function() {        
     
     setHeaderNotificationCount('forgotpage');
-    
-//    //$('#total_noti').html(globalObj.totalNotificationCount);
-//    $('#total_noti').html('ps5');
-//    //set active sidebar element on click
-//    $('#sidebar_ul li a').click(function(){
-//        $('#sidebar_ul li a').removeClass('active');
-//        $(this).addClass('active');
-//    });
-    
     
     $('#forgotForm').validate({
            rules:{ 
@@ -34,8 +26,10 @@ $(document ).delegate("#forgotpage", "pageshow", function() {
 
 
 $(document ).delegate("#forgotpage", "pageinit", function() {                
-        showForgotForm();
-            
+        //show the footer logged in user
+        showFooterUser();
+        
+        showForgotForm();    
 });
 
 
@@ -102,14 +96,14 @@ function recoverPassword(){
                 var row = result.rows.item(0);
                 if(row['secret_answer'].toUpperCase()==answer.toUpperCase()){
                     DAO.update(tx, 'cthx_health_worker', 'password', password, 'worker_id', workerObj.workerID);
-                    $('#statusPopup .statusmsg').html('<p>Password Reset Successful</p>'); 
-                    $('#statusPopup #okbutton').attr('onclick','$.mobile.changePage("login.html?pageMode=1")');
-                    $('#statusPopup').popup('open');
+                    $('#forgotpage #statusPopup .statusmsg').html('<p>Password Reset Successful</p>'); 
+                    $('#forgotpage #statusPopup #okbutton').attr('onclick','$.mobile.changePage("login.html?pageMode=1")');
+                    $('#forgotpage #statusPopup').popup('open');
                 }
                 else{
-                    $('#statusPopup .statusmsg').html('<p>Wrong answer</p>'); 
-                    $('#statusPopup #okbutton').attr('onclick','$("#statusPopup").popup("close")');
-                    $('#statusPopup').popup('open');
+                    $('#forgotpage #statusPopup .statusmsg').html('<p>Wrong answer</p>'); 
+                    $('#forgotpage #statusPopup #okbutton').attr('onclick','$("#forgotpage #statusPopup").popup("close")');
+                    $('#forgotpage #statusPopup').popup('open');
                 }
             });
         });  

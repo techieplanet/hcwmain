@@ -1,4 +1,5 @@
 $(document ).delegate("#testpage", "pagebeforecreate", function() {
+    globalObj.currentPage = 'testpage';
     createHeader('testpage','Assessment');
     createFooter('testpage');
     setNotificationCounts();
@@ -14,7 +15,11 @@ $(document).delegate("#testpage", "pageshow", function()    {
 });
 
 $(document).delegate("#testpage", "pageinit", function() {        
-        //alert('testpage')
+        //alert('testpage');
+        
+        //show the footer logged in user
+        showFooterUser();
+    
         //sample initial string to split on - /phonegap/hcwdeploy/www/test.html?pagemode=1
         //1 - summary mode, 2 - certificate mode
         var pageMode = $('#testpage').attr('data-url').split('?')[1].split('=')[1];
@@ -33,12 +38,17 @@ $(document).delegate("#testpage", "pageinit", function() {
                     $('#sidebar_ul li a').removeClass('active');
                     $('#results').addClass('active');
                 }
-                else{
+                else if(currentTab == 'summary'){
                     showSummary();
+                    $('#sidebar_ul li a').removeClass('active');
+                    $('#summary').addClass('active');
+                }
+                else{ //for initial access when noting has been selected
+                    showPending();
                 }
             }
             else{
-                showSummary();
+                showPending();
             }
         }
         else if(pageMode==2){ //certificate
@@ -90,8 +100,9 @@ function querySummary(tx){
                          }
                          
                          var avg = sum/len;
+                         avg = Math.round(avg*100)/100;
                          
-                        html += '<ul class="content-listing textfontarial12" data-role="listview">' +
+                        html += '<ul class="content-listing textfontarial12 margintop10" data-role="listview">' +
                                     '<li class="" data-icon="false">' +
                                         '<p>Total Tests Taken' +
                                             '<span id="test-taken" class=ui-li-count>' + len + '</span>' +
@@ -135,7 +146,7 @@ function querySummary(tx){
                     }
                     
                     //set the heading...has to run whether or not there were rows to display
-                    $('.c-title').html('Summary');
+                    $('.c-title').html('Summary ' + '<small>(Summary of your test scores)</small>');
                     $('#context-bar').html('Details');
                     $("#testpage").trigger('create');
                         
@@ -151,11 +162,12 @@ function querySummary(tx){
 
 /**********************
 *   Populates the Tests Page with test entries from database
+*   Tests that have never been done by the user.
 **********************/  
  function queryPendingTests(tx){
     //console.log('inside querypending');  
     
-    var query = 'SELECT * FROM cthx_test t WHERE t.test_id NOT IN (SELECT DISTINCT test_id from cthx_test_session s)';
+    var query = 'SELECT * FROM cthx_test t WHERE t.test_id NOT IN (SELECT DISTINCT(test_id) from cthx_test_session s)';
     //console.log('Pending query: ' + query);
     tx.executeSql(query,[],
                 function(tx,resultSet){  //query success callback
@@ -197,7 +209,7 @@ function querySummary(tx){
                          '<span id="column-width" class="width10">&nbsp;</span>' +
                          '<span id="column-width" class="width30 textcenter">Action</span>'
                      );
-                     $('.c-title').html('Pending');
+                     $('.c-title').html('Pending ' + '<small>(Tests you have never attempted)</small>');
                      $("#testpage").trigger('create');
                     
                 },
@@ -227,14 +239,14 @@ function queryResults(tx){
                              var gradeText = getGradeText(ptage);  //found on cert.js
                              var score = row['score'];
                              
-                             html += '<div class="">' +
+                             html += '<div class="vpadding10">' +
                                         '<p id="grp-btn">' +
                                             '<span class="row-content-col width40 textleft">' + row['title'] + '</span>' +
                                             '<span class="row-content-col width20 textcenter">' + ptage + '/' + gradeText + '</span>' +
                                             '<span class="row-content-col-btn width30">' +
-                                                '<a  class="pagebutton" onclick="changeToQuestion(' + row['test_id']+ ',' + row['module_id'] + ');" data-theme="d" data-role="button"  data-inline="true" >Retake Test</a>' ;
+                                                '<a  class="pagebutton" style="margin-bottom:10px;" onclick="changeToQuestion(' + row['test_id']+ ',' + row['module_id'] + ');" data-theme="d" data-role="button"  data-inline="true" >Retake Test</a>' ;
                                            if(ptage<40){
-                                                html += '<a  class="pagebutton" onclick="retakeTraining(' + row['test_id']+ ',' + row['module_id'] + ');" data-theme="d" data-role="button"  data-inline="true" >Retake Training</a>';
+                                                html += '<a  class="pagebutton" style="margin-top:5px !important;" onclick="retakeTraining(' + row['test_id']+ ',' + row['module_id'] + ');" data-theme="d" data-role="button"  data-inline="true" >Retake Training</a>';
                                            }
                              html +=        '</span>' +
                                         '</p>' +
@@ -262,7 +274,7 @@ function queryResults(tx){
                          '<span id="column-width" class="width20 textleft">Score/Grade</span>' +
                          '<span id="column-width" class="width30">Action</span>'
                      );
-                     $('.c-title').html('Results');
+                     $('.c-title').html('Results ' + '<small>(History of all tests you have ever done.)</small>');
                      $("#testpage").trigger('create');
                 },
                     function errorCB(error){
@@ -302,10 +314,12 @@ function retakeTraining(test_id, module_id){
  * Tables: training_to_module, training_session
  */
 function checkStatusForTest(tx){
-    var query = 'SELECT * FROM cthx_training_to_module ttm WHERE ' +
-                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.module_id NOT IN (SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE trs1.module_id=' + globalObj.moduleID + ' AND material_type=2 AND worker_id=' + globalObj.loggedInUserID + ')' +
+    var query = 'SELECT * FROM cthx_training_to_module ttm JOIN cthx_training t WHERE ' +
+                 '(ttm.training_id = t.training_id AND ttm.module_id=' + globalObj.moduleID + ' AND ttm.module_id NOT IN ' +
+                 '(SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE trs1.module_id=' + globalObj.moduleID + ' AND material_type=2 AND worker_id=' + globalObj.loggedInUserID + ') ' +
                  'AND ' +
-                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.training_id NOT IN (SELECT trs.training_id FROM cthx_training_session trs WHERE trs.module_id=' + globalObj.moduleID + ' AND status=2 AND worker_id=' + globalObj.loggedInUserID + ')))';
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.training_id NOT IN ' +
+                 '(SELECT trs.training_id FROM cthx_training_session trs WHERE trs.module_id=' + globalObj.moduleID + ' AND status=2 AND worker_id=' + globalObj.loggedInUserID + ')))';
              
     console.log('check query: ' + query);
     
@@ -318,10 +332,28 @@ function checkStatusForTest(tx){
                                 changeToTest();
                           }
                           else{
-                              //console.log('check result: go to training')
-                              $('#testcheckPopup #sessionok').attr('onclick','retakeTraining('+globalObj.testID + ',' + globalObj.moduleID + ')');
-                              $('#testcheckPopup').popup('open');
-                            }
+                              console.log('check result: test deep');
+                              //being here means either 
+                              //1. All the video have been accessed but not all hve been completed )R
+                              //2. All training videos have NOT been accessed but those trainings whose videos have not been accessed have not video registered
+                              //Action: Check if any 1 of the trainings has a video registered
+                              //If found, user has not completed module training.
+                              var videoPending = false;
+                              for(var i=0; i<len; i++){
+                                  var row = result.rows.item(i);
+                                  if(row['video_file'] != '')
+                                      videoPending = true;
+                              }
+                              
+                              if(videoPending==true){
+                                //console.log('check result: go to training')
+                                $('#testcheckPopup #sessionok').attr('onclick','retakeTraining('+globalObj.testID + ',' + globalObj.moduleID + ')');
+                                $('#testcheckPopup').popup('open');
+                              }
+                              else{
+                                  changeToTest();
+                              }
+                           }//end outer else
                     }
              );
 }
@@ -479,7 +511,7 @@ function getGradeLongText(ptage){
         //str += '<a style="padding:4%;" href="question.html" class="pagebutton width60 padtwo textcenter" data-theme="b" data-role="button" >Retake Test</a>';
     }
     else {
-        str = 'Bravo! You scored ' + ptage + '%. Good job!';
+        str = 'You scored ' + ptage + '%. Good job!';
     }
     
     return str;
