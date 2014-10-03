@@ -41,7 +41,7 @@
             
                      <div class="focus-area">
                             <div id="collapsible_content" data-role="collapsible-set" class="">
-                                Select a category on the left to show its modules here.
+                                <!--Select a category on the left to show its modules here.-->
                             </div>
                     </div>
                     <!--focus area-->
@@ -78,9 +78,9 @@
                     </div>
                     
                     <div class="popup_header">
-                        <a class="pagebutton footerbutton width40" onclick="$('#sessionPopup').popup('close'); return false;" 
+                        <a class="pagebutton footerbutton width40" onclick="$('#traininghomepage #sessionPopup').popup('close'); return false;" 
                          data-role="button"  data-inline="true" data-mini="true">Cancel</a>
-                        <a id="sessionok" class="pagebutton footerbutton width40" onclick="sessionPick()" 
+                        <a id="sessionok" class="pagebutton footerbutton width40" onclick="sessionPick(); return false;" 
                          data-role="button" data-inline="true" data-mini="true">OK</a>
                     </div>
                     

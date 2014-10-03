@@ -40,21 +40,21 @@
                           <div id="coll_usage" data-role="collapsible" data-icon="false" data-collapsed="false"  class="nomargin nobackground nopadding">
                               <h1 id="sidebar-collapsible-link" >
                                     <!--Usage Stats-->
-                                    <a id="usagestats" href="#" class="textfontarial15" style="margin-left: 0;padding-left: 0 !important;">Usage Stats</a>
+                                    <a id="usagestats" href="#" class="textfontarial15" style="margin-left: 16px !important; padding-left: 0 !important;">Usage Stats</a>
                                 </h1>
 
                                   <ul data-role="listview" data-icon="false">
 
                                      <li  data-icon="false" class="noborder">
-                                         <a href="#" onclick="showTrainingStats()" class="textfontarial12 paddthree marginleft20">Training</a>
+                                         <a href="#" id="trainingstats" onclick="showTrainingStats()" class="textfontarial12 paddthree marginleft20">Training</a>
                                      </li>
                                      
                                      <li  data-icon="false" class="noborder">
-                                         <a href="#" onclick="showTestStats()" class="textfontarial12 paddthree marginleft20">Assessment</a>
+                                         <a id="assessmentstats" href="#" onclick="showTestStats()" class="textfontarial12 paddthree marginleft20">Assessment</a>
                                      </li>
                                      
                                      <li  data-icon="false" class="noborder">
-                                         <a href="#" onclick="showOtherStats()" class="textfontarial12 paddthree marginleft20">More</a>
+                                         <a id="morestats" href="#" onclick="showOtherStats()" class="textfontarial12 paddthree marginleft20">More</a>
                                      </li>
                                      
                                   </ul>
@@ -92,7 +92,7 @@
                  <div class="c-list">
                      
                      <ul data-role="listview" data-inset="true" data-dividertheme="f" class="nomargintop"> 
-                        <li id="context-bar" data-role="list-divider">Usage Information</li>   
+                        <li id="context-bar" class="cbar" data-role="list-divider"></li>   
                      </ul>  
             
 

@@ -1,6 +1,8 @@
-$(document).delegate("#trainingpage", "pagebeforecreate", function() {        
-    createHeader('trainingpage','Training');
-    createFooter('trainingpage');
+$(document).delegate("#trainingpage", "pagebeforecreate", function() {    
+    //set current page id in global variable
+    globalObj.currentPage = 'trainingpage';
+    createHeader(globalObj.currentPage,'Training');
+    createFooter(globalObj.currentPage);
     setNotificationCounts();    
 });
 
@@ -28,17 +30,19 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
  *  2. Define next and previous buttons where needed
  */
  $(document ).delegate("#trainingpage", "pageinit", function() {   
-     
+     globalObj.currentPage = 'trainingpage';
      //refresh video played id list and init videoFnded & guideViewed variables
      globalObj.videoPlayedList = new Array();
      globalObj.videoEnded = false;
      globalObj.guideViewed = false;
      
-     console.log('category id: ' + globalObj.categoryID);
-     console.log('module id: ' + globalObj.moduleID);
-     console.log('topic id: ' + globalObj.topicID);
-     console.log('users list: ' + globalObj.sessionUsersList);
+//     console.log('category id: ' + globalObj.categoryID);
+//     console.log('module id: ' + globalObj.moduleID);
+//     console.log('topic id: ' + globalObj.topicID);
+//     console.log('users list: ' + globalObj.sessionUsersList);
      
+     //show the footer logged in user
+     showFooterUser();
      
      globalObj.db.transaction(handleTopicFiles,
                     function(error){
@@ -141,11 +145,17 @@ function attachVideoFile(){
                     * DirectoryEntry object: provides file look up method
                     * dirPath: path to directory to look up relative to DirectoryEntry
                  */
+                
                 rootDirectoryEntry.getFile(
                         filePath, {create: false}, 
                         function(entry){
                             //alert('videoscreen entry.toURL: '+ entry.toURL());
                             if(!entry.isFile) return;
+                            
+                            
+                            if($('#video-box').hasClass('hidden')) $('#video-box').removeClass('hidden');
+                            if(!$('#msg-box').hasClass('hidden')) $('#msg-box').addClass('hidden');
+                            
                             var video = document.getElementById("videoscreen");
                             video.setAttribute('src',entry.toURL());
                         },
@@ -153,8 +163,11 @@ function attachVideoFile(){
                             //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
                             //alert("No Video Found: (" + filePath + ") \n Switching to Default Video.");
                             //alert("No Video Found: \n Switching to Default Video.");
-                            $('.focus-area').empty();
-                            $('.focus-area').html('<p>No trainings found.</p>');
+                            //$('.focus-area').empty();
+                            
+                            if($('#msg-box').hasClass('hidden')) $('#msg-box').removeClass('hidden');
+                            if(!$('#video-box').hasClass('hidden')) $('#video-box').addClass('hidden');
+                            
                         }
                  );
                 
@@ -172,28 +185,47 @@ function attachVideoFile(){
  function setUpVideo(topicID){
         
          var html = '<div class="training-container padcontainer">' +
-                            '<div class="training-video ui-block" >' +
-                                '<video width="600" height="450" controls="controls" id="videoscreen">' +
-                                        '<source src="refer.mp4" type="video/mp4" />' +
-                                        //<!--<source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>-->
-                                 '</video>' +
-                             '</div>' +
+                            
+                            '<div class="training-video-nav ui-block padcontainer floatleft" style="width:10%" >' +
+                                '<a id="prevvideo" href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >' +
+                                    '<img src="img/t-v-icon-l.png" /><br/>' +
+                                    'Previous' +
+                                 '</a>' +
+                            '</div>' +
+                             
+                             '<div id="video-box" class="training-video ui-block floatleft" >' +
+                                '<video width="420" height="315" controls="controls" id="videoscreen">' +
+                                      //<source src="refer.mp4" type="video/mp4" />
+                                      //<source src="android.resource://com.tp.hcwdeploy/raw/refer" type="video/mp4"/>
+                                '</video>' +
+                            '</div>' +
+                             
+                             '<div id="msg-box" class="training-video ui-block floatleft hidden" >' +
+                                    '<p>No training video found for this topic.</p>' +
+                            '</div>' +
+                            
+                             '<div class="training-video-nav ui-block padcontainer floatleft" style="width:10%">' +
+                                '<a id="nextvideo" href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">' +
+                                    '<img src="img/t-v-icon-r.png" /><br/>' +
+                                    'Next' +
+                                '</a>' +
+                            '</div>' +
                       
 
-                            '<div class="training-video-nav ui-block padcontainer" >' + 
-                               '<a id="prevvideo" href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >' +
-                                   'Previous' +
-                               '</a>' +
-                               '<a id="nextvideo" href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">' +
-                                   'Next' +
-                               '</a>' +
-                           '</div>' +
+//                            '<div class="training-video-nav ui-block padcontainer" >' + 
+//                               '<a id="prevvideo" href="#" class="training-video-nav-left textfontarial13 floatleft notextdecoration textblack" >' +
+//                                   'Previous' +
+//                               '</a>' +
+//                               '<a id="nextvideo" href="#" class="training-video-nav-right textfontarial13 floatright notextdecoration textblack">' +
+//                                   'Next' +
+//                               '</a>' +
+//                           '</div>' +
+
                     '</div>';
                     
             $('.focus-area').html(html);
             $('#trainingpage').trigger('create');
-            loadTraining(topicID);
-            
+            loadTraining(topicID);          
  }
 
   
@@ -344,8 +376,12 @@ function attachVideoFile(){
                                         //If yes, direct to test attached to training module
                                         //Crucial: wait one second to execute this method. To be sure update above completes
                                         console.log('sessiontype: ' + globalObj.sessionType);
-                                        if(globalObj.sessionType==1)  //since test taken only on individual sessions
-                                            setTimeout(checkTestable(tx),1000);   
+                                        if(globalObj.sessionType==1){  //since test taken only on individual sessions
+                                            setTimeout(checkTestable(tx),500);   
+                                        }
+                                        else if(globalObj.sessionType==2){
+                                            launchVideoEndPopUp();
+                                        }
                                     }   
                             );// end tx
                             
@@ -446,109 +482,96 @@ function loadTraining(topicID){
  * Tables: training_session
  */
 function checkTestable(tx){
-    var query = 'SELECT * FROM cthx_training_to_module ttm WHERE ' +
-                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.module_id NOT IN (SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE trs1.module_id=' + globalObj.moduleID + ' AND material_type=2 AND worker_id=' + globalObj.loggedInUserID + ') ' +
+
+      var query = 'SELECT * FROM cthx_training_to_module ttm JOIN cthx_training t WHERE ' +
+                 '(ttm.training_id = t.training_id AND ttm.module_id=' + globalObj.moduleID + ' AND ttm.module_id NOT IN ' +
+                 '(SELECT DISTINCT(trs1.module_id) FROM cthx_training_session trs1 WHERE trs1.module_id=' + globalObj.moduleID + ' AND material_type=2 AND worker_id=' + globalObj.loggedInUserID + ') ' +
                  'AND ' +
-                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.training_id NOT IN (SELECT trs.training_id FROM cthx_training_session trs WHERE trs.module_id=' + globalObj.moduleID + ' AND status=2 AND worker_id=' + globalObj.loggedInUserID + ')))';
+                 '(ttm.module_id=' + globalObj.moduleID + ' AND ttm.training_id NOT IN ' +
+                 '(SELECT trs.training_id FROM cthx_training_session trs WHERE trs.module_id=' + globalObj.moduleID + ' AND status=2 AND worker_id=' + globalObj.loggedInUserID + ')))';
+             
              
     console.log('check query: ' + query);
     
-    tx.executeSql(query,[],
+    try{
+        tx.executeSql(query,[],
                     function(tx,result){
                         var len = result.rows.length;
                         console.log('check length: ' + len);
                         if(len==0){
-                                ///console.log('check result: go to test')
-                                $('#testPopup').popup('open');
+                                console.log('check result: go to test')
+                                //the user has completed all the videos and this is the last OR
+                                //user is just rewatching the video but has completed it before.
+                                $('#trainingpage #testPopup #cancelbutton').attr('onclick','stayOnTraining("testPopup")'); //updates noti after closing popup
+                                $('#trainingpage #testPopup #okbutton').attr('onclick','changeToTest();return false;');
+                                $('#trainingpage #testPopup').popup('open');
+                                
+                                
+                                //done all trainings, the 
+                                //globalObj.justFinishedTraining = true;
+                                //updateNotifications(globalObj.currentPage);
                           }
                           else{
-                              //console.log('check result: stay on page')
-                              $('#statusPopup .statusmsg').html('Finished Playing Video');
-                              $('#statusPopup #okbutton').attr('onclick','$("#statusPopup").popup("close")');
-                              $('#statusPopup').popup('open');
+                              //alert('check result: test deep');
+                              //being here means either 
+                              //1. All the video have been accessed but not all hve been completed )R
+                              //2. All training videos have NOT been accessed but those trainings whose videos have not been accessed have not video registered
+                              //Action: Check if any 1 of the trainings has a video registered
+                              //If found, user has not completed module training.
+                              var videoPending = false;
+                              for(var i=0; i<len; i++){
+                                  var row = result.rows.item(i);
+                                  if(row['video_file'] != '')
+                                      videoPending = true;
+                              }
+                              
+                              
+                              if(videoPending==true){
+                                    console.log('videoPending: stay on page - ' + videoPending);
+                                    $('#trainingpage #statusPopup .statusmsg').html('Finished Playing Video');
+                                    $('#trainingpage #statusPopup #okbutton').attr('onclick','$("#trainingpage #statusPopup").popup("close")');
+                                    $('#trainingpage #statusPopup').popup('open');
+                                    
+                                    //there are more videos
+                                    updateNotifications(globalObj.currentPage);
+                              }
+                              else{
+                                    console.log('videoPending: go to test');
+                                    $('#trainingpage #testPopup #cancelbutton').attr('onclick','stayOnTraining("testPopup")');
+                                    $('#trainingpage #testPopup #okbutton').attr('onclick','changeToTest();return false;');
+                                    $('#trainingpage #testPopup').popup('open');
+                              }
                           }
                     }
              );
+    }
+    catch(e){
+        console.log(JSON.stringify(e));
+    }
 }
 
 
-///*
-// * This method tests if the logged in user has taken all the tests in the current module
-// * If so, prompt user to take test
-// * Tables: training_session
-// */
-//function checkTestable(tx){
-////    var query = 'SELECT * FROM cthx_training t LEFT JOIN cthx_training_session s ON ' +
-////                't.module_id=s.module_id AND t.training_id=s.training_id ' +
-////                'WHERE t.module_id=' + _moduleID + ' AND s.worker_id=' + _loggedInUserID;
-////    var query = 'SELECT status FROM cthx_training t LEFT JOIN cthx_training_session s ON ' + 
-////                't.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
-////                ' WHERE t.module_id='+globalObj.moduleID;
-//
-//     var query = 'SELECT status FROM cthx_training_to_module tm LEFT JOIN cthx_training_session s ON ' + 
-//                'tm.training_id=s.training_id AND s.worker_id=' + globalObj.loggedInUserID + 
-//                ' WHERE tm.module_id='+globalObj.moduleID;
-//
-//    console.log('check query: ' + query);
-//    
-//    tx.executeSql(query,[],function(tx,resultSet){
-//              var len = resultSet.rows.length;
-//              console.log('check length: ' + len);
-//              if(len>0){
-//                  var allTaken = true;
-//                  for(var i=0; i<len;i++){
-//                      var row = resultSet.rows.item(i);
-//                      
-//                      console.log('this row: ' + JSON.stringify(row));
-//                      //check if the training is either not taken or its session not completed
-//                      if(row['material_type']==2){
-//                          //regardless of any other conditions, the training is completed as long
-//                          //as training guide has been viewed
-//                          //Break out, no need to keep checking.
-//                            allTaken = true;
-//                            break;
-//                      }
-//                      else if(row['material_type']==1 && row['status'] != 2) {
-//                          //material_type 1 is video. Status != 2 means the video was not completed
-//                          //But keep checking as we do not know if training guide was viewed later
-//                          allTaken = false;
-//                       }
-//                  }
-//                  
-//                  console.log('alltaken: ' + allTaken);
-//                  if(allTaken == true){
-//                      //got to test 
-//                      console.log('check result: go to test')
-//                      //if(_sessionType==1)
-//                          $('#testPopup').popup('open');
-//                  }
-//                  else{
-//                      console.log('check result: stay on page')
-//                      //changeToTest();
-//                  }
-//                  
-//              }
-//              else{  //len is 0. Means user has no prior training session 
-//                  //console.log('check result on else part: go to training')
-//                      //if(_sessionType==1)
-//                          //$('#trainingPopup').popup('open');
-//              }
-//    });
-//}
-
+function launchVideoEndPopUp(){
+    $('#trainingpage #statusPopup .statusmsg').html('Finished Playing Video');
+    $('#trainingpage #statusPopup #okbutton').attr('onclick','$("#trainingpage #statusPopup").popup("close")');
+    $('#trainingpage #statusPopup').popup('open');
+}
 
 
 function changeToTest(){
+    //console.log('inside changeToTest');
+    //console.log('testid: ' + globalObj.testID + ', moduleid: ' + globalObj.moduleID);
     globalObj.db.transaction(function(tx){
                      query = 'SELECT test_id FROM cthx_test WHERE module_id='+globalObj.moduleID;
                      tx.executeSql(query,[],
-                                    function(tx,resultSet){
-                                        var len = resultSet.rows.length;
-                                        if(len>0){
-                                            globalObj.testID = resultSet.rows.item(0)['test_id'];
-                                            $.mobile.changePage('question.html');
-                                        }
-                                    }
+                            function(tx,resultSet){
+                                //alert('testid: ' + globalObj.testID + ', moduleid: ' + globalObj.moduleID);
+                                var len = resultSet.rows.length;
+                                if(len>0){
+                                    globalObj.testID = resultSet.rows.item(0)['test_id'];
+                                    $.mobile.changePage('question.html');
+                                }
+                            }
                      );
     });
 }
@@ -566,91 +589,112 @@ function stopVideo() {
 
 function launchGuide(){
     /*----------------  PC SECTION ------------------*/
-////    alert('launching guide');
-//    if(globalObj.guideViewed==false){
-//            globalObj.guideViewed = true;
-//            globalObj.db.transaction(function(tx){
-//                            for(var i=0; i<globalObj.sessionUsersList.length; i++)
-//                                saveGuideSession(tx,globalObj.sessionUsersList[i]);
-//                    },
-//                    function(error){
-//                        alert('Error saving guide session');
-//                    }
-//                );
-//    }//end if
+//    alert('launching guide');
 //    
-//     //launch pop if individual sesseion 
-//     setTimeout(function(){
-//          if(globalObj.sessionType==1) //inidividual session
-//              $('#testPopup').popup('open');
-//      },2000)
-//        return; 
+//    //launch pop if individual sesseion 
+//     if(globalObj.sessionType==1){ //inidividual session
+//        setTimeout(function(){
+//            $('#trainingpage #guidePopup .statusmsg').html('If you have thoroughly read the training guide then you can <br/>take the test for this module.<br/><br/>' +
+//                                            'Would you like to take the test now?');
+//            $('#trainingpage #guidePopup #cancelbutton').attr('onclick','stayOnTraining("guidePopup")');
+//            $('#trainingpage #guidePopup #okbutton').attr('onclick','manageTrainingGuide(); return false;');
+//            $('#trainingpage #guidePopup').popup('open');
+//        },500);
+//     }
+//     return;
 /*----------------  PC SECTION ------------------*/
     
     //first pause any playing video
     var video = document.getElementById('videoscreen');
-    video.pause();
+    if(video != null) video.pause();
     
-    window.requestFileSystem(
-            LocalFileSystem.PERSISTENT, 0, 
-            function(fileSystem){
-                var rootDirectoryEntry = fileSystem.root;
-                //alert('root: ' + fileSystem.root.fullPath);
-                
-                var filePath = globalObj.guidesDir + "/" + globalObj.guideFile;
-                //alert('Guide file filePath: ' + filePath);
-                
-                 /*
-                    * This method (getFile) is used to look up a directory. It does not create a non-existent direcory.
-                    * Args:
-                    * DirectoryEntry object: provides file look up method
-                    * dirPath: path to directory to look up relative to DirectoryEntry
-                 */
-                rootDirectoryEntry.getFile(
-                        filePath, {create: false}, 
-                        function(entry){
-                            //alert('guide file entry.toURL: '+ entry.toURL());
-                            if(!entry.isFile) return;
-                            //window.open(entry.toURL(), '_blank', 'location=yes');
-                            window.plugins.fileOpener.open(entry.toURL());
-                            
-                            //update the session table
-                            //test first if viewing again in same session 
-                            if(globalObj.guideViewed==false){
-                                    globalObj.guideViewed = true;
-                                    globalObj.db.transaction(function(tx){
-                                                    for(var i=0; i<globalObj.sessionUsersList.length; i++)
-                                                        saveGuideSession(tx,globalObj.sessionUsersList[i]);
-                                            },
-                                            function(error){
-                                               //alert('Error saving guide session');
-                                            }
-                                        );
+    try{
+        window.requestFileSystem(
+                LocalFileSystem.PERSISTENT, 0, 
+                function(fileSystem){
+                    var rootDirectoryEntry = fileSystem.root;
+                    //alert('root: ' + fileSystem.root.fullPath);
+
+                    var filePath = globalObj.guidesDir + "/" + globalObj.guideFile;
+                    //alert('Guide file filePath: ' + filePath);
+
+                     /*
+                        * This method (getFile) is used to look up a directory. It does not create a non-existent direcory.
+                        * Args:
+                        * DirectoryEntry object: provides file look up method
+                        * dirPath: path to directory to look up relative to DirectoryEntry
+                     */
+                    rootDirectoryEntry.getFile(
+                            filePath, {create: false}, 
+                            function(entry){
+                                //alert('guide file entry.toURL: '+ entry.toURL());
+                                if(!entry.isFile) return;
+                                //window.open(entry.toURL(), '_blank', 'location=yes');
+                                window.plugins.fileOpener.open(entry.toURL());
+
+
+                                 //launch pop if individual sesseion 
+                                 if(globalObj.sessionType==1){ //inidividual session
+                                    setTimeout(function(){
+                                        $('#trainingpage #guidePopup #cancelbutton').attr('onclick','stayOnTraining("guidePopup")');
+                                        $('#trainingpage #guidePopup #okbutton').attr('onclick','manageTrainingGuide(); return false;');
+                                        $('#trainingpage #guidePopup').popup('open');
+                                    },2000);
+                                 }
+                            },
+                            function(error){
+                                //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
+                                //alert("No trainings found.");
+                                $('.focus-area').empty();
+                                $('.focus-area').html('<p>No trainings found.</p>');
                             }
-                             
-                             
-                             //launch pop if individual sesseion 
-                             //setTimeout(function(){
-                                  if(globalObj.sessionType==1) //inidividual session
-                                      $('#testPopup').popup('open');
-                              //},2000)
-                             
-                            
-                        },
-                        function(error){
-                            //alert("No Video Found: " + JSON.stringify(error) + "\n Switching to Default Video.");
-                            //alert("No trainings found.");
-                            $('.focus-area').empty();
-                            $('.focus-area').html('<p>No trainings found.</p>');
-                        }
-                 );
-                
-            }, 
-            function(error) {
-                alert("File System Error: " + JSON.stringify(error));
-            }
-          );
+                     );
+                }, 
+                function(error) {
+                    alert("File System Error: " + JSON.stringify(error));
+                }
+              );
+    } catch(e){
+        console.log('Training Guide Error: ' + JSON.stringify(e));
+    }
+    
               
+}
+
+function manageTrainingGuide(){
+    //update the session table
+    //test first if viewing again in same session 
+    //if(globalObj.guideViewed==false){
+            globalObj.guideViewed = true;
+            globalObj.db.transaction(function(tx){
+                    console.log('About to save to test');
+                            for(var i=0; i<globalObj.sessionUsersList.length; i++)
+                                saveGuideSession(tx,globalObj.sessionUsersList[i]);
+                            
+                            console.log('after saving the guide session, go to test');
+                            //after saving the guide session, go to test
+                            changeToTest();
+                            console.log('after changeToTest');
+                    },
+                    function(error){
+                       //alert('Error saving guide session');
+                    }
+                );
+    //}
+}
+
+function handleLeaveTraining(){
+    $('#trainingpage .twobuttons .statusmsg').html('<p>Are you sure you want to leave?</p>');
+    $('#trainingpage .twobuttons #cancelbutton').attr('onclick','$("#trainingpage #twobuttonspopup").popup("close")');
+    $('#trainingpage .twobuttons #okbutton').attr('onclick','stopVideo(); history.go(-2)');
+    $('#trainingpage #twobuttonspopup').popup('open');
+}
+
+function stayOnTraining(popupid){
+    //globalObj.justFinishedTraining = false;
+    updateNotifications(globalObj.currentPage); 
+    $("#trainingpage #" + popupid).popup("close");
+    return false;
 }
 
 

@@ -3,7 +3,8 @@ $(document ).delegate("#adminpage", "pagebeforecreate", function() {
         globalObj.sandboxMode = false;
         globalObj.loggedInUserID = adminObj.adminID;
     //////////////////////////////////////////////////////////
-        
+   
+    globalObj.currentPage = 'adminpage';
     createHeader('adminpage','Administration');
     createFooter('adminpage');
     setNotificationCounts();
@@ -13,6 +14,7 @@ $(document ).delegate("#adminpage", "pagebeforecreate", function() {
 $(document ).delegate("#adminpage", "pageshow", function() {        
     setHeaderNotificationCount('adminpage');
     //$('#total_noti').html(globalObj.totalNotificationCount);
+    
 
     //set active sidebar element on click
     $('#sidebar_ul li a').click(function(){
@@ -20,6 +22,9 @@ $(document ).delegate("#adminpage", "pageshow", function() {
         $(this).addClass('active');
     });
     
+    jQuery.validator.setDefaults({
+        ignore: []
+      });
     
     $('#adminForm').validate({
                     
@@ -28,39 +33,45 @@ $(document ).delegate("#adminpage", "pageshow", function() {
                line1:{required:true, minlength:5}, 
                shortcode:{required:true, digits:true, min:0}, 
                smscount:{required:true, digits:true, min:0 }, 
-               supervisor:{required:true,min:1}
+               supervisorwatch:{required:true,min:1}
            },
            messages:{
                facname:{required:'Cannot be empty', minlength:'10 characters minimum'}, 
                line1:{required:'Cannot be empty', minlength:'15 characters minimum'}, 
                shortcode:{required:'Cannot be empty', digits: 'Numbers only', min:'Must be greater than 0'}, 
                smscount:{required:'Cannot be empty', digits: 'Numbers only', min:'Must be greater than 0'}, 
-               supervisor:{required:'Cannot be empty', min:'Make a selection'}
+               supervisorwatch:{required:'Make a selection', min:'Make a selection'}
            }
         });//close validate
-     
+        
 });
 
 
 $(document ).delegate("#adminpage", "pageinit", function() {        
         
-        console.log('entering admin mode: ' + globalObj.loggedInUserID + " " + globalObj.sandboxMode);
+        //console.log('entering admin mode: ' + globalObj.loggedInUserID + " " + globalObj.sandboxMode);
+        //show the footer logged in user
+        showFooterUser();
+        
+        
+        var pageModeArray = $('#adminpage').attr('data-url').split('?');
+        
+        var pageModeArray = $('#adminpage').attr('data-url').split('?');
+        if(pageModeArray.length>1){
+            pageMode = pageModeArray[1].split('=')[1];
+            if(pageMode=='1')
+              showUsersList();
+        }
+        else{
+            //set active sidebar element on click
+            //$('#usagestats').addClass('active');
+            //$('#usagestats').addClass('nobgimage');
+            $('#trainingstats').addClass('active');
+            showTrainingStats();
+        }
         
         //make the collapsible permanently expanded.
         $(".ui-collapsible-heading").unbind("click");
-        
-        showTrainingStats();
-//        var pageModeArray = $('#adminpage').attr('data-url').split('?');
-//        if(pageModeArray.length>1){
-//            pageMode = pageModeArray[1].split('=')[1];
-//            if(pageMode=='1')
-//              $('div[data-role="collapsible"]').trigger("expand");
-//        }
-//        else{
-//            //set active sidebar element on click
-//            $('#usagelink').addClass('active');
-//            showUsage();
-//        }
             
 })
 
@@ -113,7 +124,7 @@ function queryTrainingStats(tx){
                 '(SELECT COUNT(*) FROM cthx_training) AS num_training, ' +  
                     
                 //number of video trainings accessed
-                '(SELECT COUNT(DISTINCT module_id) FROM cthx_training_session WHERE material_type=1) AS num_vtraining_accessed, ' + 
+                '(SELECT COUNT(DISTINCT training_id) FROM cthx_training_session WHERE material_type=1) AS num_vtraining_accessed, ' + 
                 
                 //number of training guides accessed
                 '(SELECT COUNT(DISTINCT module_id) FROM cthx_training_session WHERE material_type=2) AS num_gtraining_accessed, ' + 
@@ -129,9 +140,9 @@ function queryTrainingStats(tx){
                         function(tx,result){
                             var len = result.rows.length;
                             //console.log('View Length: ' + len);
+                            var html = '';
                             if(len>0){
                                 var row = result.rows.item(0);
-                                
                                 html = '<ul class="content-listing textfontarial12" data-role="listview"  >' +
                                         '<li  data-icon="false"><p>Total number of registered workers<span id="trainingtaken" class=ui-li-count>' + row['num_workers'] + '</span></p></li>' +
                                         '<li  data-icon="false"><p>Total number of training modules<span id="trainingtaken" class=ui-li-count>' + row['num_modules'] + '</span></p></li>' +
@@ -145,10 +156,9 @@ function queryTrainingStats(tx){
                                         
                                  $('.focus-area').html(html);
                                  $('.c-title').html('Usage Stats');
-                                 $('#context-bar').html(
+                                 $('.cbar').html(
                                              '<span id="column-width width30">Training Stats</span>' 
                                         );
-                       
                             }
                     });
 
@@ -185,9 +195,9 @@ function queryTestStats(tx){
                         function(tx,result){
                             var len = result.rows.length;
                             //console.log('View Length: ' + len);
+                            var html = '';
                             if(len>0){
                                 var row = result.rows.item(0);
-                                
                                 html = '<ul class="content-listing textfontarial12" data-role="listview"  >' +
                                         '<li  data-icon="false"><p>Total number of tests<span id="trainingtaken" class=ui-li-count>' + row['num_test'] + '</span></p></li>' +
                                         '<li  data-icon="false"><p>Total number of tests that have been taken<span id="trainingtaken" class=ui-li-count>' + row['num_test_done'] + '</span></p></li>' +
@@ -217,6 +227,7 @@ function queryOtherStats(tx){
         tx.executeSql(query,[],
                         function(tx,result){
                             var len = result.rows.length;
+                            var html = '';
                             //console.log('View Length: ' + len);
                             if(len>0){
                                 var row = result.rows.item(0);
@@ -256,7 +267,7 @@ function showChangeAdmin(){
                                         '<p class="marginbottom10"><strong>Change Facility Admin:</strong></p>' +
                                         '<p>' +
                                             '<span class="marginleft10">' +
-                                                '<select name="supervisor" id="supervisor" data-role="none" class="styleinputtext">' +
+                                                '<select onchange="changeMade(this);" name="supervisor" id="supervisor" data-role="none" class="styleinputtext">' +
                                                     '<option value="0">--Select New Admin--</option>';
                                                     for(var i=0; i<len; i++){
                                                         row = result.rows.item(i);
@@ -268,6 +279,7 @@ function showChangeAdmin(){
                                                         html +=  '<option value="' + row['worker_id'] + '">' + fullName + '</option>';
                                                     }
                              html +=            '</select>' +
+                                                '<input type="hidden" id="supervisorwatch" name="supervisorwatch" class="watcher">' +
                                             '</span>' +
                                         '</p>' +
                                     '</div>';
@@ -287,7 +299,7 @@ function showChangeAdmin(){
                             $('.focus-area').html(  
                                     '<ul class="content-listing textfontarial12" data-role="listview">' +
                                         '<li class="" data-icon="false">' +
-                                            '<p>No user to change to. You are the only user registered for now.</p>' +
+                                            '<p>No user to change to. You are the only user registered at the moment.</p>' +
                                         '</li>' +
                                     '</ul>'
                                  );
@@ -357,6 +369,8 @@ function querySettings(tx){
                             
                             
                             $('.focus-area').html(html);
+                            $('input').attr('onclick','focusListener(this)');
+                            
                             $('.c-title').html('Admin Settings');
                             $('#context-bar').html(
                                              '<span id="column-width width30">Settings</span>' +
@@ -416,7 +430,7 @@ function showUsersList(){
     //remove the required text if displayed
     if($('.required-area').length>0) $('.required-area').remove();
     
-     $('#context-bar').html(
+     $('.cbar').html(
                      '<span id="column-width width30">Registered Users</span>' +
                      '<span class="floatright textfontarial13">' +
                              '<a href="registration.html" class="notextdecoration actionbutton textwhite" >New User</a>' +
@@ -425,7 +439,9 @@ function showUsersList(){
                      '</span>'
                 )  
     
-    $('#userlist').addClass('active');
+    $('#sidebar_ul li a').removeClass('active');
+    $('#userslist').addClass('active');
+    
     getUsersSingleSelectionList('adminpage');
     $('.c-title').html('Users List');
 }
@@ -463,7 +479,7 @@ function getUsersSingleSelectionList(pageid){
                                         $('.focus-area').html(  
                                             '<ul class="content-listing textfontarial12" data-role="listview">' +
                                                 '<li class="" data-icon="false">' +
-                                                    '<p>You are the only user registered for now.</p>' +
+                                                    '<p>You are the only user registered at the moment.</p>' +
                                                 '</li>' +
                                             '</ul>'
                                          );
@@ -514,9 +530,9 @@ function changeAdminUser(){
                     //keep the system in the know of new change
                     adminObj.adminID = supervisor_id;
                     
-                    $('.statusmsg').html('<p>Successful. <br/> You will now be logged out.</p>');
-                    $('#statusPopup #okbutton').attr("onclick","logoutAdminUser()");
-                    $('#statusPopup').popup('open');
+                    $('#adminpage .statusmsg').html('<p>Successful. <br/> You will now be logged out.</p>');
+                    $('#adminpage #statusPopup #okbutton').attr("onclick","logoutAdminUser()");
+                    $('#adminpage #statusPopup').popup('open');
                 }
             });
      }//end valid
@@ -555,9 +571,9 @@ function logoutAdminUser(){
                     var updateQuery = 'UPDATE cthx_settings SET jsontext=\'' + values + '\' WHERE id=1';
                     tx.executeSql(updateQuery);
                     
-                    $('#statusPopup .statusmsg').html('<p>Settings Updated</p>')
-                    $('#statusPopup #okbutton').attr("onclick","$('#statusPopup').popup('close')")
-                    $('#statusPopup').popup('open');        
+                    $('#adminpage #statusPopup .statusmsg').html('<p>Settings Updated</p>')
+                    $('#adminpage #statusPopup #okbutton').attr("onclick","$('#adminpage #statusPopup').popup('close')")
+                    $('#adminpage #statusPopup').popup('open');        
                 },
                 function(error){
                     console.log('Error updating settings');

@@ -44,6 +44,7 @@ var globalObj = {   //begin class
     jobaidsDir : 'MTRAIN/JobAids', //job aids default directory on device
     helpDir : 'MTRAIN/Help', //help default directory on device
 
+    profileStatDetailsView : false,
   
   /*
    *    TRAINING VIDEO, GUIDE, FAQ
@@ -53,6 +54,7 @@ var globalObj = {   //begin class
     videoPlayedList : new Array(),
     videoFile : '', 
     guideFile : '',
+    //justFinishedTraining : false,
     
     
   /*

@@ -34,15 +34,17 @@
                          <li id="notification_li"  >
                             
                              
-                          <div data-role="collapsible" data-icon="false" data-inset="false"  class="nomargin nobackground nopadding">
+                          <div data-role="collapsible" data-icon="false" data-collapsed="false" data-inset="false"  class="nomargin nobackground nopadding">
                             <h1 id="sidebar-collapsible-link">
-                                Notifications<span id="side_notif"  class="ui-li-count setcountermargin">0</span>
+                                <a id="notificationslink" href="" onclick="showNotificationsList(); return false;" class="textfontarial15 paddthree">
+                                    Notifications<span id="side_notif"  class="ui-li-count setcountermargin">0</span>
+                                </a>
                             </h1>
                             
                               <ul data-role="listview" data-icon="false">
                                   
                                  <li  data-icon="false" class="noborder">
-                                     <a href="#" onclick="getUncompletedTrainings(false)" class="textfontarial12 paddthree marginleft20">Uncompleted Trainings<span id="uncompleted" class="ui-li-count setcountermargin2">0</span></a>
+                                     <a href="#" onclick="getUncompletedTrainings(false)" class="textfontarial12 paddthree marginleft20">Pending Trainings<span id="uncompleted" class="ui-li-count setcountermargin2">0</span></a>
                                  </li>
                                  <li  data-icon="false" class="noborder">
                                      <a href="#" onclick="getWaitingTests(false)" class="textfontarial12 paddthree marginleft20">Waiting Assessment<span id="waiting" class="ui-li-count setcountermargin2">0</span></a>
@@ -82,7 +84,7 @@
                        <div  class="focus-area">
 
                           <ul class="content-listing textfontarial12" data-role="listview"  >
-       <!--                       <li  data-icon="false"><p>Number of training taken<span id="trainingtaken" class=ui-li-count>57</span></p></li>
+       <!--                   <li  data-icon="false"><p>Number of training taken<span id="trainingtaken" class=ui-li-count>57</span></p></li>
                               <li  data-icon="false"><p>Number of training guides viewed<span id="trainingguide" class=ui-li-count>57</span></p></li>
                               <li  data-icon="false"><p>Number of uncompleted trainings taken<span id="trainingincomplete" class=ui-li-count>57</span></p></li>
                               <li  data-icon="false"><p>Number of training yet to be taken<span id="trainingdue" class=ui-li-count>44</span></p></li>
@@ -92,8 +94,7 @@
                           </ul>
 
                        </div> 
-
-                        </div> 
+                  </div> 
 
                         <!--this is the status popup-->
                         <div class="noborder" data-role="popup" id="statusPopup" data-overlay-theme="f" data-dismissible="false">

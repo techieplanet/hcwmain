@@ -1,4 +1,6 @@
 $( document ).delegate("#traininghomepage", "pagebeforecreate", function() {    
+    //set the current page id
+    globalObj.currentPage = 'traininghomepage';
     createHeader('traininghomepage','Trainings');
     createFooter('traininghomepage');
     setNotificationCounts();
@@ -62,8 +64,8 @@ $( document ).delegate("#traininghomepage", "pagebeforeshow", function() {
 *   Displays first category modules in content area
 **********************/
 $(document ).delegate("#traininghomepage", "pageinit", function() {           
-        //set the current page id
-        globalObj.currentPage = 'traininghomepage';
+        //show the footer logged in user
+        showFooterUser();
         
         /*
          *  PageMode 2: retake training mode

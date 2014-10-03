@@ -1,4 +1,5 @@
 $(document ).delegate("#questionpage", "pagebeforecreate", function() {
+    globalObj.currentPage = 'questionpage';
     createHeader('questionpage','Assessment');
     createFooter('questionpage');
     setNotificationCounts();
@@ -16,6 +17,8 @@ $(document ).delegate("#questionpage", "pageshow", function() {
  */
 
  $(document ).delegate("#questionpage", "pageinit", function() {    
+     //show the footer logged in user
+     showFooterUser();
      //openDb();
      //globalObj.testID = 1;
      //console.log('question pageinit: ' + $(this).data("url"));
@@ -117,7 +120,9 @@ function setUpQuestion(questionRow){
         //console.log('question row: ' + JSON.stringify(questionRow));
         
         
-        $('#question li:first-child').html(questionRow["question"]);        
+        //$('#question li:first-child').html(questionRow["question"]);        
+        $('#question').html(questionRow["question"]);        
+        
         var html="";
         
         //get the options shuffled 
@@ -190,7 +195,7 @@ function showTip(quest_ID){
     console.log('selectedOptionID: ' + selectedOptionID + ', selectedOptionText: ' + selectedOptionText + ', Answer: ' + answer);
     
     
-    if(selectedOptionText == answer){  //correct answer
+    if(selectedOptionText.trim().toUpperCase() == answer.trim().toUpperCase()){  //correct answer
         $('#status').html('CORRECT ANSWER');
         
         //increment score count
@@ -201,7 +206,7 @@ function showTip(quest_ID){
             $('#scorecount').val(parseInt(prevcount) + 1);
     }
     else {
-         $('#status').html('WRONG ANSWER');
+         $('#status').html('ANSWER NOT CORRECT');
     }
      
     console.log('quest id: ' + quest_ID + ' qList: ' + globalObj.questionIDList);

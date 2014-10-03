@@ -2,12 +2,12 @@
 //checkForFirstTimeUse method to be sure header elements are not displayed in wizard mode
 $(document).delegate("#mainpage", "pagebeforecreate", function() {   
     //alert('pagebeforecreate 1');
-    createHeader('mainpage','');
-    createFooter('mainpage');
-    setNotificationCounts();
+    globalObj.currentPage = 'mainpage';
+    
+    
         
     if(globalObj.firstTimeUse == false){
-        console.log('pagebeforecreate');
+        //console.log('pagebeforecreate');
         //alert('pagebeforecreate');
         showHomeIcons();
         setUpAdminObject();
@@ -16,17 +16,37 @@ $(document).delegate("#mainpage", "pagebeforecreate", function() {
         setUpSettingsObject();
     }
     else{
-        //alert('pageb4create else');
+        //alert('pagebeforecreate else');
+        createHeader('mainpage','');
+        createFooter('mainpage');
+        setNotificationCounts();
     }
 });
 
 $(document ).delegate("#mainpage", "pageshow", function() {
-   setHeaderNotificationCount('mainpage'); 
-   console.log('pageshow');
+    globalObj.currentPage = 'mainpage';
+    
+    //show the footer logged in user
+    showFooterUser();
+    
+    //redo notification counts for home. Be sure.
+    setNotificationCounts();
+    
+   //redo the context menu to get correct list,
+   //set header notifications after little delay
+   setTimeout(function(){
+        getQuickMenuContentsForHome();
+        setHeaderNotificationCount('mainpage'); 
+        createFooter('mainpage');
+   },200);
    
-   //createHeader('mainpage','');
-   //createFooter('mainpage');
-   
+   /*
+    * Very important: To ensure validator considers hidden fields
+    */
+   jQuery.validator.setDefaults({
+        ignore: []
+   });
+      
    //wizard form validation
    $('#wizardForm').validate({
            rules:{
@@ -40,10 +60,9 @@ $(document ).delegate("#mainpage", "pageshow", function() {
                lastname:{required:true, minlength:2}, 
                email:{required:true, email:true},
                phonenumber:{required:true,digits:true, minlength:8},
-               cadre:{required:true,min:1},
-               //qualification:{required:true,minlength:3},
-               gender:{required:true,min:1},
-               squestion:{required:true,min:1},
+               cadrewatch:{required:true,min:1},
+               genderwatch:{required:true,min:1},
+               questionwatch:{required:true,min:1},
                answer: {required:true},
                
                username:{required:true, minlength:6}, 
@@ -61,10 +80,9 @@ $(document ).delegate("#mainpage", "pageshow", function() {
                lastname:{required:'Cannot be empty', minlength:'2 characters minimum'}, 
                email:{required:'Cannot be empty', email:'Enter valid email'},
                phonenumber:{required:'Cannot be empty', digits:'Enter numbers only', minlength:'8 characters minimum'},
-               cadre:{required:'Cannot be empty', min:'Make a selection'},
-               //qualification:{required:'Cannot be empty', minlength:'3 characters minimum'}, 
-               gender:{required:'Cannot be empty', min:'Make a selection'},
-               squestion:{required:'Cannot be empty', min:'Make a selection'},
+               cadrewatch:{required:'Make a selection', min:'Make a selection'},
+               genderwatch:{required:'Make a selection', min:'Make a selection'},
+               questionwatch:{required:'Make a selection', min:'Make a selection'},
                answer: {required:'Cannot be empty'},
                
                username:{required:'Cannot be empty', minlength:'6 characters minimum'}, 
@@ -77,6 +95,15 @@ $(document ).delegate("#mainpage", "pageshow", function() {
 
 $(document ).delegate("#mainpage", "pageinit", function() {
     console.log('pageinit b4 device');
+    
+    
+    //quick menu items close after every click
+    $('#quickMenu ul li a').click(function(){
+        $('#quickMenu').popup("close");
+    })
+    
+    
+    
     document.addEventListener("deviceready", onDeviceReady, false);            
         function onDeviceReady(){
             //checkConnection();
@@ -104,24 +131,31 @@ $(document ).delegate("#mainpage", "pageinit", function() {
          //alert('this is the back button')
             if($.mobile.activePage.is('#mainpage')){
                 if(globalObj.firstTimeUse==true){ //i.e. first time use
-                    $('.twobuttons .statusmsg').html('<p>Setup process incomplete. <br/> Are you sure you want to quit?</p>');
-                    $('.twobuttons #okbutton').attr('onclick','quitAppNoQuestion();');
-                    $('.twobuttons #cancelbutton').attr('onclick','$("#twobuttonspopup").popup("close")');
-                    $('#twobuttonspopup').popup('open');
+                    $('#mainpage .twobuttons .statusmsg').html('<p>Setup process incomplete. <br/> Are you sure you want to quit?</p>');
+                    $('#mainpage .twobuttons #okbutton').attr('onclick','quitAppNoQuestion();');
+                    $('#mainpage .twobuttons #cancelbutton').attr('onclick','$("#mainpage #twobuttonspopup").popup("close")');
+                    $('#mainpage #twobuttonspopup').popup('open');
                 }else{
-                    $('.twobuttons .statusmsg').html('<p>Are you sure you want to quit?</p>');
-                    $('.twobuttons #okbutton').attr('onclick','quitAppNoQuestion();');
-                    $('.twobuttons #cancelbutton').attr('onclick','$("#twobuttonspopup").popup("close")');
-                    $('#twobuttonspopup').popup('open');
+                    $('#mainpage .twobuttons .statusmsg').html('<p>Are you sure you want to quit?</p>');
+                    $('#mainpage .twobuttons #okbutton').attr('onclick','quitAppNoQuestion();');
+                    $('#mainpage .twobuttons #cancelbutton ui-btn-text').html('Cancel');
+                    $('#mainpage .twobuttons #cancelbutton').attr('onclick','$("#mainpage  #twobuttonspopup").popup("close")');
+                    $('#mainpage #twobuttonspopup').popup('open');
                 }
                 //quits the app
             }
             else if($.mobile.activePage.is('#profilepage')){
                 if(globalObj.sandboxMode==true){
                     //we are expectd to be on profile page. So, we can use the status pop up on profile page
-                    $('#profilepage .statusmsg').html('<p>Back button not available in <strong>Sandbox Mode</strong></p>');
-                    $('#statusPopup #okbutton').attr('onclick','$(\'#statusPopup\').popup(\'close\');');
-                    $('#statusPopup').popup('open');
+                    $('#profilepage .statusmsg').html('<p>Back button not available in <strong>User View</strong> mode</p>');
+                    $('#profilepage #statusPopup #okbutton').attr('onclick','$(\'#profilepage  #statusPopup\').popup(\'close\');');
+                    $('#profilepage #statusPopup').popup('open');
+                }
+                else if(globalObj.profileStatDetailsView==true){
+                    //we are expectd to be on profile page. So, we can use the status pop up on profile page
+                    $('#profilepage .statusmsg').html('<p>Select "Show All Stats" at top right first.</p>');
+                    $('#profilepage #statusPopup #okbutton').attr('onclick','$(\'#profilepage  #statusPopup\').popup(\'close\');');
+                    $('#profilepage #statusPopup').popup('open');
                 }
                 else{
                     navigator.app.backHistory();
@@ -197,7 +231,7 @@ function showHomeIcons(){
                     '<p>My Profile</p>' +
                 '</a>' +
 
-                '<a href="trycombo.html" class="iconblock2" href="" onclick="accessAdminArea();">' +
+                '<a href="#" class="iconblock2" href="" onclick="">' +
                     '<img src="img/reg-icon.png" />' +
                     '<p>Registration</p>' +
                 '</a>' +
@@ -217,35 +251,10 @@ function showHomeIcons(){
 }
 
 
-//function checkForFirstTimeUse(){
-//    console.log('inside checkForFirstTimeUse');
-//    var error = function(e){console.log('Check Error: ' + JSON.stringify(e));}
-//    var query = "SELECT * FROM cthx_health_worker";
-//    globalObj.db.transaction(function(tx){
-//        tx.executeSql(query,[],function(tx,result){
-//            var len = result.rows.length;
-//            if(len>0){ //not first time
-//                console.log('not first time');
-//                globalObj.firstTimeUse = false;
-//                setUpAdminObject();
-//                setUpSettingsObject();
-//                showHomeIcons();
-//                setTimeout(function(){createFooter('mainpage')},500);
-//            }
-//            else{//first time use, let the show begin
-//                console.log('first time');
-//                $('.header-right').addClass('hidden');
-//                wizardWelcome();
-//            }
-//        });
-//    },error)
-//}
-
-
 function checkForFirstTimeUse(){
     //alert('inside checkForFirstTimeUse');
     if(globalObj.firstTimeUse == false){ //not first time
-        console.log('not first time');
+        //alert('checkForFirstTimeUse: not first time');
         setUpAdminObject();
         setUpSettingsObject();
         setUsersCount();

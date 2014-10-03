@@ -95,7 +95,8 @@ function showFacilitySetup(){
                        html += '</div>'; //content-question
 
                        //console.log('b4 attach: '+JSON.stringify(settingsObj));
-                                $('#wizardForm').html(html);
+                       $('#wizardForm').html(html);
+                       $('input').attr('onclick','focusListener(this)');
                                 //$('#context-bar').html()      
                             }
                     }); //tx
@@ -145,24 +146,18 @@ function showAdminInfoSetup(){
                         '<p class="marginbottom10"><strong>Cadre*</strong></p>' +
                         '<p>' +
                             '<span class="">' +
-                                '<select name="cadre" id="cadre" data-role="none" class="styleinputtext">' + 
+                                '<select onchange="changeMade(this);" name="cadre" id="cadre" data-role="none" class="styleinputtext">' + 
                                     '<option value="0">--Select Cadre--</option>' +
                                     '<option value="1">CHEW</option>' +
                                     '<option value="2">Nurse</option>' +
                                     '<option value="3">Midwife</option>' +
                                 '</select>' +
+                                '<input type="hidden" id="cadrewatch" name="cadrewatch" class="watcher">' +
                             '</span>' +
                         '</p>' +
                     '</div>';
                             
-                             
-            //qualification
-//            html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
-//                        '<p class="marginbottom10"><strong>Qualification:</strong></p>' +
-//                        '<p>' +
-//                            '<span class=""><input class="styleinputtext" data-role="none" size="30" type="text" name="qualification" id="qualification" value="' + workerObj.qualification + '" placeholder="Qualification" /></span>' +
-//                        '</p>' +
-//                    '</div>';
+                        
                             
             //phone
             html += '<div class="textfontarial12 width95 bottomborder padcontainer  marginbottom10">' +
@@ -187,11 +182,12 @@ function showAdminInfoSetup(){
                         '<p class="marginbottom10"><strong>Gender*</strong></p>' +
                         '<p>' +
                             '<span class="">' +
-                                '<select name="gender" id="gender" data-role="none" class="styleinputtext">' + 
+                                '<select onchange="changeMade(this);" name="gender" id="gender" data-role="none" class="styleinputtext">' + 
                                     '<option value="0">--Select Gender--</option>' +
                                     '<option value="1">Male</option>' +
                                     '<option value="2">Female</option>' +
                                 '</select>' +
+                                '<input type="hidden" id="genderwatch" name="genderwatch" class="watcher">' +
                             '</span>' +
                         '</p>' +
                     '</div>';
@@ -212,12 +208,13 @@ function showAdminInfoSetup(){
                             '<p class="marginbottom10"><strong>Secret Question*</strong></p>' +
                             '<p>' +
                                 '<span class="">' +
-                                    '<select name="squestion" id="squestion" data-role="none" class="styleinputtext">' + 
+                                    '<select onchange="changeMade(this);" name="squestion" id="squestion" data-role="none" class="styleinputtext">' + 
                                         '<option value="0">--Select Question--</option>' +
                                         '<option value="1">What is your favorite colour?</option>' +
                                         '<option value="2">What city were you born?</option>' +
                                         '<option value="2">What is your favorite food?</option>' +
                                     '</select>' +
+                                    '<input type="hidden" id="questionwatch" name="questionwatch" class="watcher">' +
                                 '</span>' +
                             '</p>' +
                         '</div>';
@@ -237,6 +234,7 @@ function showAdminInfoSetup(){
 
 
     $('#wizardForm').html(html);   
+    $('input').attr('onclick','focusListener(this)');
     
     //set the selected cadre, question and gender
     document.getElementById("cadre").selectedIndex = workerObj.cadreID;
@@ -308,6 +306,7 @@ function showAdminLoginSetup(){
 
 
              $('#wizardForm').html(html);                            
+             $('input').attr('onclick','focusListener(this)');
                      
 }
 
@@ -328,6 +327,7 @@ function setUpFacility(){
     
         showAdminInfoSetup();
     }
+    
 
 }
 
@@ -359,7 +359,6 @@ function setUpAdminWorker(){
         showAdminLoginSetup()
         console.log('worker: ' + JSON.stringify(workerObj));
     }
-    
     
 }
 
