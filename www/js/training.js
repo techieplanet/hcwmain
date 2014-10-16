@@ -61,11 +61,10 @@ $(document ).delegate("#trainingpage", "pageshow", function() {
       var video = document.getElementById('videoscreen');
       video.addEventListener('ended', function(e){
           globalObj.db.transaction(endTrainingSession,
-                          function(error){console.log('check error cb: ' + JSON.stringify(error));},//errorCB}
-                          function(){
-                              //console.log('check success cb');
-                          }
-                      );
+                  function(error){console.log('check error cb: ' + JSON.stringify(error));},//errorCB}
+                  function(){
+                      //console.log('check success cb');
+                  });
       }, false);
       
       video.addEventListener('play', function(e){

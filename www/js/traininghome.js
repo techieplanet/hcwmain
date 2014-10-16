@@ -4,16 +4,11 @@ $( document ).delegate("#traininghomepage", "pagebeforecreate", function() {
     createHeader('traininghomepage','Trainings');
     createFooter('traininghomepage');
     setNotificationCounts();
+    
 });
 
 $( document ).delegate("#traininghomepage", "pageshow", function() {    
         setHeaderNotificationCount('traininghomepage');
-        
-        //set active sidebar element on click
-        $('#sidebar_ul li a').click(function(){
-            $('#sidebar_ul li a').removeClass('active');
-            $(this).addClass('active');
-        });
         
         /*
          *  This displays the category list on sidebar. The delay is necessary to ensure that the 
@@ -24,7 +19,15 @@ $( document ).delegate("#traininghomepage", "pageshow", function() {
                     queryCategories,
                     function(error){
                             console.log('Database error: ' + JSON.stringify(error));
+                        },
+                    function(){
+                        //set active sidebar element on click
+                        $('#sidebar_ul li a').click(function(){
+                            $('#sidebar_ul li a').removeClass('active');
+                            $(this).addClass('active');
                         });
+                    }
+                );
         },200);
         
             //////////  COLLAPSIBLE ...........

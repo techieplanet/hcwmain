@@ -93,6 +93,7 @@ $(document ).delegate("#profilepage", "pageinit", function() {
               showNotificationsList();
               $('#sidebar_ul li a').removeClass('active');
               $('#notificationslink').addClass('active');
+              $('#notification_li #sidebar-collapsible-link .ui-collapsible-heading-toggle').addClass('active');
               $('#notificationslink').addClass('nobgimage');
         }
         else{
@@ -121,19 +122,26 @@ function dropView(tx){
 
 function showUsage()  {
     globalObj.profileStatDetailsView = false;
-    globalObj.db.transaction(queryUsage,errorCB);   
+    globalObj.db.transaction(queryUsage,errorCB);  
+    $('#profilepage #profile_txt_h').addClass('currentheaderlink');
 }
 
 function showPersonalInfo(){
     globalObj.db.transaction(queryInfo,errorCB);   
+    $('#profilepage #notification_txt_h').removeClass('currentheaderlink');
+    $('#profilepage #profile_txt_h').addClass('currentheaderlink');
 }
 
 function showEdit(){
     globalObj.db.transaction(queryEdit,errorCB);   
+    $('#profilepage #notification_txt_h').removeClass('currentheaderlink');
+    $('#profilepage #profile_txt_h').addClass('currentheaderlink');
 }
 
 function showLoginDetails(){
     globalObj.db.transaction(queryLogin,errorCB);   
+    $('#profilepage #notification_txt_h').removeClass('currentheaderlink');
+    $('#profilepage #profile_txt_h').addClass('currentheaderlink');
 }
 
 
@@ -541,6 +549,9 @@ function showNotificationsList(){
                  );
     }
     $("#profilepage").trigger('create');
+    
+    $('#profilepage #profile_txt_h').removeClass('currentheaderlink');
+    $('#profilepage #notification_txt_h').addClass('currentheaderlink');
     
 }
 

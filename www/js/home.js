@@ -227,25 +227,26 @@ function showHomeIcons(){
                 //row 2
         html += '<div class="home-menu height40">' +
                     '<a class="iconblock2" href="#" onclick="accessProfile();return false;" >' +
-                    '<img src="img/my-profile-icon.png" />' +
-                    '<p>My Profile</p>' +
-                '</a>' +
+                        '<img src="img/my-profile-icon.png" />' +
+                        '<p>My Profile</p>' +
+                    '</a>' +
 
-                '<a href="#" class="iconblock2" href="" onclick="">' +
-                    '<img src="img/reg-icon.png" />' +
-                    '<p>Registration</p>' +
-                '</a>' +
+                    '<a href="#" class="iconblock2" href="" onclick="">' +
+                        '<img src="img/reg-icon.png" />' +
+                        '<p>Registration</p>' +
+                    '</a>' +
 
-                '<a class="iconblock2" href="help.html" >' +
-                    '<img src="img/help-icon.png" />' +
-                    '<p>Help</p>' +
-                '</a>' +
+                    '<a class="iconblock2" href="help.html" >' +
+                        '<img src="img/help-icon.png" />' +
+                        '<p>Help</p>' +
+                    '</a>' +
 
-                '<a class="iconblock2" href="" onclick="accessAdminArea();" >' +
-                    '<img src="img/admin-icon.png" />' +
-                    '<p>Facility Administration</p>' +
-                '</a>' +
-            '</div>';
+                    '<a class="iconblock2" href="" onclick="accessAdminArea();" >' +
+                        '<img src="img/admin-icon.png" />' +
+                        '<p>Facility Administration</p>' +
+                    '</a>' +
+                    
+                '</div>';
             
         $('#mainpage #content').html(html);
 }

@@ -100,29 +100,29 @@ function querySummary(tx){
                          }
                          
                          var avg = sum/len;
-                         avg = Math.round(avg*100)/100;
+                         avg = avg==null ? 0 : Math.round(avg*100)/100;
                          
                         html += '<ul class="content-listing textfontarial12 margintop10" data-role="listview">' +
                                     '<li class="" data-icon="false">' +
-                                        '<p>Total Tests Taken' +
+                                        '<p class="margintop5">Total Tests Taken' +
                                             '<span id="test-taken" class=ui-li-count>' + len + '</span>' +
                                         '</p>' +
                                     '</li>';
                         
                         html +=     '<li class="" data-icon="false">' + 
-                                        '<p>Total Tests Passed' +
+                                        '<p class="margintop5">Total Tests Passed' +
                                             '<span id="test-passed" class=ui-li-count>' + passCount + '</span>' +
                                         '</p>' +
                                     '</li>';
 
                         html +=     '<li class="" data-icon="false">' +
-                                        '<p>Total Tests Failed' +
+                                        '<p class="margintop5">Total Tests Failed' +
                                             '<span id="test-failed" class=ui-li-count>' + failCount + '</span>' +
                                         '</p>' +
                                     '</li>';
 
                         html +=     '<li class="" data-icon="false">' +
-                                        '<p>Average Score Percentage' +
+                                        '<p class="margintop5">Average Score Percentage' +
                                             '<span id="test-avg" class=ui-li-count>' + avg + '</span>' +
                                         '</p>' +
                                     '</li>';

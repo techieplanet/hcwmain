@@ -78,10 +78,10 @@ function setUpTrainingModules(tx){
     //alert('inside setmodules');
     tx.executeSql('DROP TABLE IF EXISTS cthx_training_module');
     tx.executeSql('CREATE TABLE cthx_training_module (module_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, module_title TEXT, guide_file TEXT, remarks TEXT, admin_id INTEGER, category_id INTEGER)');
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Family Planning", "chai_sample.pdf","Dual protection contraception against HIV transmission/STDs and unintended pregnancy; Avoid pregnancy following unprotected intercourse","","1")');
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Management of Complications in Pregnancy & Delivery","chai_sample.pdf", "Dual protection contraception against HIV transmission/STDs and unintended pregnancy; Avoid pregnancy following unprotected intercourse","","2")');
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Management of Newborn Complications","chai_sample.pdf","Dual protection contraception against HIV transmission/STDs and unintended pregnancy; Avoid pregnancy following unprotected intercourse","","3")');
-    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Management of Common Childhood Illnesses","chai_sample.pdf","Dual protection contraception against HIV transmission/STDs and unintended pregnancy; Avoid pregnancy following unprotected intercourse","","3")');
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Family Planning", "fp_training_guide.pdf","Dual protection contraception against HIV transmission/STDs and unintended pregnancy; Avoid pregnancy following unprotected intercourse","","1")');
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Management of Complications in Pregnancy & Delivery","mcpd_training_guide.pdf", "Dual protection contraception against HIV transmission/STDs and unintended pregnancy; Avoid pregnancy following unprotected intercourse","","2")');
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Management of Newborn Complications","mnc_training_guide.pdf","Dual protection contraception against HIV transmission/STDs and unintended pregnancy; Avoid pregnancy following unprotected intercourse","","3")');
+    tx.executeSql('INSERT INTO cthx_training_module (module_title,guide_file,remarks,admin_id,category_id) VALUES ("Management of Common Childhood Illnesses","mcci_training_guide.pdf","Dual protection contraception against HIV transmission/STDs and unintended pregnancy; Avoid pregnancy following unprotected intercourse","","3")');
 }
 
 
