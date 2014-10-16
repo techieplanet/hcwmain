@@ -125,7 +125,7 @@ function getJobAidsFromTraining(){
                                 console.log('aids len: ' + len);
                                 if(len>0){
                                     //console.log('rows: ' + JSON.stringify(resultSet.rows.item(0)))
-                                    html += '<ul class="content-listing textfontarial12" id="choicelist"  data-role="listview"  >';
+                                    html += '<ul class="content-listing2 textfontarial12" id=""  data-role="listview"  >';
                                     for(var i=0; i<resultSet.rows.length; i++){
                                         var row = resultSet.rows.item(i);
                                         html += '<li class="bottomborder width98" data-icon="false" >';
@@ -134,6 +134,17 @@ function getJobAidsFromTraining(){
                                         html +=        '</a>';
                                         html += '</li>';
                                     }
+
+//                                      for(var i=0; i<resultSet.rows.length; i++){
+//                                        var row = resultSet.rows.item(i);
+//                                        html += '<li class="bottomborder width98" data-icon="false" >';
+//                                        html +=     '<p class="bold ">';
+//                                        html +=        '<a class="margintop10 notextdecoration textblack" href="#" onclick="launchAid(\''+ row['aid_file'] + '\')">';
+//                                        html +=         row['aid_title'];
+//                                        html +=        '</a>';
+//                                        html +=     '</p>';
+//                                        html += '</li>';
+//                                    }
 
                                     html += '</ul>';
 

@@ -461,7 +461,7 @@ function createHeader(pageid,pageheading){
                         '<img src="img/logo_icon.png" >'; 
                     
                     if(globalObj.currentPage != 'mainpage' && globalObj.sandboxMode==false){
-                        html += '<a href="index.html"><img class="floatright" src="img/home-icon.png" ></a>';
+                        html += '<a class="homeicon" href="index.html"><img class="floatright" src="img/home-icon.png" ></a>';
                     }
                         
         html +=     '</div>' ;
@@ -471,7 +471,7 @@ function createHeader(pageid,pageheading){
     
     //if(globalObj.firstTimeUse == false){
        html +=      '<div class="header-right"> ' +
-                        
+           
                         //quick menu
                         '<div id="menu_icon_h">' +
                             '<a href="#quickMenu" data-rel="popup" data-position-to="origin">' +
@@ -481,23 +481,26 @@ function createHeader(pageid,pageheading){
 
                          //profile
                         '<div id="profile_txt_h">' +
-                            '<a href="" onclick="accessProfile();return false;" class="notextdecoration textwhite textfontarialblack13">Profile</a>' +
+                            '<a href="" onclick="accessProfile();return false;" class="notextdecoration textwhite textfontarialblack13">' +
+                                '<span>Profile</span>' +
+                            '</a>' +
                         '</div>' +
                      
                         //notification
                         '<div id="notification_txt_h" class="hidden">' +
-                            '<a href="" onclick="accessNotifications(); return false;" class="notextdecoration textwhite textfontarialblack13">Notifications</a>' +
-                            '<span id="total_noti" class="noticecount ui-li-count"></span>' +
+                            '<a href="" onclick="accessNotifications(); return false;" class="notextdecoration textwhite textfontarialblack13">' +
+                                '<span style="margin-right:5px;">Notifications</span>' + 
+                                '<span id="total_noti" class="noticecount ui-li-count"></span>' +
+                            '</a>' +
                         '</div>' +
                      
                         //help
                         '<div id="help_txt_h">' +
-                            '<a href="" onclick="accessHelp();return false;" class="notextdecoration textwhite textfontarialblack13">Help</a>' +
+                            '<a href="" onclick="accessHelp();return false;" class="notextdecoration textwhite textfontarialblack13">' +
+                                '<span>Help</span>' +
+                            '</a>' +
                         '</div>' +
                         
-                        //'<div id="home_icon">' +
-                          //  '<a href="index.html"><img src="img/home-icon.png" ></a>' +
-                        //'</div>' +
                    '</div>';    //header right
             
                         
@@ -506,17 +509,17 @@ function createHeader(pageid,pageheading){
             //<!--context menu-->
             html +=     '<div data-role="popup" id="quickMenu" data-history="false">' +
                             '<ul id="choicelist" data-role="listview" >' +
-                                '<li data-icon="false"><a href="index.html" id="main">Main Menu </a></li>' +
-                                '<li data-icon="false"><a href="training_home.html">Training</a></li>' +
-                                '<li data-icon="false"><a href="" onclick="accessTests();">Take Test</a></li>' +
-                                '<li data-icon="false"><a href="job_aids.html">Job Aids</a></li>' +
-                                '<li data-icon="false"><a href="#" onclick="menuClose(); accessStandingOrder(\'standing_order.pdf\');">Standing Order</a></li>';
+                                '<li data-icon="false"><a href="index.html" id="context_mainpage">Main Menu </a></li>' +
+                                '<li data-icon="false"><a href="training_home.html" id="context_traininghomepage">Training</a></li>' +
+                                '<li data-icon="false"><a href="" onclick="accessTests();" id="context_testpage">Take Test</a></li>' +
+                                '<li data-icon="false"><a href="job_aids.html" id="context_jobaidspage">Job Aids</a></li>' +
+                                '<li data-icon="false"><a href="#" id="page" onclick="menuClose(); accessStandingOrder(\'standing_order.pdf\');">Standing Order</a></li>';
 
             html +=             (globalObj.loggedInUserID == adminObj.adminID) ? 
-                                            '<li data-icon="false"><a href="admin.html" >Admin Area</a></li>' : '' ;
+                                            '<li data-icon="false"><a href="admin.html" id="context_adminpage">Admin Area</a></li>' : '' ;
 
             html +=             (globalObj.loggedInUserID <= 0) ? //no logged in user
-                                    '<li data-icon="false"><a href="" onclick="accessProfile();">Log In</a></li>':
+                                    '<li data-icon="false"><a href="" onclick="accessProfile();" id="context_loginpage">Log In</a></li>':
                                     '<li data-icon="false"><a href="#" onclick="menuClose(); logout();">Log Out</a></li>';
 
                                 //<li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
@@ -536,6 +539,7 @@ function createHeader(pageid,pageheading){
                $('#' + pageid + ' .header-right').addClass('hidden');
            }
              
+           $("#"+globalObj.currentPage + " #quickMenu #context_" + globalObj.currentPage).addClass('active');
 }
 
 function menuClose(){
@@ -552,17 +556,17 @@ function menuClose(){
 function getQuickMenuContentsForHome(){
     
     var html = '<ul id="choicelist" >' +
-                                '<li data-icon="false"><a href="index.html" id="main">Main Menu </a></li>' +
-                                '<li data-icon="false"><a href="training_home.html">Training</a></li>' +
-                                '<li data-icon="false"><a href="" onclick="accessTests();">Take Test</a></li>' +
-                                '<li data-icon="false"><a href="job_aids.html">Job Aids</a></li>' +
-                                '<li data-icon="false"><a href="#" onclick="menuClose(); accessStandingOrder(\'standing_order.pdf\');">Standing Order</a></li>';
+                                '<li data-icon="false"><a href="index.html" id="context_mainpage">Main Menu </a></li>' +
+                                '<li data-icon="false"><a href="training_home.html" id="context_traininghomepage">Training</a></li>' +
+                                '<li data-icon="false"><a href="" onclick="accessTests();" id="context_testpage">Take Test</a></li>' +
+                                '<li data-icon="false"><a href="job_aids.html" id="context_jobaidspage">Job Aids</a></li>' +
+                                '<li data-icon="false"><a href="#" onclick="menuClose(); accessStandingOrder(\'standing_order.pdf\');" >Standing Order</a></li>';
 
         html +=             (globalObj.loggedInUserID == adminObj.adminID) ? 
-                                        '<li data-icon="false"><a href="admin.html" >Admin Area</a></li>' : '' ;
+                                        '<li data-icon="false"><a href="admin.html" id="context_adminpage" >Admin Area</a></li>' : '' ;
 
         html +=             (globalObj.loggedInUserID <= 0) ? //no logged in user
-                                '<li data-icon="false"><a href="" onclick="accessProfile();">Log In</a></li>':
+                                '<li data-icon="false"><a href="" onclick="accessProfile();" id="context_loginpage">Log In</a></li>':
                                 '<li data-icon="false"><a href="#" onclick="menuClose(); logout();">Log Out</a></li>';
 
                             //<li data-icon="false"><a href="printdb.html" id="printdb">Print DB</a></li>
@@ -573,6 +577,8 @@ function getQuickMenuContentsForHome(){
        $('#mainpage #quickMenu').html(html);
        
        $("#mainpage #choicelist").listview();
+       
+       $("#mainpage #quickMenu #context_"+globalObj.currentPage).addClass('active');
 }
 
 

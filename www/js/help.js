@@ -8,6 +8,9 @@ $(document ).delegate("#helppage", "pagebeforecreate", function() {
 $(document ).delegate("#helppage", "pageshow", function() {
     setHeaderNotificationCount('helppage');
     
+    $('#helppage #help_txt_h').addClass('currentheaderlink');
+    //$('#helppage #help_txt_h').css('background','#507eab !important');
+    
    
 });
 
@@ -32,7 +35,7 @@ $(document ).delegate("#helppage", "pageinit", function() {
 function getHelpFiles(){
        var html = '';
        var query = 'SELECT * FROM cthx_user_guide ORDER BY guide_title';
-       $('#c-bar').html('User Guides');
+       $('#helppage #c-bar').html('User Guides');
        
        console.log('user guides aids: ' + query);
        
@@ -43,7 +46,7 @@ function getHelpFiles(){
                                 console.log('ug len: ' + len);
                                 if(len>0){
                                     //console.log('rows: ' + JSON.stringify(resultSet.rows.item(0)))
-                                    html += '<ul class="content-listing textfontarial12" id="choicelist"  data-role="listview"  >';
+                                    html += '<ul class="content-listing2 textfontarial12" id=""  data-role="listview"  >';
                                     for(var i=0; i<resultSet.rows.length; i++){
                                         var row = resultSet.rows.item(i);
                                         html += '<li class="bottomborder " data-icon="false" >';

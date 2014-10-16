@@ -143,7 +143,7 @@ function queryTrainingStats(tx){
                             var html = '';
                             if(len>0){
                                 var row = result.rows.item(0);
-                                html = '<ul class="content-listing textfontarial12" data-role="listview"  >' +
+                                html = '<ul class="content-listing textfontarial12" id="choicelist" data-role="listview"  >' +
                                         '<li  data-icon="false"><p>Total number of registered workers<span id="trainingtaken" class=ui-li-count>' + row['num_workers'] + '</span></p></li>' +
                                         '<li  data-icon="false"><p>Total number of training modules<span id="trainingtaken" class=ui-li-count>' + row['num_modules'] + '</span></p></li>' +
                                         '<li  data-icon="false"><p>Total number of modules accessed<span id="trainingtaken" class=ui-li-count>' + row['num_modules_accessed'] + '</span></p></li>' +
@@ -152,7 +152,7 @@ function queryTrainingStats(tx){
                                         '<li  data-icon="false"><p>Total number of training GUIDES accessed<span id="trainingincomplete" class=ui-li-count>' + row['num_gtraining_accessed'] + '</span></p></li>' +
                                         '<li  data-icon="false"><p>Total number of video topics completed<span id="trainingdue" class=ui-li-count>' + row['num_vtraining_completed'] + '</span></p></li>' +
                                         '<li  data-icon="false"><p>Total number of video topics NOT completed<span id="trainingdue" class=ui-li-count>' + row['num_vtraining_uncompleted'] + '</span></p></li>' +
-                                        '</ul>';
+                                      '</ul>';
                                         
                                  $('.focus-area').html(html);
                                  $('.c-title').html('Usage Stats');
